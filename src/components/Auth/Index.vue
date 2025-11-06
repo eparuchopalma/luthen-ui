@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Logo from "./Logo.vue";
 import { authStore } from "../../store/authStore"
 
 async function startDemo() {
@@ -8,13 +9,11 @@ async function startDemo() {
 </script>
 
 <template>
-  <main>
-    <div class="logo">
-      <img src="../../assets/squirrel.svg" alt="Squirrel Logo" class="logo__img">
-    </div>
+  <main class="main">
+    <Logo :centered="true" />
     <header>
       <h1 class="headline">Squirrel</h1>
-      <h4 class="title">Financial Log</h4>
+      <p>Financial Log</p>
     </header>
     <div class="button-container">
       <button
@@ -45,17 +44,8 @@ async function startDemo() {
 
 <style scoped>
 
-.logo {
-  width: 140px;
-  margin: 32px auto;
-  padding: 12px 12px 6px;
-  border-radius: 20px;
-  box-shadow: 1px 1px 4px #111;
-}
-
-.logo__img {
-  width: 100%;
-  height: auto;
+.main {
+  padding-top: 40px;
 }
 
 .brand-logo {
@@ -64,8 +54,12 @@ async function startDemo() {
 }
 
 .headline {
-  margin-bottom: 10px;
-  font-size: 64px;
+  margin: 40px 0 10px;
+  font-size: 6.4rem;
+}
+
+.button-container {
+  margin: 60px auto 0;
 }
 
 .footer {
@@ -83,7 +77,7 @@ async function startDemo() {
 .footer__text {
   padding-right: 20px;
   display: inline-block;
-  font-size: 24px;
+  font-size: 2.4rem;
   font-family: "Sacramento", cursive;
   font-weight: 400;
   font-style: normal;
@@ -101,7 +95,13 @@ async function startDemo() {
 
 .link {
   font-weight: 400;
-  font-size: 14px;
-  color: var(--lightest);
+  font-size: 1.4rem;
+  color: var(--light);
 }
+
+.link:hover {
+  color: var(--lightest);
+  text-decoration-color: var(--accent);
+}
+
 </style>
