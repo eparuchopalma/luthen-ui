@@ -58,10 +58,6 @@ async function startDemo() {
   font-size: 6.4rem;
 }
 
-.button-container {
-  margin: 60px auto 0;
-}
-
 .footer {
   height: 120px;
   width: 100%;
