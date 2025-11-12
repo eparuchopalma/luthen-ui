@@ -8,6 +8,16 @@
       </div>
       <h1>Records</h1>
     </header>
+    <div class="button-container">
+      <button
+      class="button"
+      type="button"
+      >Query</button>
+      <button
+      class="button button_secondary"
+      type="button"
+      >Export</button>
+    </div>
     <table class="table">
       <thead>
         <tr>
@@ -20,30 +30,50 @@
       </thead>
       <tbody>
         <tr>
-          <td class="table__cell table__cell_text-sm">Aug-16 (Fri)</td>
+          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
           <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell">Fondo I</td>
-          <td class="table__cell">Vehículo</td>
+          <td class="table__cell table__cell_bg-bag">Fondo I</td>
+          <td class="table__cell table__cell_leaf">Vehículo</td>
           <td class="table__cell table__cell_flex">
             <button type="button" class="table__button table__button_edit"></button>
             <button type="button" class="table__button table__button_delete"></button>
           </td>
         </tr>
         <tr>
-          <td class="table__cell table__cell_text-sm">Aug-16 (Fri)</td>
+          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
           <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell">Fondo I</td>
-          <td class="table__cell">Vehículo</td>
+          <td class="table__cell table__cell_bg-bag">Fondo I</td>
+          <td class="table__cell table__cell_leaf">Vehículo</td>
           <td class="table__cell table__cell_flex">
             <button type="button" class="table__button table__button_edit"></button>
             <button type="button" class="table__button table__button_delete"></button>
           </td>
         </tr>
         <tr>
-          <td class="table__cell table__cell_text-sm">Aug-16 (Fri)</td>
+          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
           <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell">Fondo I</td>
-          <td class="table__cell">Vehículo</td>
+          <td class="table__cell table__cell_bg-bag">Fondo I</td>
+          <td class="table__cell table__cell_leaf">Vehículo</td>
+          <td class="table__cell table__cell_flex">
+            <button type="button" class="table__button table__button_edit"></button>
+            <button type="button" class="table__button table__button_delete"></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
+          <td class="table__cell table__cell_text-lg">-$5</td>
+          <td class="table__cell table__cell_bg-bag">Fondo I</td>
+          <td class="table__cell table__cell_leaf">Vehículo</td>
+          <td class="table__cell table__cell_flex">
+            <button type="button" class="table__button table__button_edit"></button>
+            <button type="button" class="table__button table__button_delete"></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
+          <td class="table__cell table__cell_text-lg">-$5</td>
+          <td class="table__cell table__cell_bg-bag">Fondo I</td>
+          <td class="table__cell table__cell_leaf">Vehículo</td>
           <td class="table__cell table__cell_flex">
             <button type="button" class="table__button table__button_edit"></button>
             <button type="button" class="table__button table__button_delete"></button>
@@ -51,6 +81,32 @@
         </tr>
       </tbody>
     </table>
+    <div class="button-container button-container_justify-between button-container_mt-30">
+      <button
+      class="button button_secondary button_sm button_dark"
+      type="button"
+      >
+      <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron">
+    </button>
+    <button
+    class="button button_secondary button_sm button_dark"
+    type="button"
+    >
+      <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron button__chevron_right">
+    </button>
+    </div>
+    <div class="balance-cell">
+      <span>Credit</span>
+      <span>$0</span>
+    </div>
+    <div class="balance-cell">
+      <span>Debit</span>
+      <span>-$15</span>
+    </div>
+    <div class="balance-cell">
+      <span>Total</span>
+      <span>-$15</span>
+    </div>
   </section>
 </template>
 
@@ -58,7 +114,6 @@
 
 .table {
   width: 100%;
-  margin: 48px auto;
   border-collapse: separate;
   border-spacing: 0 48px;
 }
@@ -68,12 +123,16 @@
 }
 
 .table__cell {
-  margin: 6px 0;
+  margin: 2px 0;
   width: 48%;
+  padding: 0;
   display: inline-block;
 }
 
-.table__cell_text-sm {
+.table__cell_highlight {
+  padding-left: 8px;
+  text-align: left;
+  background-color: var(--accent);
   font-size: 1.6rem;
 }
 
@@ -81,16 +140,28 @@
   font-size: 2.4rem;
 }
 
+.table__cell_bg-bag {
+  background-image: url('../../assets/seed-bag.png');
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: 4px 0;
+}
+
+.table__cell_leaf {
+  background-image: url('../../assets/leaf.png');
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: 4px 0;
+}
+
 .table__cell_flex {
   display: flex;
-  justify-content: space-around;
-  gap: 12px;
   width: 100%;
 }
 
 .table__button {
-  width: 48px;
-  height: 24px;
+  width: 100%;
+  height: 20px;
   background-color: var(--darkest);
   border: none;
   border-radius: 4px;
@@ -114,29 +185,65 @@
   background-image: url('../../assets/trash.png');
 }
 
+.balance-cell {
+  padding: 8px 16px;
+  margin: 8px 0;
+  border: 1px solid var(--dark);
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.6rem;
+}
+
+.button__chevron {
+  width: 16px;
+  height: 16px;
+  padding-top: 3px;
+}
+
+.button__chevron_right {
+  padding-bottom: 3px;
+  transform: rotate(180deg);
+}
+
 @media (width >= 640px) {
 
   .table {
+    margin: 48px auto;
     border-spacing: 2px;
   }
 
   .table__header {
-    background-color: var(--dark);
-    display: table-cell;
+    width: 120px;
     border: none;
     border-radius: 2px;
+    display: table-cell;
+    background-color: var(--dark);
   }
-
+  
   .table__cell {
+    display: table-cell;
     width: 120px;
     border: 1px solid var(--dark);
-    display: table-cell;
+    border-radius: 2px;
     font-size: 1.6rem;
+    opacity: 1;
+  }
+
+  .table__cell_highlight {
+    background-color: var(--darkest);
   }
 
   .table__button {
-    height: 20px;
+    display: inline-block;
+    width: 44px;
     margin: 0 4px;
+  }
+
+  .balance-cell {
+    display: inline-flex;
+    width: 20%;
+    margin: 0 12px;
   }
 
 }

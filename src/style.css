@@ -43,6 +43,14 @@ body {
   gap: 48px;
 }
 
+.button-container_justify-between {
+  justify-content: space-between;
+}
+
+.button-container_mt-30 {
+  margin: 30px 0;
+}
+
 .button {
   height: 24px;
   width: 120px;
@@ -64,6 +72,14 @@ body {
   background-color: var(--darkest);
 }
 
+.button_sm {
+  width: 60px;
+}
+
+.button_dark {
+  background-color: var(--dark);
+}
+  
 .button:hover {
   box-shadow: 0 1px 4px var(--dark);
 }
