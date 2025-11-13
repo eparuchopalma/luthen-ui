@@ -1,4 +1,26 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref, watch } from 'vue'
+
+const screenSize = ref({
+  width: window.innerWidth,
+  height: window.innerHeight
+})
+
+const rowsQuantity = ref(10)
+
+const handleResize = () => {
+  screenSize.value.width = window.innerWidth
+  screenSize.value.height = window.innerHeight
+}
+
+watch(screenSize, (newSize) => {
+  if (newSize.width <= 640) rowsQuantity.value = Math.floor(newSize.height / 128)
+  else rowsQuantity.value = Math.floor(newSize.height / 64)
+}, { deep: true })
+
+window.addEventListener('resize', handleResize)
+
+</script>
 
 <template>
   <section class="section">
@@ -29,51 +51,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
-          <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell table__cell_bg-bag">Fondo I</td>
-          <td class="table__cell table__cell_leaf">Vehículo</td>
-          <td class="table__cell table__cell_flex">
-            <button type="button" class="table__button table__button_edit"></button>
-            <button type="button" class="table__button table__button_delete"></button>
-          </td>
-        </tr>
-        <tr>
-          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
-          <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell table__cell_bg-bag">Fondo I</td>
-          <td class="table__cell table__cell_leaf">Vehículo</td>
-          <td class="table__cell table__cell_flex">
-            <button type="button" class="table__button table__button_edit"></button>
-            <button type="button" class="table__button table__button_delete"></button>
-          </td>
-        </tr>
-        <tr>
-          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
-          <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell table__cell_bg-bag">Fondo I</td>
-          <td class="table__cell table__cell_leaf">Vehículo</td>
-          <td class="table__cell table__cell_flex">
-            <button type="button" class="table__button table__button_edit"></button>
-            <button type="button" class="table__button table__button_delete"></button>
-          </td>
-        </tr>
-        <tr>
-          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
-          <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell table__cell_bg-bag">Fondo I</td>
-          <td class="table__cell table__cell_leaf">Vehículo</td>
-          <td class="table__cell table__cell_flex">
-            <button type="button" class="table__button table__button_edit"></button>
-            <button type="button" class="table__button table__button_delete"></button>
-          </td>
-        </tr>
-        <tr>
-          <td class="table__cell table__cell_highlight">Aug-16 (Fri)</td>
-          <td class="table__cell table__cell_text-lg">-$5</td>
-          <td class="table__cell table__cell_bg-bag">Fondo I</td>
-          <td class="table__cell table__cell_leaf">Vehículo</td>
+        <tr v-for="row in rowsQuantity" :key="row">
+          <td class="table__cell table__cell_highlight table__cell_text-sm">Aug-16 (Fri)</td>
+          <td class="table__cell">-$5</td>
+          <td class="table__cell table__cell_text-sm table__cell_bg-bag">Fondo I</td>
+          <td class="table__cell table__cell_text-sm table__cell_bg-leaf">Vehículo</td>
           <td class="table__cell table__cell_flex">
             <button type="button" class="table__button table__button_edit"></button>
             <button type="button" class="table__button table__button_delete"></button>
@@ -81,19 +63,19 @@
         </tr>
       </tbody>
     </table>
-    <div class="button-container button-container_justify-between button-container_mt-30">
+    <div class="button-container button-container_justify-between button-container_m-0">
       <button
       class="button button_secondary button_sm button_dark"
       type="button"
       >
-      <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron">
-    </button>
-    <button
-    class="button button_secondary button_sm button_dark"
-    type="button"
-    >
-      <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron button__chevron_right">
-    </button>
+        <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron">
+      </button>
+      <button
+      class="button button_secondary button_sm button_dark"
+      type="button"
+      >
+        <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron button__chevron_right">
+      </button>
     </div>
     <div class="balance-cell">
       <span>Credit</span>
@@ -133,25 +115,24 @@
   padding-left: 8px;
   text-align: left;
   background-color: var(--accent);
-  font-size: 1.6rem;
 }
 
-.table__cell_text-lg {
-  font-size: 2.4rem;
+.table__cell_text-sm {
+  font-size: 1.4rem;
 }
 
 .table__cell_bg-bag {
   background-image: url('../../assets/seed-bag.png');
   background-repeat: no-repeat;
-  background-size: 20px;
-  background-position: 4px 0;
+  background-size: 14px;
+  background-position: 4px 1px;
 }
 
-.table__cell_leaf {
+.table__cell_bg-leaf {
   background-image: url('../../assets/leaf.png');
   background-repeat: no-repeat;
-  background-size: 20px;
-  background-position: 4px 0;
+  background-size: 14px;
+  background-position: 4px 1px;
 }
 
 .table__cell_flex {
@@ -186,9 +167,9 @@
 }
 
 .balance-cell {
-  padding: 8px 16px;
-  margin: 8px 0;
+  margin: 16px 0;
   border: 1px solid var(--dark);
+  padding: 8px 16px;
   border-radius: 4px;
   display: flex;
   justify-content: space-between;
@@ -226,7 +207,7 @@
     width: 120px;
     border: 1px solid var(--dark);
     border-radius: 2px;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     opacity: 1;
   }
 
@@ -234,16 +215,21 @@
     background-color: var(--darkest);
   }
 
+  .table__cell_bg-bag, .table__cell_bg-leaf {
+    background-position: 4px 4px;
+  }
+  
   .table__button {
     display: inline-block;
-    width: 44px;
+    width: 43%;
+    height: 18px;
     margin: 0 4px;
   }
 
   .balance-cell {
     display: inline-flex;
     width: 20%;
-    margin: 0 12px;
+    margin: 20px 12px;
   }
 
 }
