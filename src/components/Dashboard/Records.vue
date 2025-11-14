@@ -14,7 +14,7 @@ const handleResize = () => {
 }
 
 watch(screenSize, (newSize) => {
-  if (newSize.width <= 640) rowsQuantity.value = Math.floor(newSize.height / 128)
+  if (newSize.width <= 640) rowsQuantity.value = Math.floor(newSize.height / 90)
   else rowsQuantity.value = Math.floor(newSize.height / 64)
 }, { deep: true })
 
@@ -41,22 +41,22 @@ window.addEventListener('resize', handleResize)
       >Export</button>
     </div>
     <table class="table">
-      <thead>
+      <thead class="table__header">
         <tr>
-          <th class="table__header">Date</th>
-          <th class="table__header">Amount</th>
-          <th class="table__header">Fund</th>
-          <th class="table__header">Tag</th>
-          <th class="table__header">Actions</th>
+          <th class="table__cell table__cell_text-center table__cell_sm">Date</th>
+          <th class="table__cell table__cell_text-center table__cell_sm">Amount</th>
+          <th class="table__cell table__cell_text-center">Fund</th>
+          <th class="table__cell table__cell_text-center">Tag</th>
+          <th class="table__cell table__cell_text-center table__cell_sm">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="row in rowsQuantity" :key="row">
           <td class="table__cell table__cell_highlight table__cell_text-sm">Aug-16 (Fri)</td>
-          <td class="table__cell">-$5</td>
+          <td class="table__cell table__cell_text-right">-$5</td>
           <td class="table__cell table__cell_text-sm table__cell_bg-bag">Fondo I</td>
           <td class="table__cell table__cell_text-sm table__cell_bg-leaf">Vehículo</td>
-          <td class="table__cell table__cell_flex">
+          <td class="table__cell table__cell_flex table__cell_mb-8 table__cell_w-full">
             <button type="button" class="table__button table__button_edit"></button>
             <button type="button" class="table__button table__button_delete"></button>
           </td>
@@ -95,9 +95,9 @@ window.addEventListener('resize', handleResize)
 <style scoped>
 
 .table {
+  margin: 48px auto 32px;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 48px;
+  border-collapse: collapse;
 }
 
 .table__header {
@@ -105,7 +105,7 @@ window.addEventListener('resize', handleResize)
 }
 
 .table__cell {
-  margin: 2px 0;
+  margin: 4px 0;
   width: 48%;
   padding: 0;
   display: inline-block;
@@ -113,12 +113,16 @@ window.addEventListener('resize', handleResize)
 
 .table__cell_highlight {
   padding-left: 8px;
+  background-color: var(--dark);
   text-align: left;
-  background-color: var(--accent);
 }
 
 .table__cell_text-sm {
   font-size: 1.4rem;
+}
+
+.table__cell_text-right {
+  text-align: right;
 }
 
 .table__cell_bg-bag {
@@ -137,6 +141,13 @@ window.addEventListener('resize', handleResize)
 
 .table__cell_flex {
   display: flex;
+}
+
+.table__cell_mb-8 {
+  margin-bottom: 8px;
+}
+
+.table__cell_w-full {
   width: 100%;
 }
 
@@ -190,38 +201,52 @@ window.addEventListener('resize', handleResize)
 @media (width >= 640px) {
 
   .table {
-    margin: 48px auto;
-    border-spacing: 2px;
+    max-width: 900px;
+    border-collapse: separate;
+    table-layout: fixed;
   }
 
   .table__header {
-    width: 120px;
-    border: none;
     border-radius: 2px;
-    display: table-cell;
+    display: table-header-group;
     background-color: var(--dark);
+    font-size: 1.4rem;
+    font-weight: 400;
   }
   
   .table__cell {
-    display: table-cell;
-    width: 120px;
+    padding: 0 8px;
     border: 1px solid var(--dark);
     border-radius: 2px;
+    display: table-cell;
+    text-align: left;
     font-size: 1.4rem;
     opacity: 1;
   }
 
+  .table__cell_text-center {
+    text-align: center;
+  }
+
+  .table__cell_text-right {
+    text-align: right;
+  }
+
+  .table__cell_sm {
+    width: 100px;
+  }
+
   .table__cell_highlight {
-    background-color: var(--darkest);
+    background-color: transparent;
   }
 
   .table__cell_bg-bag, .table__cell_bg-leaf {
-    background-position: 4px 4px;
+    background-image: none;
   }
   
   .table__button {
     display: inline-block;
-    width: 43%;
+    width: 40%;
     height: 18px;
     margin: 0 4px;
   }
