@@ -2,20 +2,6 @@
 import Logo from "../Auth/Logo.vue"
 import Status from "./Status.vue"
 import Records from "./Records.vue"
-import { onMounted, ref } from "vue"
-import { fundStore } from "../../store/fundStore"
-
-onMounted(() => setFunds())
-
-const loading = ref(false)
-
-async function setFunds() {
-  loading.value = true
-  const { errorMessage } = await fundStore.getFunds()
-  if (errorMessage) alert(errorMessage)
-  loading.value = false
-}
-
 </script>
 
 <template>

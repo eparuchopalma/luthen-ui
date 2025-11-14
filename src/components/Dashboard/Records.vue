@@ -1,5 +1,17 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, computed } from "vue"
+import { recordStore } from "../../store/recordStore"
+
+onMounted(() => setRecords())
+
+const loading = ref(false)
+
+async function setRecords() {
+  loading.value = true
+  const { errorMessage } = await recordStore.getRecords()
+  if (errorMessage) alert(errorMessage)
+  loading.value = false
+}
 
 const screenSize = ref({
   width: window.innerWidth,
@@ -7,6 +19,10 @@ const screenSize = ref({
 })
 
 const rowsQuantity = ref(10)
+
+const pageRecords = computed(() => {
+  return recordStore.records.slice(0, rowsQuantity.value)
+})
 
 const handleResize = () => {
   screenSize.value.width = window.innerWidth
@@ -51,11 +67,11 @@ window.addEventListener('resize', handleResize)
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rowsQuantity" :key="row">
-          <td class="table__cell table__cell_highlight table__cell_text-sm">Aug-16 (Fri)</td>
-          <td class="table__cell table__cell_text-right">-$5</td>
-          <td class="table__cell table__cell_text-sm table__cell_bg-bag">Fondo I</td>
-          <td class="table__cell table__cell_text-sm table__cell_bg-leaf">Vehículo</td>
+        <tr v-for="record in pageRecords" :key="record.id">
+          <td class="table__cell table__cell_highlight table__cell_text-sm">{{ record.date.slice(0, 10) }}</td>
+          <td class="table__cell table__cell_text-right">{{ Number(record.amount).toFixed(2) }}</td>
+          <td class="table__cell table__cell_text-sm table__cell_bg-bag">{{ record.fund_id.slice(0, 8) }}</td>
+          <td class="table__cell table__cell_text-sm table__cell_bg-leaf">{{ record.tag }}</td>
           <td class="table__cell table__cell_flex table__cell_mb-8 table__cell_w-full">
             <button type="button" class="table__button table__button_edit"></button>
             <button type="button" class="table__button table__button_delete"></button>
