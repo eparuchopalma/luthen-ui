@@ -13,10 +13,7 @@ async function setRecords() {
   loading.value = false
 }
 
-const screenSize = ref({
-  width: window.innerWidth,
-  height: window.innerHeight
-})
+const screenHeight = ref(window.innerHeight)
 
 const rowsQuantity = ref(10)
 
@@ -24,15 +21,9 @@ const pageRecords = computed(() => {
   return recordStore.records.slice(0, rowsQuantity.value)
 })
 
-const handleResize = () => {
-  screenSize.value.width = window.innerWidth
-  screenSize.value.height = window.innerHeight
-}
+const handleResize = () => screenHeight.value = window.innerHeight
 
-watch(screenSize, (newSize) => {
-  if (newSize.width <= 640) rowsQuantity.value = Math.floor(newSize.height / 90)
-  else rowsQuantity.value = Math.floor(newSize.height / 64)
-}, { deep: true })
+watch(screenHeight, (newHeight) => rowsQuantity.value = Math.floor(newHeight / 44))
 
 window.addEventListener('resize', handleResize)
 
@@ -57,53 +48,47 @@ window.addEventListener('resize', handleResize)
       >Export</button>
     </div>
     <table class="table">
-      <thead class="table__header">
-        <tr>
-          <th class="table__cell table__cell_text-center table__cell_sm">Date</th>
-          <th class="table__cell table__cell_text-center table__cell_sm">Amount</th>
-          <th class="table__cell table__cell_text-center">Fund</th>
-          <th class="table__cell table__cell_text-center">Tag</th>
-          <th class="table__cell table__cell_text-center table__cell_sm">Actions</th>
+      <caption class="table__caption">Click on a record for details and actions.</caption>
+      <thead>
+        <tr class="table__header-row">
+          <th>Date</th>
+          <th>Tag</th>
+          <th>Amount</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="record in pageRecords" :key="record.id">
-          <td class="table__cell table__cell_highlight table__cell_text-sm">{{ record.date.slice(0, 10) }}</td>
-          <td class="table__cell table__cell_text-right">{{ Number(record.amount).toFixed(2) }}</td>
-          <td class="table__cell table__cell_text-sm table__cell_bg-bag">{{ record.fund_id.slice(0, 8) }}</td>
-          <td class="table__cell table__cell_text-sm table__cell_bg-leaf">{{ record.tag }}</td>
-          <td class="table__cell table__cell_flex table__cell_mb-8 table__cell_w-full">
-            <button type="button" class="table__button table__button_edit"></button>
-            <button type="button" class="table__button table__button_delete"></button>
-          </td>
+        <tr v-for="record in pageRecords" :key="record.id" class="table__body-row">
+          <td class="table__cell table__cell_text-left">{{ record.date.slice(0, 10) }}</td>
+          <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
+          <td class="table__cell table__cell_text-right">$ {{ record.amount }}</td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr class="table__footer-row">
+          <td>
+            <div class="table__footer-data">
+              <span>Credit</span>
+              <span>$ 0</span>
+            </div>
+          </td>
+          <td>
+            <div class="table__footer-data">
+              <span>Debit</span>
+              <span>$ -15</span>
+            </div>
+          </td>
+          <td>
+            <div class="table__footer-data">
+              <span>Total</span>
+              <span>$ -15</span>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
     </table>
-    <div class="button-container button-container_justify-between button-container_m-0">
-      <button
-      class="button button_secondary button_sm button_dark"
-      type="button"
-      >
-        <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron">
-      </button>
-      <button
-      class="button button_secondary button_sm button_dark"
-      type="button"
-      >
-        <img src="../../assets/chevron.png" alt="chevron left icon" class="button__chevron button__chevron_right">
-      </button>
-    </div>
-    <div class="balance-cell">
-      <span>Credit</span>
-      <span>$0</span>
-    </div>
-    <div class="balance-cell">
-      <span>Debit</span>
-      <span>-$15</span>
-    </div>
-    <div class="balance-cell">
-      <span>Total</span>
-      <span>-$15</span>
+    <div class="table-actions">
+      <button class="button button_sm button_dark" type="button">&lt</button>
+      <button class="button button_sm button_dark" type="button">&gt;</button>
     </div>
   </section>
 </template>
@@ -113,166 +98,65 @@ window.addEventListener('resize', handleResize)
 .table {
   margin: 48px auto 32px;
   width: 100%;
-  border-collapse: collapse;
+  max-width: 500px;
+  border-spacing: 2px;
+  border-collapse: separate;
+  font-size: 1.4rem;
+  table-layout: fixed;
 }
 
-.table__header {
-  display: none;
+  
+.table__caption {
+  margin: 8px 0;
+  font-style: italic;
+  font-size: 1.2rem;
+  text-align: center;
+  color: var(--light);
+}
+
+.table__header-row {
+  font-size: 1.4rem;
+  background-color: var(--dark);
 }
 
 .table__cell {
-  margin: 4px 0;
-  width: 48%;
-  padding: 0;
-  display: inline-block;
+  width: 120px;
+  padding: 0 4px;
+  border: 1px solid var(--dark);
 }
 
-.table__cell_highlight {
-  padding-left: 8px;
-  background-color: var(--dark);
+.table__cell_text-left {
   text-align: left;
-}
-
-.table__cell_text-sm {
-  font-size: 1.4rem;
 }
 
 .table__cell_text-right {
   text-align: right;
 }
 
-.table__cell_bg-bag {
-  background-image: url('../../assets/seed-bag.png');
-  background-repeat: no-repeat;
-  background-size: 14px;
-  background-position: 4px 1px;
+.table__footer-row {
+  background-color: var(--dark);
 }
 
-.table__cell_bg-leaf {
-  background-image: url('../../assets/leaf.png');
-  background-repeat: no-repeat;
-  background-size: 14px;
-  background-position: 4px 1px;
-}
-
-.table__cell_flex {
-  display: flex;
-}
-
-.table__cell_mb-8 {
-  margin-bottom: 8px;
-}
-
-.table__cell_w-full {
-  width: 100%;
-}
-
-.table__button {
-  width: 100%;
-  height: 20px;
-  background-color: var(--darkest);
-  border: none;
-  border-radius: 4px;
-  display: inline;  
-  cursor: pointer;
-  box-shadow: 0 1px 4px #111;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 16px;
-}
-
-.table__button:hover {
-  box-shadow: 0 1px 4px var(--dark);
-}
-
-.table__button_edit {
-  background-image: url('../../assets/edit.png');
-}
-
-.table__button_delete {
-  background-image: url('../../assets/trash.png');
-}
-
-.balance-cell {
-  margin: 16px 0;
-  border: 1px solid var(--dark);
-  padding: 8px 16px;
-  border-radius: 4px;
+.table__footer-data {
+  padding: 0 4px;
   display: flex;
   justify-content: space-between;
-  font-size: 1.6rem;
 }
 
-.button__chevron {
-  width: 16px;
-  height: 16px;
-  padding-top: 3px;
+.table-actions {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
 }
 
-.button__chevron_right {
-  padding-bottom: 3px;
-  transform: rotate(180deg);
-}
+@media (hover: hover) and (pointer: fine) {
 
-@media (width >= 640px) {
-
-  .table {
-    max-width: 900px;
-    border-collapse: separate;
-    table-layout: fixed;
-  }
-
-  .table__header {
-    border-radius: 2px;
-    display: table-header-group;
-    background-color: var(--dark);
-    font-size: 1.4rem;
-    font-weight: 400;
+  .table__body-row:hover {
+    cursor: pointer;
+    color: var(--light);
   }
   
-  .table__cell {
-    padding: 0 8px;
-    border: 1px solid var(--dark);
-    border-radius: 2px;
-    display: table-cell;
-    text-align: left;
-    font-size: 1.4rem;
-    opacity: 1;
-  }
-
-  .table__cell_text-center {
-    text-align: center;
-  }
-
-  .table__cell_text-right {
-    text-align: right;
-  }
-
-  .table__cell_sm {
-    width: 100px;
-  }
-
-  .table__cell_highlight {
-    background-color: transparent;
-  }
-
-  .table__cell_bg-bag, .table__cell_bg-leaf {
-    background-image: none;
-  }
-  
-  .table__button {
-    display: inline-block;
-    width: 40%;
-    height: 18px;
-    margin: 0 4px;
-  }
-
-  .balance-cell {
-    display: inline-flex;
-    width: 20%;
-    margin: 20px 12px;
-  }
-
 }
 
 </style>

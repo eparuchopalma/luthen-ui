@@ -43,27 +43,18 @@ body {
   gap: 48px;
 }
 
-.button-container_justify-between {
-  justify-content: space-between;
-}
-
-.button-container_m-0 {
-  margin: 0;
-}
-
 .button {
   height: 24px;
   width: 120px;
   border: none;
   border-radius: 2px;
   background-color: var(--accent);
-  font-size: 1.4rem;
   color: var(--lightest);
   font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
+  font-size: 1.4rem;
   font-weight: 400;
   font-style: normal;
-  cursor: pointer;
+  font-optical-sizing: auto;
   box-shadow: 0 1px 4px #111;
   transition: all 0.6s ease;
 }
@@ -72,14 +63,17 @@ body {
   background-color: var(--darkest);
 }
 
-.button_sm {
-  width: 60px;
-}
-
 .button_dark {
   background-color: var(--dark);
 }
+
+.button_sm {
+  width: 50px;
+}
   
-.button:hover {
-  box-shadow: 0 1px 4px var(--dark);
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    box-shadow: 0 1px 4px var(--dark);
+    cursor: pointer;
+  }
 }
