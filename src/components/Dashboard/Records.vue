@@ -178,7 +178,6 @@ window.addEventListener('resize', handleResize)
 }
 
 .table__header-row {
-  font-size: 1.4rem;
   background-color: var(--dark);
 }
 

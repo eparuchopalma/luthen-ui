@@ -2,6 +2,7 @@
 import Logo from "../Auth/Logo.vue"
 import Status from "./Status.vue"
 import Records from "./Records.vue"
+import Insights from "./Insights.vue"
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import Records from "./Records.vue"
   <main>
     <Status />
     <Records />
+    <Insights />
   </main>
 </template>
 
@@ -24,7 +26,8 @@ import Records from "./Records.vue"
 }
 
 .section {
-  min-height: 100vh;
+  padding-top: 48px;
+  min-height: 94vh;
 }
 
 .section__icon {
