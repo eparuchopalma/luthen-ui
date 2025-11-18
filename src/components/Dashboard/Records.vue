@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, onMounted, computed } from "vue"
+import { ref, watch, onMounted } from "vue"
 import { recordStore } from "../../store/recordStore"
 
 onMounted(() => setRecords())
@@ -10,6 +10,7 @@ async function setRecords() {
   loading.value = true
   const { errorMessage } = await recordStore.getRecords()
   if (errorMessage) alert(errorMessage)
+  document.getElementById("table")?.scrollIntoView({ behavior: "smooth" })
   loading.value = false
 }
 
@@ -18,19 +19,41 @@ const screenHeight = ref(window.innerHeight)
 const totalPages = ref(1)
 const currentPage = ref(1)
 const rowsPerPage = ref(10)
+const pageRecords = ref()
+const totalCredit = ref(0)
+const totalDebit = ref(0)
+const queryBalance = ref(0)
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+})
 
-const pageRecords = computed(() => {
+function setColumnsBalance() {
+  totalDebit.value = 0
+  totalCredit.value = 0
+  queryBalance.value = 0
+  for (const record of recordStore.records) {
+    if (record.type == 0) continue
+    else if (record.type == 2) totalDebit.value += Number(record.amount)
+    else if (record.type == 1) totalCredit.value += Number(record.amount)
+    queryBalance.value += Number(record.amount)
+  }
+}
+
+function setPageRecords() {
   const startingIndex = (currentPage.value - 1) * rowsPerPage.value
   const endingIndex = startingIndex + rowsPerPage.value
-  return recordStore.records.slice(startingIndex, endingIndex)
-})
+  pageRecords.value = recordStore.records.slice(startingIndex, endingIndex)
+}
 
 function setNextPage() {
   currentPage.value++
+  setPageRecords()
 }
 
 function setPreviousPage() {
   currentPage.value--
+  setPageRecords()
 }
 
 function handleResize() {
@@ -41,6 +64,8 @@ watch([screenHeight, () => recordStore.records], ([newHeight, newRecords]) => {
   const rowsToFit = Math.floor(newHeight / 44)
   rowsPerPage.value = rowsToFit
   totalPages.value = Math.ceil(newRecords.length / rowsToFit)
+  setPageRecords()
+  setColumnsBalance()
 }, { immediate: true, deep: true }
 )
 
@@ -67,7 +92,7 @@ window.addEventListener('resize', handleResize)
       >Export</button>
     </div>
     <div class="table-container">
-      <table class="table">
+      <table class="table" id="table">
         <caption class="table__caption">Click on a record for details and actions.</caption>
         <thead>
           <tr class="table__header-row">
@@ -80,7 +105,7 @@ window.addEventListener('resize', handleResize)
           <tr v-for="record in pageRecords" :key="record.id" class="table__body-row">
             <td class="table__cell table__cell_text-left">{{ record.date.slice(0, 10) }}</td>
             <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
-            <td class="table__cell table__cell_text-right">$ {{ record.amount }}</td>
+            <td class="table__cell table__cell_text-right">{{ formatter.format(record.amount) }}</td>
           </tr>
         </tbody>
         <tfoot>
@@ -88,19 +113,19 @@ window.addEventListener('resize', handleResize)
             <td>
               <div class="table__footer-data">
                 <span>Credit</span>
-                <span>$ 0</span>
+                <span>{{ formatter.format(totalCredit) }}</span>
               </div>
             </td>
             <td>
               <div class="table__footer-data">
                 <span>Debit</span>
-                <span>$ -15</span>
+                <span>{{ formatter.format(totalDebit) }}</span>
               </div>
             </td>
             <td>
               <div class="table__footer-data">
-                <span>Total</span>
-                <span>$ -15</span>
+                <span>Balance</span>
+                <span>{{ formatter.format(queryBalance) }}</span>
               </div>
             </td>
           </tr>
@@ -125,6 +150,16 @@ window.addEventListener('resize', handleResize)
 
 <style scoped>
 
+.table-container {
+  margin: 48px auto 0;
+  width: 100%;
+  max-width: 500px;
+  height: 62vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+  
 .table {
   width: 100%;
   margin: 0 auto;
@@ -134,16 +169,6 @@ window.addEventListener('resize', handleResize)
   table-layout: fixed;
 }
 
-.table-container {
-  margin: 48px auto 32px;
-  width: 100%;
-  max-width: 500px;
-  height: 64vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-  
 .table__caption {
   margin: 8px 0;
   font-style: italic;
