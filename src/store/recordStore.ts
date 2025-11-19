@@ -2,7 +2,7 @@ import { reactive } from "vue"
 import { authStore } from "./authStore"
 import { readRecords } from "../services/recordService"
 
-type Record = {
+export type Record = {
   amount: number
   correlated_fund_id: string
   date: string

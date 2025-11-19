@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { recordStore } from "../../store/recordStore"
+import type { Record } from '../../store/recordStore';
 
 const tagsData = ref()
 const listType = ref<1 | 2>(2)
 const tagListBalance = ref(0)
 
-function setTagsData() {
-  const typeRecords = recordStore.records.filter(r => r.type === listType.value)
+function setTagsData(newListType: 1 | 2, newRecords: Record[]) {
+  const typeRecords = newRecords.filter(r => r.type == newListType)
   tagListBalance.value = 0
   tagsData.value = Object.entries(typeRecords.reduce((acc: any, current) => {
     if (acc[current.tag]) acc[current.tag] += Number(current.amount)
@@ -17,8 +18,8 @@ function setTagsData() {
   }, {}))
 }
 
-watch([listType, () => recordStore.records], (newListType, newRecords) => {
-  setTagsData()
+watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
+  setTagsData(newListType, newRecords)
 }, { immediate: true })
 
 </script>
