@@ -29,6 +29,15 @@ body {
   font-size: 1.8rem;
 }
 
+select {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  background-color: transparent;
+  color: var(--lightest);
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
