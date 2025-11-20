@@ -78,13 +78,23 @@ watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
 }
 
 .flex-container {
+  margin-top: 20px;
   display: flex;
+  align-items: start;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 .chart-container {
-  width: 100%;
+  margin: 14px auto 0;
   height: 100%;
+  width: 100%;
   max-width: 700px;
+  border-radius: 2px;
+  padding: 2px 6px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 1px 4px var(--accent);
 }
 
 .table {
@@ -114,6 +124,12 @@ watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
 
 .table__cell_text-right {
   text-align: right;
+}
+
+@media (width >= 800px) {
+  .flex-container {
+    flex-direction: row;
+  }
 }
 
 </style>
