@@ -2,20 +2,24 @@
 import { ref, watch } from 'vue';
 import { recordStore } from "../../store/recordStore"
 import type { Record } from '../../store/recordStore';
+import BarChart from './BarChart.vue';
 
-const tagsData = ref()
 const listType = ref<1 | 2>(2)
 const tagListBalance = ref(0)
+const tagNames = ref<String[]>([])
+const tagBalances = ref<Number[]>([])
 
 function setTagsData(newListType: 1 | 2, newRecords: Record[]) {
-  const typeRecords = newRecords.filter(r => r.type == newListType)
   tagListBalance.value = 0
-  tagsData.value = Object.entries(typeRecords.reduce((acc: any, current) => {
+  const typeRecords = newRecords.filter(r => r.type == newListType)
+  const tagsData = typeRecords.reduce((acc: any, current) => {
     if (acc[current.tag]) acc[current.tag] += Number(current.amount)
     else acc[current.tag] = Number(current.amount)
     tagListBalance.value += Number(current.amount)
     return acc
-  }, {}))
+  }, {})
+  tagNames.value = Object.keys(tagsData)
+  tagBalances.value = Object.values(tagsData)
 }
 
 watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
@@ -36,22 +40,27 @@ watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
       <option value="2" class="option">Debit</option>
       <option value="1" class="option">Credit</option>
     </select>
-    <table class="table">
-      <thead>
-        <tr class="table__header-row">
-          <th>Tag</th>
-          <th>Balance</th>
-          <th>Equivalence</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="[tagName, tagBalance] in tagsData" :key="tagName">
-          <td class="table__cell table__cell_text-left">{{ tagName }}</td>
-          <td class="table__cell table__cell_text-right">- ${{ tagBalance }}</td>
-          <td class="table__cell">{{ Math.round((tagBalance / tagListBalance) * 100) }}%</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="flex-container">
+      <table class="table">
+        <thead>
+          <tr class="table__header-row">
+            <th>Tag</th>
+            <th>Balance</th>
+            <th>Equivalence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="tagName, index in tagNames" :key="index">
+            <td class="table__cell table__cell_text-left">{{ tagName }}</td>
+            <td class="table__cell table__cell_text-right">$ {{ tagBalances[index] }}</td>
+            <td class="table__cell">{{ Math.round((Number(tagBalances[index]) / tagListBalance) * 100) }}%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="chart-container">
+        <BarChart :tag-names="tagNames" :tag-balances="tagBalances" />
+      </div>
+    </div>
   </section>
 </template>
 
@@ -68,9 +77,20 @@ watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
   color: var(--lightest);
 }
 
+.flex-container {
+  display: flex;
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+  max-width: 700px;
+}
+
 .table {
   margin: 12px auto 0;
   width: 100%;
+  height: 100%;
   max-width: 400px;
   border-spacing: 2px;
   border-collapse: separate;
