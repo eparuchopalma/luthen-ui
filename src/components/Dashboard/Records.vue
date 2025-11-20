@@ -10,7 +10,7 @@ async function setRecords() {
   loading.value = true
   const { errorMessage } = await recordStore.getRecords()
   if (errorMessage) alert(errorMessage)
-  document.getElementById("table")?.scrollIntoView({ behavior: "smooth" })
+  document.getElementById("records-section")?.scrollIntoView({ behavior: "smooth" })
   loading.value = false
 }
 
@@ -75,7 +75,7 @@ window.addEventListener('resize', handleResize)
 
 <template>
   <section class="section">
-    <header>
+    <header id="records-section">
       <div class="section__icon">
         <img src="../../assets/lupe.png" alt="lupe icon" class="icon__img">
       </div>
@@ -92,7 +92,7 @@ window.addEventListener('resize', handleResize)
       >Export</button>
     </div>
     <div class="table-container">
-      <table class="table" id="table">
+      <table class="table">
         <caption class="table__caption">Click on a record for details and actions.</caption>
         <thead>
           <tr class="table__header-row">
@@ -112,19 +112,16 @@ window.addEventListener('resize', handleResize)
           <tr class="table__footer-row">
             <td>
               <div class="table__footer-data">
-                <span>Credit</span>
                 <span>{{ formatter.format(totalCredit) }}</span>
               </div>
             </td>
             <td>
               <div class="table__footer-data">
-                <span>Debit</span>
                 <span>{{ formatter.format(totalDebit) }}</span>
               </div>
             </td>
             <td>
               <div class="table__footer-data">
-                <span>Balance</span>
                 <span>{{ formatter.format(queryBalance) }}</span>
               </div>
             </td>
@@ -200,9 +197,8 @@ window.addEventListener('resize', handleResize)
 }
 
 .table__footer-data {
+  text-align: right;
   padding: 0 4px;
-  display: flex;
-  justify-content: space-between;
 }
 
 .table-actions {

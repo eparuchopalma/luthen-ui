@@ -1,25 +1,32 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { recordStore } from "../../store/recordStore"
-import type { Record } from '../../store/recordStore';
+import type { Record as RecordType } from '../../store/recordStore';
 import BarChart from './BarChart.vue';
+import LineChart from './LineChart.vue';
 
 const listType = ref<1 | 2>(2)
 const tagListBalance = ref(0)
-const tagNames = ref<String[]>([])
-const tagBalances = ref<Number[]>([])
+const tagsBalance = ref<Record<string, number>>({})
+const monthsBalance = ref<Record<string, number>>({})
 
-function setTagsData(newListType: 1 | 2, newRecords: Record[]) {
+function setTagsData(newListType: 1 | 2, newRecords: RecordType[]) {
   tagListBalance.value = 0
+  tagsBalance.value = {}
+  monthsBalance.value = {}
+
   const typeRecords = newRecords.filter(r => r.type == newListType)
-  const tagsData = typeRecords.reduce((acc: any, current) => {
-    if (acc[current.tag]) acc[current.tag] += Number(current.amount)
-    else acc[current.tag] = Number(current.amount)
-    tagListBalance.value += Number(current.amount)
-    return acc
-  }, {})
-  tagNames.value = Object.keys(tagsData)
-  tagBalances.value = Object.values(tagsData)
+
+  typeRecords.forEach((record) => {
+    const tag = record.tag ?? 'Untagged'
+    const amount = Number(record.amount)
+    if (tagsBalance.value[tag]) tagsBalance.value[tag] += amount
+    else tagsBalance.value[tag] = amount
+    if (monthsBalance.value[record.date]) monthsBalance.value[record.date]! += amount
+    else monthsBalance.value[new Date(record.date)!.toLocaleString('default', { month: 'short', year: '2-digit' })] = amount
+    tagListBalance.value += amount
+  })
+
 }
 
 watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
@@ -50,16 +57,19 @@ watch([listType, () => recordStore.records], ([newListType, newRecords]) => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="tagName, index in tagNames" :key="index">
+          <tr v-for="[tagName, tagBalance] in Object.entries(tagsBalance)" :key="tagName">
             <td class="table__cell table__cell_text-left">{{ tagName }}</td>
-            <td class="table__cell table__cell_text-right">$ {{ tagBalances[index] }}</td>
-            <td class="table__cell">{{ Math.round((Number(tagBalances[index]) / tagListBalance) * 100) }}%</td>
+            <td class="table__cell table__cell_text-right">$ {{ tagBalance }}</td>
+            <td class="table__cell">{{ Math.round((tagBalance / tagListBalance) * 100) }}%</td>
           </tr>
         </tbody>
       </table>
       <div class="chart-container">
-        <BarChart :tag-names="tagNames" :tag-balances="tagBalances" />
+        <BarChart :tag-names="Object.keys(tagsBalance)" :tag-balances="Object.values(tagsBalance)" />
       </div>
+    </div>
+    <div class="chart-container">
+        <LineChart :months="Object.keys(monthsBalance)" :months-balance="Object.values(monthsBalance)" />
     </div>
   </section>
 </template>
