@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { recordStore } from "../../store/recordStore"
-import type { Record as RecordType } from '../../store/recordStore';
 import BarChart from './BarChart.vue';
 import LineChart from './LineChart.vue';
 
@@ -54,58 +53,56 @@ watch(() => recordStore.records, () => {
 </script>
 
 <template>
-  <section class="section">
-    <header>
-      <div class="section__icon">
-        <img src="../../assets/lupe-chart.png" alt="lupe on chart icon" class="icon__img">
-      </div>
-      <h1>Insights</h1>
-    </header>
-    <select id="tag-list-type" class="select-field" v-model="listType">
-      <option value="2" class="option">Debit</option>
-      <option value="1" class="option">Credit</option>
-    </select>
-    <div class="flex-container">
-      <table class="table">
-        <thead>
-          <tr class="table__header-row">
-            <th>Tag</th>
-            <th>Balance</th>
-            <th>Equivalence</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="[tagName, tagBalance] in Object.entries(tagsBalance)" :key="tagName">
-            <td class="table__cell table__cell_text-left">{{ tagName }}</td>
-            <td class="table__cell table__cell_text-right">{{ formatter.format(tagBalance) }}</td>
-            <td class="table__cell">{{ Math.round((tagBalance / tagListBalance) * 100) }}%</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="chart-container">
-        <BarChart :tag-names="Object.keys(tagsBalance)" :tag-balances="Object.values(tagsBalance)" />
-      </div>
+  <header>
+    <div class="section__icon">
+      <img src="../../assets/lupe-chart.png" alt="lupe on chart icon" class="icon__img">
     </div>
-    <div class="flex-container">
-      <div class="chart-container">
-        <LineChart :months="Object.keys(monthsBalance)" :months-balance="Object.values(monthsBalance)" />
-      </div>
-      <table class="table">
-        <thead>
-          <tr class="table__header-row">
-            <th>Month</th>
-            <th>Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="[month, monthBalance] in Object.entries(monthsBalance)" :key="month">
-            <td class="table__cell table__cell_text-left">{{ month }}</td>
-            <td class="table__cell table__cell_text-right">{{ formatter.format(monthBalance) }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <h1>Insights</h1>
+  </header>
+  <select id="tag-list-type" class="select-field" v-model="listType">
+    <option value="2" class="option">Debit</option>
+    <option value="1" class="option">Credit</option>
+  </select>
+  <div class="flex-container">
+    <table class="table">
+      <thead>
+        <tr class="table__header-row">
+          <th>Tag</th>
+          <th>Balance</th>
+          <th>Equivalence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="[tagName, tagBalance] in Object.entries(tagsBalance)" :key="tagName">
+          <td class="table__cell table__cell_text-left">{{ tagName }}</td>
+          <td class="table__cell table__cell_text-right">{{ formatter.format(tagBalance) }}</td>
+          <td class="table__cell">{{ Math.round((tagBalance / tagListBalance) * 100) }}%</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="chart-container">
+      <BarChart :tag-names="Object.keys(tagsBalance)" :tag-balances="Object.values(tagsBalance)" />
     </div>
-  </section>
+  </div>
+  <div class="flex-container">
+    <div class="chart-container">
+      <LineChart :months="Object.keys(monthsBalance)" :months-balance="Object.values(monthsBalance)" />
+    </div>
+    <table class="table">
+      <thead>
+        <tr class="table__header-row">
+          <th>Month</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="[month, monthBalance] in Object.entries(monthsBalance)" :key="month">
+          <td class="table__cell table__cell_text-left">{{ month }}</td>
+          <td class="table__cell table__cell_text-right">{{ formatter.format(monthBalance) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <style scoped>

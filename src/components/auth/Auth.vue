@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Logo from "./Logo.vue";
+import Logo from "../layout/Logo.vue";
 import { authStore } from "../../store/authStore"
 
 async function startDemo() {
@@ -9,19 +9,17 @@ async function startDemo() {
 </script>
 
 <template>
-  <main class="main">
-    <Logo :centered="true" />
-    <header>
-      <h1 class="headline">Squirrel</h1>
-      <p>Financial Log</p>
-    </header>
-    <div class="button-container">
-      <button
-      class="button button_secondary"
-      type="button"
-      @click="startDemo">Start Demo</button>
-    </div>
-  </main>
+  <Logo :centered="true" />
+  <header>
+    <h1 class="headline">Squirrel</h1>
+    <p>Financial Log</p>
+  </header>
+  <div class="button-container">
+    <button
+    class="button button_secondary"
+    type="button"
+    @click="startDemo">Start Demo</button>
+  </div>
   <footer class="footer">
     <ul class="link-container">
       <li>

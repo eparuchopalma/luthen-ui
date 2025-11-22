@@ -15,6 +15,13 @@
   background-color: var(--darkest);
 }
 
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-size: 1.8rem;
+}
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-family: "Libre Baskerville", serif;
@@ -22,11 +29,12 @@ h1, h2, h3, h4, h5, h6 {
   font-style: normal;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  font-size: 1.8rem;
+input, button, select, option {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  font-style: normal;
+  font-optical-sizing: auto;
 }
 
 select {
@@ -46,7 +54,6 @@ select {
 }
 
 .button-container {
-  margin-top: 60px;
   display: flex;
   justify-content: center;
   gap: 48px;
@@ -59,11 +66,6 @@ select {
   border-radius: 2px;
   background-color: var(--accent);
   color: var(--lightest);
-  font-family: "Roboto", sans-serif;
-  font-size: 1.4rem;
-  font-weight: 400;
-  font-style: normal;
-  font-optical-sizing: auto;
   box-shadow: 0 1px 4px #111;
   transition: all 0.6s ease;
 }
@@ -95,4 +97,10 @@ select {
 .button:disabled:hover {
   box-shadow: none;
   cursor: auto;
+}
+
+@media (width >= 600px) {
+  .button-container {
+    flex-direction: row-reverse;
+  }
 }

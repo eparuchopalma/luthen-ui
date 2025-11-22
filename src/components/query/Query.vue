@@ -74,81 +74,79 @@ window.addEventListener('resize', handleResize)
 </script>
 
 <template>
-  <section class="section">
-    <header id="records-section">
-      <div class="section__icon">
-        <img src="../../assets/lupe.png" alt="lupe icon" class="icon__img">
-      </div>
-      <h1>Records</h1>
-    </header>
-    <div class="button-container">
-      <button
-      class="button"
-      type="button"
-      >Query</button>
-      <button
-      class="button button_secondary"
-      type="button"
-      >Export</button>
+  <header id="records-section">
+    <div class="section__icon">
+      <img src="../../assets/lupe.png" alt="lupe icon" class="icon__img">
     </div>
-    <div class="table-container">
-      <table class="table">
-        <caption class="table__caption">Click on a record for details and actions.</caption>
-        <thead>
-          <tr class="table__header-row">
-            <th>Date</th>
-            <th>Tag</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="record in pageRecords" :key="record.id" class="table__body-row">
-            <td class="table__cell table__cell_text-left">{{ record.date.slice(0, 10) }}</td>
-            <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
-            <td class="table__cell table__cell_text-right">{{ formatter.format(record.amount) }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr class="table__footer-row">
-            <td>
-              <div class="table__footer-data">
-                <span>{{ formatter.format(totalCredit) }}</span>
-              </div>
-            </td>
-            <td>
-              <div class="table__footer-data">
-                <span>{{ formatter.format(totalDebit) }}</span>
-              </div>
-            </td>
-            <td>
-              <div class="table__footer-data">
-                <span>{{ formatter.format(queryBalance) }}</span>
-              </div>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-      <div class="table-actions">
-        <button
-        class="button button_sm button_dark"
-        type="button"
-        @click="setPreviousPage"
-        :disabled="currentPage == 1">&lt</button>
-        <small>Page {{ currentPage }} / {{ totalPages }}. Records: {{ recordStore.records.length }}</small>
-        <button
-        class="button button_sm button_dark"
-        type="button"
-        @click="setNextPage"
-        :disabled="currentPage == totalPages">&gt;</button>
-      </div>
+    <h1>Query</h1>
+  </header>
+  <div class="table-container">
+    <table class="table">
+      <caption class="table__caption">Click on a record for details and actions.</caption>
+      <thead>
+        <tr class="table__header-row">
+          <th>Date</th>
+          <th>Tag</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="record in pageRecords" :key="record.id" class="table__body-row">
+          <td class="table__cell table__cell_text-left">{{ record.date.slice(0, 10) }}</td>
+          <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
+          <td class="table__cell table__cell_text-right">{{ formatter.format(record.amount) }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="table__footer-row">
+          <td>
+            <div class="table__footer-data">
+              <span>{{ formatter.format(totalCredit) }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table__footer-data">
+              <span>{{ formatter.format(totalDebit) }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table__footer-data">
+              <span>{{ formatter.format(queryBalance) }}</span>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="table-actions">
+      <button
+      class="button button_sm button_dark"
+      type="button"
+      @click="setPreviousPage"
+      :disabled="currentPage == 1">&lt</button>
+      <small>Page {{ currentPage }} / {{ totalPages }}. Records: {{ recordStore.records.length }}</small>
+      <button
+      class="button button_sm button_dark"
+      type="button"
+      @click="setNextPage"
+      :disabled="currentPage == totalPages">&gt;</button>
     </div>
-  </section>
+  </div>
+  <div class="button-container">
+    <button
+    class="button button_secondary"
+    type="button"
+    >Export</button>
+    <button
+    class="button"
+    type="button"
+    >Query</button>
+  </div>
 </template>
 
 <style scoped>
 
 .table-container {
-  margin: 48px auto 0;
+  margin: 48px auto;
   width: 100%;
   max-width: 500px;
   height: 62vh;
