@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Dialog from '../layout/Dialog.vue';
 import { recordStore, type Record } from '../../store/recordStore'
 import { fundStore } from '../../store/fundStore'
