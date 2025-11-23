@@ -2,11 +2,13 @@
 import { onMounted, ref, computed } from "vue"
 import { fundStore } from "../../store/fundStore"
 import FundForm from "./FundForm.vue"
+import RecordForm from "./RecordForm.vue"
 
 onMounted(() => setFunds())
 
 const loading = ref(false)
 const fundFormIsOpen = ref(false)
+const recordFormIsOpen = ref(false)
 
 const totalBalance = computed(() => {
   return fundStore.funds.reduce((acc, fund) => acc + Number(fund.balance), 0)
@@ -21,6 +23,10 @@ async function setFunds() {
 
 function dismissFundForm() {
   fundFormIsOpen.value = false
+}
+
+function dismissRecordForm() {
+  recordFormIsOpen.value = false
 }
 
 </script>
@@ -44,10 +50,6 @@ function dismissFundForm() {
     <div v-for="fund in fundStore.funds" :key="fund.id" class="card card_background">
       <dd class="card__balance card__balance_text-right">{{ fund.balance }}</dd>
       <dt class="card__description card__description_text-left">{{ fund.name }}</dt>
-      <div class="card__actions">
-        <button class="card__action card__action_edit"></button>
-        <button class="card__action card__action_delete"></button>
-      </div>
     </div>
   </dl>
   <div class="button-container">
@@ -59,14 +61,16 @@ function dismissFundForm() {
     <button
     class="button"
     type="button"
+    @click="recordFormIsOpen = true"
     >Add record</button>
   </div>
   <Transition>
     <FundForm v-if="fundFormIsOpen" @dismiss-form="dismissFundForm" />
+    <RecordForm v-else-if="recordFormIsOpen" @dismiss-form="dismissRecordForm" />
   </Transition>
 </template>
 
-<style scoped>
+<style>
 
 .card-container {
   display: grid;
@@ -76,8 +80,8 @@ function dismissFundForm() {
 .card {
   margin: 32px auto;
   width: 220px;
-  height: 100px;
-  padding: 16px;
+  height: 80px;
+  padding: 8px;
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: 0 2px 2px 1px #191817;
@@ -93,7 +97,7 @@ function dismissFundForm() {
   background-image: url('../../assets/seed-bag.png');
   background-repeat: no-repeat;
   background-size: 24px;
-  background-position: 16px 16px;
+  background-position: 8px 8px;
 }
 
 .card__balance {
@@ -111,44 +115,12 @@ function dismissFundForm() {
 
 .card__description {
   color: var(--light);
-  margin-top: 8px;
-  font-size: 1.6rem;
+  margin-top: 20px;
+  font-size: 1.4rem;
 }
 
 .card__description_text-left {
   text-align: left;
-}
-
-.card__actions {
-  display: flex;
-  gap: 8px;
-}
-
-.card__action {
-  margin-top: 8px;
-  flex: 1;
-  height: 20px;
-  border: none;
-  background-color: var(--darkest);
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 1px 1px #191817;
-  transition: box-shadow 0.3s;
-  background-repeat: no-repeat;
-  background-size: 12px;
-  background-position: center;
-}
-
-.card__action_edit {
-  background-image: url('../../assets/edit.png');
-}
-
-.card__action_delete {
-  background-image: url('../../assets/trash.png');
-}
-
-.card__action:hover {
-  box-shadow: 0 1px 1px var(--accent);
 }
 
 @media (width >= 480px) {
@@ -163,6 +135,112 @@ function dismissFundForm() {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
   }
+}
+
+.form {
+  width: 100%;
+  max-width: 360px;
+  height: 100%;
+  max-height: 600px;
+  border-radius: 4px;
+  padding: 0 32px;
+  display: grid;
+  place-items: center;
+  background-color: var(--darkest);
+  color: var(--lightest);
+}
+
+.form_sm {
+  max-width: 300px;
+  max-height: 220px;
+}
+
+.fieldset {
+  border: none;
+}
+
+.label {
+  margin: 0 6px;
+  width: 45%;
+  display: inline-block;
+  text-align: left;
+  font-size: 1.2rem;
+  color: var(--light);
+}
+
+.label_w-full {
+  width: 100%;
+}
+
+.label_mt {
+  margin-top: 24px;
+}
+
+.label-alert::after {
+  content: '!';
+  margin-left: 4px;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  background-color: var(--accent);
+  color: var(--darkest);
+}
+
+.input {
+  margin: 0 6px;
+  width: calc(90% + 12px);
+  background-color: var(--darkest);
+  color: var(--lightest);
+  border: none;
+  border-bottom: 1px solid var(--light);
+}
+
+.input_w-half {
+  display: inline-block;
+  width: 45%;
+}
+
+.input_text-right {
+  text-align: right;
+}
+
+.input::selection, .input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.select {
+  margin: 4px 6px 0;
+  width: 45%;
+  height: 28px;
+  border: 1px solid var(--dark);
+  padding: 0 2px;
+  background-color: var(--darkest);
+  border-radius: 20px;
+  outline: none;
+}
+
+.select::selection, .select:focus {
+  border-color: var(--accent);
+}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* Remove the default arrows from input number fields */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: inherit;
 }
 
 </style>

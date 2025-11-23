@@ -30,7 +30,7 @@ async function createFund() {
 
 <template>
   <Dialog>
-    <form class="form">
+    <form class="form form_sm">
       <h3 class="title">Fund Form</h3>
       <input
       type="text"
@@ -38,6 +38,7 @@ async function createFund() {
       placeholder="Savings"
       id="fund-name-field"
       maxlength="50"
+      required
       v-model="fundName">
       <div class="button-container">
         <button
@@ -56,32 +57,3 @@ async function createFund() {
     </form>
   </Dialog>
 </template>
-
-<style scoped>
-
-.form {
-  width: 100%;
-  max-width: 300px;
-  height: 100%;
-  max-height: 220px;
-  border-radius: 4px;
-  padding: 0 32px;
-  display: grid;
-  place-items: center;
-  background-color: var(--darkest);
-  color: var(--lightest);
-}
-
-.input {
-  background-color: var(--darkest);
-  color: var(--lightest);
-  border: none;
-  border-bottom: 1px solid var(--light);
-}
-
-.input::selection, .input:focus {
-  border-color: var(--accent);
-  outline: none;
-}
-
-</style>

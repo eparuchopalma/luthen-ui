@@ -1,6 +1,7 @@
 import { api, handleError, handleResponse } from "./api"
 
 type Payload = {
+  id?: string
   amount: number
   date: string
   fund_id: string
@@ -21,8 +22,8 @@ export function readRecords(demo: boolean) {
     .catch(handleError)
 }
 
-export function updateRecord({ id, name }: { id: string, name: string }, demo: boolean) {
-  return api.patch(demo ? `/public/record/${id}` : `/record/${id}`, { name })
+export function updateRecord(payload: Payload, demo: boolean) {
+  return api.patch(demo ? `/public/record/${payload.id}` : `/record/${payload.id}`, payload)
     .then(handleResponse)
     .catch(handleError)
 }
