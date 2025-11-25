@@ -1,16 +1,7 @@
 import { api, handleError, handleResponse } from "./api"
+import { type Record } from "../store/recordStore"
 
-type Payload = {
-  id?: string
-  amount: number
-  date: string
-  fund_id: string
-  correlated_fund_id?: string
-  note?: string
-  tag?: string
-}
-
-export function createRecord(payload: Payload, demo: boolean) {
+export function createRecord(payload: Partial<Record>, demo: boolean) {
   return api.post(demo ? "/public/record" : "/record", payload)
     .then(handleResponse)
     .catch(handleError)
@@ -22,8 +13,8 @@ export function readRecords(demo: boolean) {
     .catch(handleError)
 }
 
-export function updateRecord(payload: Payload, demo: boolean) {
-  return api.patch(demo ? `/public/record/${payload.id}` : `/record/${payload.id}`, payload)
+export function updateRecord(id: string, payload: Partial<Record>, demo: boolean) {
+  return api.patch(demo ? `/public/record/${id}` : `/record/${id}`, payload)
     .then(handleResponse)
     .catch(handleError)
 }

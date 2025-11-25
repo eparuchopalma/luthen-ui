@@ -9,28 +9,29 @@ const emit = defineEmits(['dismissForm'])
 
 const props = defineProps<{ record?: Record }>()
 
-const form = ref<Record>({
+const [mm, dd, yyyy] = new Date().toLocaleString().slice(0, 10).split('/')
+
+const form = ref<Record & { time?: string }>({
   amount: 0,
-  date: '',
+  date: `${yyyy}-${mm}-${dd}`,
+  time: new Date().toTimeString().slice(0, 5),
   fund_id: fundStore.funds.find(fund => fund.is_main)!.id,
   note: '',
   tag: '',
   type: 2
 })
 
-const [mm, dd, yyyy] = new Date().toLocaleString().slice(0, 10).split('/')
-const date = ref(`${yyyy}-${mm}-${dd}`)
-const time = ref(new Date().toTimeString().slice(0, 5))
+const originalValues = ref<null | Record & { time: string }>(null)
 const loading = ref(false)
 const typeNames = ['Fund to fund', 'Credit', 'Debit']
 
 if (props.record) startEditing()
 
-const dateIsValid = computed(() => date.value && new Date(date.value) <= new Date())
+const dateIsValid = computed(() => new Date(form.value.date) <= new Date())
 
 const timeIsValid = computed(() => {
-  if (!time.value) return false
-  return new Date(date.value) <= new Date() && new Date(`${date.value}T${time.value}:00`) <= new Date()
+  if (!form.value.time) return false
+  return new Date(form.value.date) <= new Date() && new Date(`${form.value.date}T${form.value.time}:00`) <= new Date()
 })
 
 const amountIsValid = computed(() => {
@@ -40,25 +41,45 @@ const amountIsValid = computed(() => {
 
 const correlatedFundIsValid = computed(() => {
   if (form.value.type !== 0) return true
-  return form.value.correlated_fund_id !== form.value.fund_id && form.value.correlated_fund_id !== ''
+  return form.value.correlated_fund_id !== form.value.fund_id && form.value.correlated_fund_id
 })
 
 const typeIsValid = computed(() => [0, 1, 2].includes(form.value.type!))
 
-const editingWithoutChanges = computed(() => {
-  return JSON.stringify(props.record) === JSON.stringify(form.value)
+const changesOnUpdate = computed(() => {
+  if (!props.record) return null
+  const updates = {} as Partial<Record>
+
+  Object.entries(form.value).forEach(([key, value]) => {
+    const k = key as keyof Record
+    const originalValue = originalValues.value![k]
+    if (value !== originalValue) updates[k] = value as any
+  })
+
+  if (JSON.stringify(updates) === '{}') return null
+  else return updates
 })
 
-const invalidForm = computed(() => {
-  return [dateIsValid, timeIsValid, amountIsValid, correlatedFundIsValid, typeIsValid]
-    .some(isValid => !isValid.value)
+const formInvalid = computed(() => {
+  return [
+    dateIsValid.value,
+    timeIsValid.value,
+    amountIsValid.value,
+    correlatedFundIsValid.value,
+    typeIsValid.value,
+    (changesOnUpdate.value !== null || !props.record)
+  ]
+    .some(isValid => !isValid)
 })
 
 function startEditing() {
-  form.value = JSON.parse(JSON.stringify(props.record!))
-  date.value = props.record!.date.slice(0, 10)
-  time.value = props.record!.date.slice(11, 16)
-  if (props.record!.type !== 1) form.value.amount = -props.record!.amount
+  originalValues.value = JSON.parse(JSON.stringify(props.record!))
+  originalValues.value!.date = props.record!.date.slice(0, 10)
+  originalValues.value!.time = props.record!.date.slice(11, 16)
+  originalValues.value!.amount = (props.record!.type !== 1)
+    ? -Number(props.record!.amount)
+    : Number(props.record!.amount)
+  form.value = JSON.parse(JSON.stringify(originalValues.value))
 }
 
 function clearCorrelated() {
@@ -68,7 +89,6 @@ function clearCorrelated() {
 }
 
 async function handleSubmit() {
-  normalizeForm()
   loading.value = true
   const { errorMessage } = props.record ? await update() : await create()
   if (errorMessage) alert(errorMessage)
@@ -77,16 +97,21 @@ async function handleSubmit() {
 }
 
 function update() {
-  return recordStore.updateRecord(form.value)
+  const payload = normalizePayload(changesOnUpdate.value!)
+  return recordStore.updateRecord(props.record!.id!, payload)
 }
 
 function create() {
-  return recordStore.createRecord(form.value)
+  const payload = normalizePayload(form.value)
+  return recordStore.createRecord(payload)
 }
 
-function normalizeForm() {  
-  form.value.date = new Date(`${date.value}T${time.value}:00`).toISOString()
-  if (form.value.type !== 1) form.value.amount = -form.value.amount
+function normalizePayload(data: Partial<Record & { time: string }>) {
+  const payload = JSON.parse(JSON.stringify(data))
+  payload.date = new Date(`${payload.date}T${payload.time}:00`).toISOString()
+  if (payload.type !== 1) payload.amount = -Number(payload.amount || -props.record!.amount)
+  delete payload.time
+  return payload
 }
 
 </script>
@@ -110,13 +135,13 @@ function normalizeForm() {
         type="date"
         class="input input_w-half"
         id="record-date-field"
-        v-model="date"
+        v-model="form.date"
         required>
         <input
         id="record-time-field"
         type="time"
         class="input input_w-half"
-        v-model="time"
+        v-model="form.time"
         required>
         <label
         for="record-type-field"
@@ -136,8 +161,7 @@ function normalizeForm() {
         type="number"
         class="input input_w-half input_text-right"
         placeholder="0"
-        :min="form.type === 1 ? 0 : undefined"
-        :max="form.type === 1 ? undefined : 0"
+        min="0"
         v-model.number="form.amount"
         required>
         <label
@@ -177,7 +201,7 @@ function normalizeForm() {
         class="input"
         placeholder="Vehicle"
         maxlength="250"
-        v-model="form.tag">
+        v-model.trim="form.tag">
         <label
         for="record-note-field"
         class="label label_mt label_w-full"
@@ -188,7 +212,7 @@ function normalizeForm() {
         class="input"
         placeholder="Fuel"
         maxlength="250"
-        v-model="form.note">
+        v-model.trim="form.note">
       </fieldset>
       <div class="button-container">
         <button
@@ -200,9 +224,9 @@ function normalizeForm() {
         <button
         type="button"
         class="button"
-        :disabled="invalidForm || loading || editingWithoutChanges"
+        :disabled="formInvalid || loading"
         @click="handleSubmit"
-        >Confirm</button>
+        >Confirm {{ formInvalid }}</button>
       </div>
     </form>
   </Dialog>

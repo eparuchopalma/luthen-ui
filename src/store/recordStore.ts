@@ -25,13 +25,13 @@ export const recordStore = reactive({
     this.records[index] = record
   },
 
-  async createRecord(record: Record) {
+  async createRecord(record: Partial<Record>) {
     const response = await createRecord(record, authStore.inDemo)
     return response
   },
 
-  async updateRecord(record: Record) {
-    const response = await updateRecord(record, authStore.inDemo)
+  async updateRecord(id: string, payload: Partial<Record>) {
+    const response = await updateRecord(id, payload, authStore.inDemo)
     if (!response.errorMessage) this.replaceRecord(response.data)
     return response
   },
