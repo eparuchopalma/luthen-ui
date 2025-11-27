@@ -7,7 +7,7 @@ import { fundStore } from '../../store/fundStore'
 onMounted(() => document.getElementById('record-date-field')?.focus())
 const emit = defineEmits(['dismissForm'])
 
-const props = defineProps<{ record?: Record }>()
+const props = defineProps<{ record?: Record | null }>()
 
 const [mm, dd, yyyy] = new Date().toLocaleString().slice(0, 10).split('/')
 
@@ -74,8 +74,9 @@ const formInvalid = computed(() => {
 
 function startEditing() {
   originalValues.value = JSON.parse(JSON.stringify(props.record!))
-  originalValues.value!.date = props.record!.date.slice(0, 10)
-  originalValues.value!.time = props.record!.date.slice(11, 16)
+  const [m, d, yyyy] = new Date(props.record!.date).toLocaleString().split(',')[0]!.split('/')
+  originalValues.value!.date = `${yyyy}-${m!.padStart(2, '0')}-${d!.padStart(2, '0')}`
+  originalValues.value!.time = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false  }).format(new Date(props.record!.date))
   originalValues.value!.amount = (props.record!.type !== 1)
     ? -Number(props.record!.amount)
     : Number(props.record!.amount)
@@ -108,10 +109,25 @@ function create() {
 
 function normalizePayload(data: Partial<Record & { time: string }>) {
   const payload = JSON.parse(JSON.stringify(data))
-  payload.date = new Date(`${payload.date}T${payload.time}:00`).toISOString()
-  if (payload.type !== 1) payload.amount = -Number(payload.amount || -props.record!.amount)
-  delete payload.time
+  if (payload.date || payload.time) setDateAPIFormat(payload)
+  if (payload.type !== undefined || payload.amount !== undefined) setAmountAPIFormat(payload)
   return payload
+}
+
+function setDateAPIFormat(data: Partial<Record & { time: string }>) {
+  const date = data.date || originalValues.value!.date
+  const time = data.time || originalValues.value!.time
+  data.date = new Date(`${date}T${time}:00`).toISOString()
+  delete data.time
+  return
+}
+
+function setAmountAPIFormat(data: Partial<Record>) {
+  const type = data.type ?? originalValues.value!.type
+  const amount = data.amount ?? props.record!.amount
+  if (type !== 1 && amount > 0) data.amount = -Number(amount)
+  else if (type === 1 && amount < 0) data.amount = -Number(amount)
+  return
 }
 
 </script>
@@ -226,7 +242,7 @@ function normalizePayload(data: Partial<Record & { time: string }>) {
         class="button"
         :disabled="formInvalid || loading"
         @click="handleSubmit"
-        >Confirm {{ formInvalid }}</button>
+        >Confirm</button>
       </div>
     </form>
   </Dialog>

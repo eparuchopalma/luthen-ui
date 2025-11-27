@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted } from "vue"
-import { recordStore } from "../../store/recordStore"
+import { recordStore, type Record } from "../../store/recordStore"
+import RecordForm from "../status/RecordForm.vue"
 
 onMounted(() => setRecords())
 
@@ -27,6 +28,8 @@ const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 })
+const recordEditing = ref<Record | null>(null)
+const recordFormIsOpen = ref(false)
 
 function setColumnsBalance() {
   totalDebit.value = 0
@@ -60,6 +63,16 @@ function handleResize() {
   screenHeight.value = window.innerHeight
 }
 
+function openRecordForm(record: Record) {
+  recordEditing.value = record
+  recordFormIsOpen.value = true
+}
+
+function dismissRecordForm() {
+  recordFormIsOpen.value = false
+  recordEditing.value = null
+}
+
 watch([screenHeight, () => recordStore.records], ([newHeight, newRecords]) => {
   const rowsToFit = Math.floor(newHeight / 44)
   rowsPerPage.value = rowsToFit
@@ -91,7 +104,11 @@ window.addEventListener('resize', handleResize)
         </tr>
       </thead>
       <tbody>
-        <tr v-for="record in pageRecords" :key="record.id" class="table__body-row">
+        <tr
+        v-for="record in pageRecords"
+        :key="record.id"
+        class="table__body-row"
+        @click="openRecordForm(record)">
           <td class="table__cell table__cell_text-left">{{ record.date.slice(0, 10) }}</td>
           <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
           <td class="table__cell table__cell_text-right">{{ formatter.format(record.amount) }}</td>
@@ -141,6 +158,12 @@ window.addEventListener('resize', handleResize)
     type="button"
     >Query</button>
   </div>
+  <Transition>
+    <RecordForm
+    :record="recordEditing"
+    v-if="recordFormIsOpen"
+    @dismiss-form="dismissRecordForm" />
+  </Transition>
 </template>
 
 <style scoped>
