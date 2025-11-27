@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue"
-import { fundStore } from "../../store/fundStore"
+import { fundStore, type Fund } from "../../store/fundStore"
 import FundForm from "./FundForm.vue"
 import RecordForm from "./RecordForm.vue"
 
@@ -9,6 +9,7 @@ onMounted(() => setFunds())
 const loading = ref(false)
 const fundFormIsOpen = ref(false)
 const recordFormIsOpen = ref(false)
+const fundEditing = ref<Fund | null>(null)
 
 const totalBalance = computed(() => {
   return fundStore.funds.reduce((acc, fund) => acc + Number(fund.balance), 0)
@@ -19,6 +20,11 @@ async function setFunds() {
   const { errorMessage } = await fundStore.getFunds()
   if (errorMessage) alert(errorMessage)
   loading.value = false
+}
+
+function selectFund(fund: Fund) {
+  fundEditing.value = fund
+  fundFormIsOpen.value = true
 }
 
 function dismissFundForm() {
@@ -47,7 +53,10 @@ function dismissRecordForm() {
   v-if="fundStore.funds.length"
   class="card-container"
   :class="{ 'card-container_three-columns': fundStore.funds.length >= 3 }">
-    <div v-for="fund in fundStore.funds" :key="fund.id" class="card card_background">
+    <div
+    v-for="fund in fundStore.funds"
+    :key="fund.id" class="card card_background"
+    @click="selectFund(fund)">
       <dd class="card__balance card__balance_text-right">{{ fund.balance }}</dd>
       <dt class="card__description card__description_text-left">{{ fund.name }}</dt>
     </div>
@@ -65,7 +74,7 @@ function dismissRecordForm() {
     >Add record</button>
   </div>
   <Transition>
-    <FundForm v-if="fundFormIsOpen" @dismiss-form="dismissFundForm" />
+    <FundForm v-if="fundFormIsOpen" @dismiss-form="dismissFundForm" :fund="fundEditing" />
     <RecordForm v-else-if="recordFormIsOpen" @dismiss-form="dismissRecordForm" />
   </Transition>
 </template>
@@ -86,6 +95,19 @@ function dismissRecordForm() {
   border-radius: 4px;
   box-shadow: 0 2px 2px 1px #191817;
   text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .card {
+    transition: box-shadow 0.3s;
+  }
+  
+  .card:hover {
+    cursor: pointer;
+    box-shadow: -2px 2px 6px var(--accent);
+  }
+
 }
 
 .card_sm {

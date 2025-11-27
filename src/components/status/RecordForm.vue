@@ -92,7 +92,7 @@ function clearCorrelated() {
 async function handleSubmit() {
   loading.value = true
   const { errorMessage } = props.record ? await update() : await create()
-  alert(errorMessage ? errorMessage : 'Record saved successfully!')
+  alert(errorMessage ? errorMessage : 'Record saved!')
   if (!errorMessage) emit('dismissForm')
   else loading.value = false
 }
@@ -102,7 +102,7 @@ async function onDelete() {
   if (!confirmDelete) return
   loading.value = true
   const { errorMessage } = await recordStore.deleteRecord(props.record!.id!)
-  alert(errorMessage ? errorMessage : 'Record saved successfully!')
+  alert(errorMessage ? errorMessage : 'Record deleted!')
   if (!errorMessage) emit('dismissForm')
   else loading.value = false
 }

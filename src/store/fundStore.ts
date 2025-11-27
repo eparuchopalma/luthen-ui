@@ -1,6 +1,6 @@
 import { reactive } from "vue"
 import { authStore } from "./authStore"
-import { createFund, readFunds } from "../services/fundService"
+import { createFund, deleteFund, readFunds, updateFund } from "../services/fundService"
 
 export type Fund = {
   id: string
@@ -20,6 +20,15 @@ export const fundStore = reactive({
     this.funds.push(fund)
   },
 
+  replaceFund(fund: Fund) {
+    const index = this.funds.findIndex(f => f.id === fund.id)
+    this.funds[index] = fund
+  },
+
+  removeFund(id: string) {
+    this.funds = this.funds.filter(f => f.id !== id)
+  },
+
   async getFunds() {
     const response = await readFunds(authStore.inDemo)
     if (!response.errorMessage) this.setFunds(response.data)
@@ -29,6 +38,18 @@ export const fundStore = reactive({
   async createFund(name: string) {
     const response = await createFund(name, authStore.inDemo)
     if (!response.errorMessage) this.addFund(response.data)
+    return response
+  },
+
+  async updateFund(payload: Partial<Fund>) {
+    const response = await updateFund(payload, authStore.inDemo)
+    if (!response.errorMessage) this.replaceFund(response.data)
+    return response
+  },
+
+  async deleteFund(id: string) {
+    const response = await deleteFund(id, authStore.inDemo)
+    if (!response.errorMessage) this.removeFund(id)
     return response
   }
 })

@@ -6,11 +6,9 @@ import { fundStore, type Fund } from '../../store/fundStore'
 onMounted(() => document.getElementById('fund-name-field')?.focus())
 const emit = defineEmits(['dismissForm'])
 
-const props = defineProps<{
-  fund?: Fund
-}>()
+const props = defineProps<{ fund?: Fund | null }>()
 
-const fundName = ref('')
+const fundName = ref(props.fund?.name || '')
 const loading = ref(false)
 
 const invalidForm = computed(() => {
@@ -18,12 +16,30 @@ const invalidForm = computed(() => {
   return fundName.value === '' || props.fund.name === fundName.value
 })
 
-async function createFund() {
+async function onSubmit() {
   loading.value = true
-  const { errorMessage } = await fundStore.createFund(fundName.value)
-  if (errorMessage) alert(errorMessage)
-  else emit('dismissForm')
-  loading.value = false
+  const { errorMessage } = props.fund ? await update() : await create()
+  alert(errorMessage ? errorMessage : 'Fund saved!')
+  if (!errorMessage) emit('dismissForm')
+  else loading.value = false
+}
+
+function create() {
+  return fundStore.createFund(fundName.value)
+}
+
+function update() {
+  return fundStore.updateFund({ id: props.fund!.id, name: fundName.value })
+}
+
+async function onDelete() {
+  const confirmDelete = confirm('Are you sure you want to delete this record? This action cannot be undone.')
+  if (!confirmDelete) return
+  loading.value = true
+  const { errorMessage } = await fundStore.deleteFund(props.fund!.id!)
+  alert(errorMessage ? errorMessage : 'Fund deleted successfully!')
+  if (!errorMessage) emit('dismissForm')
+  else loading.value = false
 }
 
 </script>
@@ -43,16 +59,23 @@ async function createFund() {
       <div class="button-container">
         <button
         type="button"
-        class="button button_secondary"
+        class="button button_sm button_secondary"
         @click="$emit('dismissForm')"
         :disabled="loading"
         >Dismiss</button>
         <button
+        v-if="props.fund"
         type="button"
-        class="button"
+        class="button button_secondary button_sm"
+        @click="onDelete"
+        :disabled="loading"
+        >Delete</button>
+        <button
+        type="button"
+        class="button button_sm"
         :disabled="invalidForm || loading"
-        @click="createFund"
-        >Confirm</button>
+        @click="onSubmit"
+        >{{ props.fund ? 'Update' : 'Create' }}</button>
       </div>
     </form>
   </Dialog>

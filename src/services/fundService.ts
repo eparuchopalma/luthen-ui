@@ -1,3 +1,4 @@
+import type { Fund } from "../store/fundStore"
 import { api, handleError, handleResponse } from "./api"
 
 export function createFund(name: string, demo: boolean) {
@@ -12,7 +13,7 @@ export function readFunds(demo: boolean) {
     .catch(handleError)
 }
 
-export function updateFund({ id, name }: { id: string, name: string }, demo: boolean) {
+export function updateFund({ id, name }: Partial<Fund>, demo: boolean) {
   return api.patch(demo ? `/public/fund/${id}` : `/fund/${id}`, { name })
     .then(handleResponse)
     .catch(handleError)
