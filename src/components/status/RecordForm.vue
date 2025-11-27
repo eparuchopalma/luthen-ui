@@ -92,9 +92,19 @@ function clearCorrelated() {
 async function handleSubmit() {
   loading.value = true
   const { errorMessage } = props.record ? await update() : await create()
-  if (errorMessage) alert(errorMessage)
-  else emit('dismissForm')
-  loading.value = false
+  alert(errorMessage ? errorMessage : 'Record saved successfully!')
+  if (!errorMessage) emit('dismissForm')
+  else loading.value = false
+}
+
+async function onDelete() {
+  const confirmDelete = confirm('Are you sure you want to delete this record? This action cannot be undone.')
+  if (!confirmDelete) return
+  loading.value = true
+  const { errorMessage } = await recordStore.deleteRecord(props.record!.id!)
+  alert(errorMessage ? errorMessage : 'Record saved successfully!')
+  if (!errorMessage) emit('dismissForm')
+  else loading.value = false
 }
 
 function update() {
@@ -233,16 +243,23 @@ function setAmountAPIFormat(data: Partial<Record>) {
       <div class="button-container">
         <button
         type="button"
-        class="button button_secondary"
+        class="button button_secondary button_sm"
         @click="$emit('dismissForm')"
         :disabled="loading"
         >Dismiss</button>
         <button
+        v-if="props.record"
         type="button"
-        class="button"
+        class="button button_secondary button_sm"
+        @click="onDelete"
+        :disabled="loading"
+        >Delete</button>
+        <button
+        type="button"
+        class="button button_sm"
         :disabled="formInvalid || loading"
         @click="handleSubmit"
-        >Confirm</button>
+        >{{ props.record ? 'Update' : 'Create' }}</button>
       </div>
     </form>
   </Dialog>

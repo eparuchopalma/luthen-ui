@@ -79,7 +79,7 @@ select {
 }
 
 .button_sm {
-  width: 50px;
+  width: 72px;
 }
 
 @media (hover: hover) and (pointer: fine) {
