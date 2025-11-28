@@ -1,6 +1,7 @@
 import { reactive } from "vue"
 import { authStore } from "./authStore"
 import { createRecord, deleteRecord, updateRecord, readRecords } from "../services/recordService"
+import { fundStore, type Fund } from "./fundStore"
 
 export type Record = {
   amount: number
@@ -20,6 +21,11 @@ export const recordStore = reactive({
     this.records = records
   },
 
+  handleUpdate(data: { record: Record, funds: Fund[] }) {
+    this.replaceRecord(data.record)
+    data.funds.forEach(fund => fundStore.replaceFund(fund))
+  },
+
   replaceRecord(record: Record) {
     const index = this.records.findIndex(r => r.id === record.id)
     this.records[index] = record
@@ -36,7 +42,7 @@ export const recordStore = reactive({
 
   async updateRecord(id: string, payload: Partial<Record>) {
     const response = await updateRecord(id, payload, authStore.inDemo)
-    if (!response.errorMessage) this.replaceRecord(response.data)
+    if (!response.errorMessage) this.handleUpdate(response.data)
     return response
   },
 
