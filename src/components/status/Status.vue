@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from "vue"
 import { fundStore, type Fund } from "../../store/fundStore"
 import FundForm from "./FundForm.vue"
 import RecordForm from "./RecordForm.vue"
+import { amountFormatter } from "../../utils/formatter"
 
 onMounted(() => setFunds())
 
@@ -46,7 +47,7 @@ function dismissRecordForm() {
   </header>
   <p v-if="loading">...Loading</p>
   <div class="card card_sm">
-    <strong class="card__balance card__balance_lg">${{ totalBalance.toFixed(2) }}</strong>
+    <strong class="card__balance card__balance_lg">{{ amountFormatter(totalBalance) }}</strong>
     <p class="card__description">Balance</p>
   </div>
   <dl
@@ -57,7 +58,7 @@ function dismissRecordForm() {
     v-for="fund in fundStore.funds"
     :key="fund.id" class="card card_background"
     @click="selectFund(fund)">
-      <dd class="card__balance card__balance_text-right">{{ fund.balance }}</dd>
+      <dd class="card__balance card__balance_text-right">{{ amountFormatter(fund.balance) }}</dd>
       <dt class="card__description card__description_text-left">{{ fund.name }}</dt>
     </div>
   </dl>

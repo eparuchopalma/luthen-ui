@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from "vue"
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
+import { amountFormatter, tableDateFormatter } from '../../utils/formatter';
 
 onMounted(() => setRecords())
 
@@ -24,10 +25,6 @@ const pageRecords = ref()
 const totalCredit = ref(0)
 const totalDebit = ref(0)
 const queryBalance = ref(0)
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-})
 const recordEditing = ref<Record | null>(null)
 const recordFormIsOpen = ref(false)
 
@@ -109,26 +106,26 @@ window.addEventListener('resize', handleResize)
         :key="record.id"
         class="table__body-row"
         @click="openRecordForm(record)">
-          <td class="table__cell table__cell_text-left">{{ record.date.slice(0, 10) }}</td>
+          <td class="table__cell table__cell_text-left">{{ tableDateFormatter(record.date) }}</td>
           <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
-          <td class="table__cell table__cell_text-right">{{ formatter.format(record.amount) }}</td>
+          <td class="table__cell table__cell_text-right">{{ amountFormatter(record.amount) }}</td>
         </tr>
       </tbody>
       <tfoot>
         <tr class="table__footer-row">
           <td>
             <div class="table__footer-data">
-              <span>{{ formatter.format(totalCredit) }}</span>
+              <span>{{ amountFormatter(totalCredit) }}</span>
             </div>
           </td>
           <td>
             <div class="table__footer-data">
-              <span>{{ formatter.format(totalDebit) }}</span>
+              <span>{{ amountFormatter(totalDebit) }}</span>
             </div>
           </td>
           <td>
             <div class="table__footer-data">
-              <span>{{ formatter.format(queryBalance) }}</span>
+              <span>{{ amountFormatter(queryBalance) }}</span>
             </div>
           </td>
         </tr>

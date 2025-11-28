@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import Dialog from '../layout/Dialog.vue';
 import { recordStore, type Record } from '../../store/recordStore'
 import { fundStore } from '../../store/fundStore'
+import { formDateFormatter } from '../../utils/formatter';
 
 onMounted(() => document.getElementById('record-date-field')?.focus())
 const emit = defineEmits(['dismissForm'])
@@ -76,7 +77,7 @@ function startEditing() {
   originalValues.value = JSON.parse(JSON.stringify(props.record!))
   const [m, d, yyyy] = new Date(props.record!.date).toLocaleString().split(',')[0]!.split('/')
   originalValues.value!.date = `${yyyy}-${m!.padStart(2, '0')}-${d!.padStart(2, '0')}`
-  originalValues.value!.time = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false  }).format(new Date(props.record!.date))
+  originalValues.value!.time = formDateFormatter(new Date(props.record!.date))
   originalValues.value!.amount = (props.record!.type !== 1)
     ? -Number(props.record!.amount)
     : Number(props.record!.amount)

@@ -3,15 +3,12 @@ import { ref, watch } from 'vue';
 import { recordStore } from "../../store/recordStore"
 import BarChart from './BarChart.vue';
 import LineChart from './LineChart.vue';
+import { amountFormatter } from '../../utils/formatter';
 
 const listType = ref<1 | 2>(2)
 const tagListBalance = ref(0)
 const tagsBalance = ref<Record<string, number>>({})
 const monthsBalance = ref<Record<string, number>>({})
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-})
 
 function setTagsData() {
   tagListBalance.value = 0
@@ -75,7 +72,7 @@ watch(() => recordStore.records, () => {
       <tbody>
         <tr v-for="[tagName, tagBalance] in Object.entries(tagsBalance)" :key="tagName">
           <td class="table__cell table__cell_text-left">{{ tagName }}</td>
-          <td class="table__cell table__cell_text-right">{{ formatter.format(tagBalance) }}</td>
+          <td class="table__cell table__cell_text-right">{{ amountFormatter(tagBalance) }}</td>
           <td class="table__cell">{{ Math.round((tagBalance / tagListBalance) * 100) }}%</td>
         </tr>
       </tbody>
@@ -98,7 +95,7 @@ watch(() => recordStore.records, () => {
       <tbody>
         <tr v-for="[month, monthBalance] in Object.entries(monthsBalance)" :key="month">
           <td class="table__cell table__cell_text-left">{{ month }}</td>
-          <td class="table__cell table__cell_text-right">{{ formatter.format(monthBalance) }}</td>
+          <td class="table__cell table__cell_text-right">{{ amountFormatter(monthBalance) }}</td>
         </tr>
       </tbody>
     </table>
