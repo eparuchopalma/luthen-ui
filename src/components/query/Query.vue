@@ -12,8 +12,9 @@ async function setRecords() {
   loading.value = true
   const { errorMessage } = await recordStore.getRecords()
   if (errorMessage) alert(errorMessage)
-  document.getElementById("records-section")?.scrollIntoView({ behavior: "smooth" })
   loading.value = false
+  setColumnsBalance()
+  document.getElementById("records-section")?.scrollIntoView({ behavior: "smooth" })
 }
 
 const screenHeight = ref(window.innerHeight)
@@ -29,18 +30,15 @@ const recordEditing = ref<Record | null>(null)
 const recordFormIsOpen = ref(false)
 
 function setColumnsBalance() {
-  totalDebit.value = 0
-  totalCredit.value = 0
-  queryBalance.value = 0
-  for (const record of recordStore.records) {
-    if (record.type == 0) continue
-    else if (record.type == 2) totalDebit.value += Number(record.amount)
-    else if (record.type == 1) totalCredit.value += Number(record.amount)
-    queryBalance.value += Number(record.amount)
-  }
+  totalDebit.value = recordStore.getDebits().reduce((sum, record) => sum + Number(record.amount), 0)
+  totalCredit.value = recordStore.getCredits().reduce((sum, record) => sum + Number(record.amount), 0)
+  queryBalance.value = totalDebit.value + totalCredit.value
 }
 
 function setPageRecords() {
+  const rowsToFit = Math.floor(screenHeight.value / 44)
+  rowsPerPage.value = rowsToFit
+  totalPages.value = Math.ceil(recordStore.records.length / rowsToFit)
   const startingIndex = (currentPage.value - 1) * rowsPerPage.value
   const endingIndex = startingIndex + rowsPerPage.value
   pageRecords.value = recordStore.records.slice(startingIndex, endingIndex)
@@ -70,14 +68,14 @@ function dismissRecordForm() {
   recordEditing.value = null
 }
 
-watch([screenHeight, () => recordStore.records], ([newHeight, newRecords]) => {
-  const rowsToFit = Math.floor(newHeight / 44)
-  rowsPerPage.value = rowsToFit
-  totalPages.value = Math.ceil(newRecords.length / rowsToFit)
+watch(screenHeight, () => {
+  setPageRecords()
+}, { immediate: true, deep: true })
+
+watch(() => recordStore.records, () => {
   setPageRecords()
   setColumnsBalance()
-}, { immediate: true, deep: true }
-)
+}, { immediate: true })
 
 window.addEventListener('resize', handleResize)
 

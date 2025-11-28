@@ -17,6 +17,14 @@ export type Record = {
 export const recordStore = reactive({
   records: [] as Record[],
 
+  getCredits() {
+    return this.records.filter(r => r.type === 1)
+  },
+
+  getDebits() {
+    return this.records.filter(r => r.type === 2)
+  },
+
   setRecords(records: Record[]) {
     this.records = records
   },
