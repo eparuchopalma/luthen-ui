@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import Logo from "../layout/Logo.vue";
+import Logo from "../layout/Logo.vue"
+import Button from "../layout/Button.vue"
 import { authStore } from "../../store/authStore"
 
 async function startDemo() {
@@ -15,10 +16,11 @@ async function startDemo() {
     <p>Financial Log</p>
   </header>
   <div class="button-container">
-    <button
-    class="button button_secondary"
+    <Button
+    :modifiers="['secondary']"
     type="button"
-    @click="startDemo">Start Demo</button>
+    @click="startDemo"
+    text="Start Demo"/>
   </div>
   <footer class="footer">
     <ul class="link-container">

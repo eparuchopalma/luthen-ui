@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from "vue"
 import { fundStore, type Fund } from "../../store/fundStore"
 import FundForm from "./FundForm.vue"
 import RecordForm from "./RecordForm.vue"
+import Button from "../layout/Button.vue"
 import { amountFormatter } from "../../utils/formatter"
 
 onMounted(() => setFunds())
@@ -63,16 +64,15 @@ function dismissRecordForm() {
     </div>
   </dl>
   <div class="button-container">
-    <button
-    class="button button_secondary"
+    <Button
+    :modifiers="['secondary']"
     type="button"
-    @click="fundFormIsOpen = true"
-    >Add fund</button>
-    <button
-    class="button"
+    text="Add fund"
+    @click="fundFormIsOpen = true" />
+    <Button
     type="button"
-    @click="recordFormIsOpen = true"
-    >Add record</button>
+    text="Add record"
+    @click="recordFormIsOpen = true" />
   </div>
   <Transition>
     <FundForm v-if="fundFormIsOpen" @dismiss-form="dismissFundForm" :fund="fundEditing" />
@@ -158,112 +158,6 @@ function dismissRecordForm() {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
   }
-}
-
-.form {
-  width: 100%;
-  max-width: 360px;
-  height: 100%;
-  max-height: 600px;
-  border-radius: 4px;
-  padding: 0 32px;
-  display: grid;
-  place-items: center;
-  background-color: var(--darkest);
-  color: var(--lightest);
-}
-
-.form_sm {
-  max-width: 300px;
-  max-height: 220px;
-}
-
-.fieldset {
-  border: none;
-}
-
-.label {
-  margin: 0 6px;
-  width: 45%;
-  display: inline-block;
-  text-align: left;
-  font-size: 1.2rem;
-  color: var(--light);
-}
-
-.label_w-full {
-  width: 100%;
-}
-
-.label_mt {
-  margin-top: 24px;
-}
-
-.label-alert::after {
-  content: '!';
-  margin-left: 4px;
-  box-sizing: border-box;
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  display: inline-block;
-  text-align: center;
-  font-weight: bold;
-  background-color: var(--accent);
-  color: var(--darkest);
-}
-
-.input {
-  margin: 0 6px;
-  width: calc(90% + 12px);
-  background-color: var(--darkest);
-  color: var(--lightest);
-  border: none;
-  border-bottom: 1px solid var(--light);
-}
-
-.input_w-half {
-  display: inline-block;
-  width: 45%;
-}
-
-.input_text-right {
-  text-align: right;
-}
-
-.input::selection, .input:focus {
-  border-color: var(--accent);
-  outline: none;
-}
-
-.select {
-  margin: 4px 6px 0;
-  width: 45%;
-  height: 28px;
-  border: 1px solid var(--dark);
-  padding: 0 2px;
-  background-color: var(--darkest);
-  border-radius: 20px;
-  outline: none;
-}
-
-.select::selection, .select:focus {
-  border-color: var(--accent);
-}
-
-::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-/* Remove the default arrows from input number fields */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type=number] {
-  -moz-appearance: textfield;
-  appearance: inherit;
 }
 
 </style>

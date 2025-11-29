@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import Dialog from '../layout/Dialog.vue';
+import Button from '../layout/Button.vue';
 import { recordStore, type Record } from '../../store/recordStore'
 import { fundStore } from '../../store/fundStore'
 import { formDateFormatter } from '../../utils/formatter';
@@ -145,74 +146,83 @@ function setAmountAPIFormat(data: Partial<Record>) {
 
 <template>
   <Dialog>
-    <form class="form">
-      <h3 class="title">Record Form</h3>
-      <fieldset class="fieldset">
+    <form class="record-form" @submit.prevent="handleSubmit">
+      <h3 class="record-form__title">Record Form</h3>
+      <fieldset class="record-form__fieldset">
         <label
         for="record-date-field"
-        class="label"
-        :class="{ 'label-alert': !dateIsValid }"
+        class="record-form__label record-form__label_zero"
+        :class="{ 'record-form__label_alert': !dateIsValid }"
         >Date</label>
         <label
         for="record-time-field"
-        class="label"
-        :class="{ 'label-alert': !timeIsValid }"
+        class="record-form__label record-form__label_zero"
+        :class="{ 'record-form__label_alert': !timeIsValid }"
         >Time</label>
         <input
         type="date"
-        class="input input_w-half"
+        class="record-form__input"
         id="record-date-field"
         v-model="form.date"
         required>
         <input
         id="record-time-field"
         type="time"
-        class="input input_w-half"
+        class="record-form__input"
         v-model="form.time"
         required>
         <label
         for="record-type-field"
-        class="label label_mt"
-        :class="{ 'label-alert': !typeIsValid }"
+        class="record-form__label"
+        :class="{ 'record-form__label_alert': !typeIsValid }"
         >Type</label>
         <label
         for="record-amount-field"
-        class="label"
-        :class="{ 'label-alert': !amountIsValid }"
+        class="record-form__label"
+        :class="{ 'record-form__label_alert': !amountIsValid }"
         >Amount</label>
-        <select id="record-type-field" class="select" v-model="form.type" @change="clearCorrelated">
-          <option v-for="type in [0, 1, 2]" :key="type" :value="type">{{ typeNames[type] }}</option>
+        <select
+        id="record-type-field"
+        class="record-form__select"
+        v-model="form.type"
+        @change="clearCorrelated">
+          <option
+          v-for="type in [0, 1, 2]"
+          :key="type"
+          :value="type">{{ typeNames[type] }}</option>
         </select>
         <input
         id="record-amount-field"
         type="number"
-        class="input input_w-half input_text-right"
+        class="record-form__input record-form__input_text-right"
         placeholder="0"
         min="0"
         v-model.number="form.amount"
         required>
         <label
         for="record-fund-field"
-        class="label label_mt"
+        class="record-form__label"
         >Fund</label>
         <label
         for="record-correlated-field"
-        class="label"
-        :class="{ 'label-alert': !correlatedFundIsValid }"
+        class="record-form__label"
+        :class="{ 'record-form__label_alert': !correlatedFundIsValid }"
         >Correlated Fund</label>
         <select
         id="record-fund-field"
-        class="select"
+        class="record-form__select"
         v-model="form.fund_id"
-        @change="clearCorrelated">
+        @change="clearCorrelated"
+        required>
           <option v-for="fund in fundStore.funds" :value="fund.id">{{ fund.name }}</option>
         </select>
         <select
         id="record-correlated-field"
-        class="select"
+        class="record-form__select"
         @change="clearCorrelated"
         v-model="form.correlated_fund_id"
-        :disabled="form.type !== 0">
+        :disabled="form.type !== 0"
+        :required="form.type === 0">
           <option
           v-for="fund in fundStore.funds.filter(f => f.id !== form.fund_id)"
           :value="fund.id"
@@ -220,48 +230,153 @@ function setAmountAPIFormat(data: Partial<Record>) {
         </select>
         <label
         for="record-tag-field"
-        class="label label_mt label_w-full"
+        class="record-form__label record-form__label_w-full"
         >Tag</label>
         <input
         id="record-tag-field"
         type="text"
-        class="input"
+        class="record-form__input record-form__block"
         placeholder="Vehicle"
         maxlength="250"
         v-model.trim="form.tag">
         <label
         for="record-note-field"
-        class="label label_mt label_w-full"
+        class="record-form__label record-form__label_w-full"
         >Note</label>
         <input
         id="record-note-field"
         type="text"
-        class="input"
+        class="record-form__input record-form__input_w-full"
         placeholder="Fuel"
         maxlength="250"
         v-model.trim="form.note">
       </fieldset>
-      <div class="button-container">
-        <button
+      <div class="record-form__actions">
+        <Button
+        type="submit"
+        :disabled="formInvalid || loading"
+        :modifiers="['sm']"
+        :text="props.record ? 'Update' : 'Create'" />
+        <Button
         type="button"
-        class="button button_secondary button_sm"
-        @click="$emit('dismissForm')"
+        :modifiers="['secondary', 'sm']"
         :disabled="loading"
-        >Dismiss</button>
-        <button
+        text="Dismiss"
+        @click="$emit('dismissForm')" />
+        <Button
         v-if="props.record"
         type="button"
-        class="button button_secondary button_sm"
-        @click="onDelete"
         :disabled="loading"
-        >Delete</button>
-        <button
-        type="button"
-        class="button button_sm"
-        :disabled="formInvalid || loading"
-        @click="handleSubmit"
-        >{{ props.record ? 'Update' : 'Create' }}</button>
+        :modifiers="['secondary', 'sm']"
+        text="Delete"
+        @click="onDelete" />
       </div>
     </form>
   </Dialog>
 </template>
+
+<style scoped>
+
+.record-form {
+  width: 100%;
+  height: 100%;
+  max-width: 360px;
+  max-height: 440px;
+  border-radius: 4px;
+  padding: 24px;
+  background-color: var(--darkest);
+  color: var(--lightest);
+}
+
+.record-form__fieldset {
+  margin: 24px 0;
+}
+
+.record-form__label {
+  margin: 24px 6px 0;
+  width: 45%;
+  display: inline-block;
+  text-align: left;
+  font-size: 1.2rem;
+  color: var(--light);
+}
+
+.record-form__label_w-full {
+  width: 100%;
+  margin-left: 12px;
+}
+
+.record-form__label_zero {
+  margin-top: 0;
+}
+
+.record-form__label_alert::after {
+  content: '!';
+  margin-left: 4px;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  background-color: var(--accent);
+  color: var(--darkest);
+}
+
+.record-form__input {
+  margin: 0 6px;
+  width: 45%;
+  background-color: var(--darkest);
+  color: var(--lightest);
+  border: none;
+  border-bottom: 1px solid var(--light);
+}
+
+.record-form__input_w-full {
+  display: inline-block;
+  width: calc(90% + 12px);
+}
+
+.record-form__input_text-right {
+  text-align: right;
+}
+
+.record-form__block {
+  display: block;
+  margin: 0 0 0 12px;
+}
+
+.record-form__input::selection, .record-form__input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.record-form__select {
+  margin: 4px 6px 0;
+  width: 45%;
+  height: 28px;
+  border: 1px solid var(--dark);
+  padding: 0 2px;
+  background-color: var(--darkest);
+  border-radius: 20px;
+  outline: none;
+}
+
+.record-form__select::selection, .record-form__select:focus {
+  border-color: var(--accent);
+}
+
+.record-form__actions {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+
+@media (width <= 600px) {
+  .record-form__actions {
+    flex-direction: row-reverse;
+  }
+}
+
+</style>

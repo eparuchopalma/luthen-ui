@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import Dialog from '../layout/Dialog.vue';
+import Button from '../layout/Button.vue';
 import { fundStore, type Fund } from '../../store/fundStore'
 
 onMounted(() => document.getElementById('fund-name-field')?.focus())
@@ -12,8 +13,7 @@ const fundName = ref(props.fund?.name || '')
 const loading = ref(false)
 
 const invalidForm = computed(() => {
-  if (!props.fund) return fundName.value === ''
-  return fundName.value === '' || props.fund.name === fundName.value
+  return fundName.value === '' || props.fund?.name === fundName.value
 })
 
 async function onSubmit() {
@@ -46,37 +46,113 @@ async function onDelete() {
 
 <template>
   <Dialog>
-    <form class="form form_sm">
+    <form class="fund-form" @submit.prevent="onSubmit">
       <h3 class="title">Fund Form</h3>
-      <input
-      type="text"
-      class="input"
-      placeholder="Savings"
-      id="fund-name-field"
-      maxlength="50"
-      required
-      v-model="fundName">
-      <div class="button-container">
-        <button
+      <fieldset class="fund-form__fieldset">
+        <label
+        for="fund-name-field"
+        class="fund-form__label"
+        :class="{ 'fund-form__label_alert': invalidForm }"
+        >Name</label>
+        <input
+        type="text"
+        class="fund-form__input"
+        placeholder="Savings"
+        id="fund-name-field"
+        maxlength="50"
+        required
+        v-model="fundName">
+      </fieldset>
+      <div class="fund-form__actions">
+        <Button
+        type="submit"
+        :disabled="invalidForm || loading"
+        :modifiers="['sm']"
+        :text="props.fund ? 'Update' : 'Create'" />
+        <Button
         type="button"
-        class="button button_sm button_secondary"
-        @click="$emit('dismissForm')"
+        :modifiers="['secondary', 'sm']"
         :disabled="loading"
-        >Dismiss</button>
-        <button
+        text="Dismiss"
+        @click="$emit('dismissForm')" />
+        <Button
         v-if="props.fund"
         type="button"
-        class="button button_secondary button_sm"
-        @click="onDelete"
         :disabled="loading"
-        >Delete</button>
-        <button
-        type="button"
-        class="button button_sm"
-        :disabled="invalidForm || loading"
-        @click="onSubmit"
-        >{{ props.fund ? 'Update' : 'Create' }}</button>
+        :modifiers="['secondary', 'sm']"
+        text="Delete"
+        @click="onDelete" />
       </div>
     </form>
   </Dialog>
 </template>
+
+<style scoped>
+
+.fund-form {
+  width: 100%;
+  height: 100%;
+  max-width: 300px;
+  max-height: 220px;
+  border-radius: 4px;
+  padding: 0 32px;
+  display: grid;
+  place-items: center;
+  background-color: var(--darkest);
+  color: var(--lightest);
+}
+
+.fund-form__fieldset {
+  justify-self: start;
+}
+
+.fund-form__label {
+  margin: 6px 8px;
+  width: 100%;
+  display: block;
+  text-align: left;
+  font-size: 1.2rem;
+  color: var(--light);
+}
+
+.fund-form__label_alert::after {
+  content: '!';
+  margin-left: 4px;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  background-color: var(--accent);
+  color: var(--darkest);
+}
+
+.fund-form__input {
+  margin: 0 6px;
+  width: calc(90% + 12px);
+  background-color: var(--darkest);
+  color: var(--lightest);
+  border: none;
+  border-bottom: 1px solid var(--light);
+}
+
+.fund-form__input::selection, .fund-form__input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.fund-form__actions {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+
+@media (width <= 600px) {
+  .fund-form__actions {
+    flex-direction: row-reverse;
+  }
+}
+
+</style>

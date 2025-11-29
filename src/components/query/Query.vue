@@ -2,7 +2,9 @@
 import { ref, watch, onMounted } from "vue"
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
+import Button from "../layout/Button.vue"
 import { amountFormatter, tableDateFormatter } from '../../utils/formatter';
+import QueryForm from "./QueryForm.vue";
 
 onMounted(() => setRecords())
 
@@ -28,6 +30,7 @@ const totalDebit = ref(0)
 const queryBalance = ref(0)
 const recordEditing = ref<Record | null>(null)
 const recordFormIsOpen = ref(false)
+const queryFormIsOpen = ref(false)
 
 function setColumnsBalance() {
   totalDebit.value = recordStore.getDebits().reduce((sum, record) => sum + Number(record.amount), 0)
@@ -66,6 +69,10 @@ function openRecordForm(record: Record) {
 function dismissRecordForm() {
   recordFormIsOpen.value = false
   recordEditing.value = null
+}
+
+function dismissQueryForm() {
+  queryFormIsOpen.value = false
 }
 
 watch(screenHeight, () => {
@@ -130,34 +137,37 @@ window.addEventListener('resize', handleResize)
       </tfoot>
     </table>
     <div class="table-actions">
-      <button
-      class="button button_sm button_dark"
+      <Button
       type="button"
-      @click="setPreviousPage"
-      :disabled="currentPage == 1">&lt</button>
+      :modifiers="['sm', 'dark']"
+      :disabled="currentPage == 1"
+      text="&lt;"
+      @click="setPreviousPage" />
       <small>Page {{ currentPage }} / {{ totalPages }}. Records: {{ recordStore.records.length }}</small>
-      <button
-      class="button button_sm button_dark"
+      <Button
       type="button"
-      @click="setNextPage"
-      :disabled="currentPage == totalPages">&gt;</button>
+      :modifiers="['sm', 'dark']"
+      :disabled="currentPage == totalPages"
+      text="&gt;"
+      @click="setNextPage" />
     </div>
   </div>
-  <div class="button-container">
-    <button
-    class="button button_secondary"
-    type="button"
-    >Export</button>
-    <button
-    class="button"
-    type="button"
-    >Query</button>
-  </div>
+  <Button
+  :modifiers="['secondary']"
+  type="button"
+  text="Export" />
+  <Button
+  type="button"
+  text="Query"
+  @click="queryFormIsOpen = true" />
   <Transition>
     <RecordForm
     :record="recordEditing"
     v-if="recordFormIsOpen"
     @dismiss-form="dismissRecordForm" />
+    <QueryForm
+    v-else-if="queryFormIsOpen"
+    @dismiss-form="dismissQueryForm" />
   </Transition>
 </template>
 
