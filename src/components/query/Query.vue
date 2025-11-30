@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { nextTick, ref, watch } from "vue"
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
 import Button from "../layout/Button.vue"
@@ -25,7 +25,9 @@ function setColumnsBalance() {
 }
 
 function setPageRecords() {
-  const rowsToFit = Math.floor(screenHeight.value / 44)
+  const rowHeight = 28
+  const nonDataRows = 6
+  const rowsToFit = Math.floor(screenHeight.value / rowHeight) - nonDataRows
   rowsPerPage.value = rowsToFit
   totalPages.value = Math.ceil(recordStore.records.length / rowsToFit)
   const startingIndex = (currentPage.value - 1) * rowsPerPage.value
@@ -63,7 +65,7 @@ function dismissQueryForm() {
 
 function focusTable() {
   currentPage.value = 1
-  document.getElementById("records-section")?.scrollIntoView({ behavior: "smooth" })
+  document.getElementById("table")?.scrollIntoView({ behavior: "smooth" })
 }
 
 watch(screenHeight, () => {
@@ -71,9 +73,9 @@ watch(screenHeight, () => {
 }, { immediate: true, deep: true })
 
 watch(() => recordStore.records, () => {
-  focusTable()
   setPageRecords()
   setColumnsBalance()
+  nextTick(() => focusTable())
 }, { immediate: true })
 
 window.addEventListener('resize', handleResize)
@@ -81,69 +83,71 @@ window.addEventListener('resize', handleResize)
 </script>
 
 <template>
-  <header id="records-section">
+  <header class="header">
     <div class="section__icon">
       <img src="../../assets/lupe.png" alt="lupe icon" class="icon__img">
     </div>
     <h1>Query</h1>
   </header>
-  <div class="table-container">
-    <table class="table">
-      <caption class="table__caption">Click on a record for details and actions.</caption>
-      <thead>
-        <tr class="table__header-row">
-          <th>Date</th>
-          <th>Tag</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-        v-for="record in pageRecords"
-        :key="record.id"
-        class="table__body-row"
-        @click="openRecordForm(record)">
-          <td class="table__cell table__cell_text-left">{{ tableDateFormatter(record.date) }}</td>
-          <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
-          <td class="table__cell table__cell_text-right">{{ amountFormatter(record.amount) }}</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr class="table__footer-row">
-          <td>
-            <div class="table__footer-data">
-              <span>{{ amountFormatter(totalCredit) }}</span>
-            </div>
-          </td>
-          <td>
-            <div class="table__footer-data">
-              <span>{{ amountFormatter(totalDebit) }}</span>
-            </div>
-          </td>
-          <td>
-            <div class="table__footer-data">
-              <span>{{ amountFormatter(queryBalance) }}</span>
-            </div>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-    <div class="table-actions">
-      <Button
-      type="button"
-      :modifiers="['sm', 'dark']"
-      :disabled="currentPage == 1"
-      text="&lt;"
-      @click="setPreviousPage" />
-      <small>Page {{ currentPage }} / {{ totalPages }}. Records: {{ recordStore.records.length }}</small>
-      <Button
-      type="button"
-      :modifiers="['sm', 'dark']"
-      :disabled="currentPage == totalPages"
-      text="&gt;"
-      @click="setNextPage" />
+  <Transition>
+    <div class="table-container" v-if="recordStore.records.length">
+      <table class="table">
+        <caption id="table" class="table__caption">Click on a record for details and actions.</caption>
+        <thead>
+          <tr class="table__header-row">
+            <th>Date</th>
+            <th>Tag</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+          v-for="record in pageRecords"
+          :key="record.id"
+          class="table__body-row"
+          @click="openRecordForm(record)">
+            <td class="table__cell table__cell_text-left">{{ tableDateFormatter(record.date) }}</td>
+            <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
+            <td class="table__cell table__cell_text-right">{{ amountFormatter(record.amount) }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="table__footer-row">
+            <td>
+              <div class="table__footer-data">
+                <span>{{ amountFormatter(totalCredit) }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="table__footer-data">
+                <span>{{ amountFormatter(totalDebit) }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="table__footer-data">
+                <span>{{ amountFormatter(queryBalance) }}</span>
+              </div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+      <div class="table-actions">
+        <Button
+        type="button"
+        :modifiers="['sm', 'dark']"
+        :disabled="currentPage == 1"
+        text="&lt;"
+        @click="setPreviousPage" />
+        <small class="table__caption">Pages {{ currentPage }}/{{ totalPages }}. Records: {{ recordStore.records.length }}</small>
+        <Button
+        type="button"
+        :modifiers="['sm', 'dark']"
+        :disabled="currentPage == totalPages"
+        text="&gt;"
+        @click="setNextPage" />
+      </div>
     </div>
-  </div>
+  </Transition>
   <Button
   :modifiers="['secondary']"
   type="button"
@@ -165,11 +169,14 @@ window.addEventListener('resize', handleResize)
 
 <style scoped>
 
+.header {
+  margin-bottom: 48px;
+}
+
 .table-container {
   margin: 48px auto;
   width: 100%;
   max-width: 500px;
-  height: 62vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -200,6 +207,13 @@ window.addEventListener('resize', handleResize)
   width: 120px;
   padding: 0 4px;
   border: 1px solid var(--dark);
+  height: 24px;
+  max-height: 24px;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .table__cell_text-left {

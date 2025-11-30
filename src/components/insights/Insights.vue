@@ -147,6 +147,13 @@ watch(() => recordStore.records, () => {
   width: 120px;
   padding: 0 4px;
   border: 1px solid var(--dark);
+  height: 24px;
+  max-height: 24px;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .table__cell_text-left {

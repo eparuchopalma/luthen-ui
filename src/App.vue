@@ -5,6 +5,7 @@ import AppBar from "./components/layout/AppBar.vue"
 import Query from "./components/query/Query.vue"
 import Status from "./components/status/Status.vue"
 import { authStore } from "./store/authStore"
+import { recordStore } from "./store/recordStore"
 
 </script>
 
@@ -19,7 +20,7 @@ import { authStore } from "./store/authStore"
       <section class="section">
         <Query />
       </section>
-      <section class="section">
+      <section class="section" v-if="recordStore.records.length">
         <Insights />
       </section>
     </div>
