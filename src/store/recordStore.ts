@@ -54,8 +54,8 @@ export const recordStore = reactive({
     return response
   },
 
-  async getRecords() {
-    const response = await readRecords(authStore.inDemo)
+  async getRecords(filters: Partial<Record> & { fromDate?: string; toDate?: string }) {
+    const response = await readRecords(filters, authStore.inDemo)
     if (!response.errorMessage) this.setRecords(response.data)
     return response
   },

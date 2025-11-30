@@ -96,7 +96,7 @@ async function handleSubmit() {
   const { errorMessage } = props.record ? await update() : await create()
   alert(errorMessage ? errorMessage : 'Record saved!')
   if (!errorMessage) emit('dismissForm')
-  else loading.value = false
+  loading.value = false
 }
 
 async function onDelete() {

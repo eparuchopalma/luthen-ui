@@ -1,0 +1,246 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import Dialog from '../layout/Dialog.vue'
+import Button from '../layout/Button.vue'
+import { fundStore } from '../../store/fundStore'
+import { recordStore } from '../../store/recordStore'
+
+const emit = defineEmits(['dismissForm'])
+
+const form = ref({
+  type: '',
+  fund_id: '',
+  fromDate: '',
+  toDate: '',
+  tag: '',
+  note: ''
+})
+const typeNames = ['Fund to fund', 'Credit', 'Debit']
+const loading = ref(false)
+
+const fromDateIsValid = computed(() => {
+  return !form.value.fromDate || new Date(form.value.fromDate) <= new Date()
+})
+
+const toDateIsValid = computed(() => {
+  return !form.value.toDate || new Date(form.value.toDate) <= new Date() && new Date(form.value.fromDate) <= new Date(form.value.toDate)
+})
+
+const formInvalid = computed(() => !fromDateIsValid.value || !toDateIsValid.value)
+
+async function onSubmit() {
+  loading.value = true
+  const filters = normalizeData()
+  const { errorMessage } = await recordStore.getRecords(filters)
+  alert(errorMessage ? errorMessage : 'Query executed')
+  if (!errorMessage) emit('dismissForm')
+  loading.value = false
+}
+
+function normalizeData() {
+  const normalized: any = { ...form.value }
+  if (normalized.type === '') delete normalized.type
+  if (normalized.fromDate === '') delete normalized.fromDate
+  if (normalized.toDate === '') delete normalized.toDate
+  if (normalized.fund_id === '') delete normalized.fund_id
+  if (normalized.tag === '') delete normalized.tag
+  if (normalized.note === '') delete normalized.note
+  return normalized
+}
+
+</script>
+
+<template>
+  <Dialog>
+    <form class="query-form" @submit.prevent="onSubmit">
+      <h3 class="query-form__title">Query Form</h3>
+      <fieldset class="query-form__fieldset">
+        <label
+        for="query-type-field"
+        class="query-form__label"
+        >Type</label>
+        <label
+        for="query-fund-field"
+        class="query-form__label"
+        >Fund</label>
+        <select
+        id="query-type-field"
+        class="query-form__select"
+        v-model="form.type">
+          <option value="">Records</option>
+          <option
+          v-for="type in [0, 1, 2]"
+          :key="type"
+          :value="type">{{ typeNames[type] }}</option>
+        </select>
+        <select
+        id="query-fund-field"
+        class="query-form__select"
+        v-model="form.fund_id">
+          <option value="">All funds</option>
+          <option
+          v-for="fund in fundStore.funds"
+          :value="fund.id"
+          >{{ fund.name }}</option>
+        </select>
+        <label
+        for="query-from-date"
+        class="query-form__label"
+        :class="{ 'query-form__label_alert': !fromDateIsValid }"
+        >From date</label>
+        <label
+        for="query-to-date"
+        class="query-form__label"
+        :class="{ 'query-form__label_alert': !toDateIsValid }"
+        >To date</label>
+        <input
+        type="date"
+        class="query-form__input"
+        id="query-from-date"
+        v-model="form.fromDate">
+        <input
+        type="date"
+        class="query-form__input"
+        id="query-to-date"
+        v-model="form.toDate">
+        <label
+        for="query-tag-field"
+        class="query-form__label query-form__label_w-full"
+        >Tag</label>
+        <input
+        id="query-tag-field"
+        type="text"
+        class="query-form__input query-form__block"
+        placeholder="Vehicle"
+        maxlength="250"
+        v-model.trim="form.tag">
+        <label
+        for="query-note-field"
+        class="query-form__label query-form__label_w-full"
+        >Note</label>
+        <input
+        id="query-note-field"
+        type="text"
+        class="query-form__input query-form__input_w-full"
+        placeholder="Fuel"
+        maxlength="250"
+        v-model.trim="form.note">
+      </fieldset>
+      <div class="query-form__actions">
+        <Button
+        type="submit"
+        :disabled="formInvalid || loading"
+        :modifiers="['sm']"
+        text="Execute" />
+        <Button
+        type="button"
+        :modifiers="['secondary', 'sm']"
+        :disabled="loading"
+        text="Dismiss"
+        @click="$emit('dismissForm')" />
+      </div>
+    </form>
+  </Dialog>
+</template>
+
+<style scoped>
+
+.query-form {
+  width: 100%;
+  height: 100%;
+  max-width: 360px;
+  max-height: 400px;
+  border-radius: 4px;
+  padding: 24px;
+  background-color: var(--darkest);
+  color: var(--lightest);
+}
+
+.query-form__fieldset {
+  margin: 24px 0;
+}
+
+.query-form__label {
+  margin: 24px 6px 0;
+  width: 45%;
+  display: inline-block;
+  text-align: left;
+  font-size: 1.2rem;
+  color: var(--light);
+}
+
+.query-form__label_w-full {
+  width: 100%;
+  margin-left: 12px;
+}
+
+.query-form__label_alert::after {
+  content: '!';
+  margin-left: 4px;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  background-color: var(--accent);
+  color: var(--darkest);
+}
+
+.query-form__input {
+  margin: 0 6px;
+  width: 45%;
+  background-color: var(--darkest);
+  color: var(--lightest);
+  border: none;
+  border-bottom: 1px solid var(--light);
+}
+
+.query-form__input_w-full {
+  display: inline-block;
+  width: calc(90% + 12px);
+}
+
+.query-form__input_text-right {
+  text-align: right;
+}
+
+.query-form__block {
+  display: block;
+  margin: 0 0 0 12px;
+}
+
+.query-form__input::selection, .query-form__input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.query-form__select {
+  margin: 4px 6px 0;
+  width: 45%;
+  height: 28px;
+  border: 1px solid var(--dark);
+  padding: 0 2px;
+  background-color: var(--darkest);
+  border-radius: 20px;
+  outline: none;
+}
+
+.query-form__select::selection, .query-form__select:focus {
+  border-color: var(--accent);
+}
+
+.query-form__actions {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+
+@media (width <= 600px) {
+  .query-form__actions {
+    flex-direction: row-reverse;
+  }
+}
+
+</style>
