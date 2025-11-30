@@ -1,26 +1,12 @@
 <script lang="ts" setup>
-import { ref, watch, onMounted } from "vue"
+import { ref, watch } from "vue"
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
 import Button from "../layout/Button.vue"
 import { amountFormatter, tableDateFormatter } from '../../utils/formatter';
 import QueryForm from "./QueryForm.vue";
 
-onMounted(() => setRecords())
-
-const loading = ref(false)
-
-async function setRecords() {
-  loading.value = true
-  const { errorMessage } = await recordStore.getRecords()
-  if (errorMessage) alert(errorMessage)
-  loading.value = false
-  setColumnsBalance()
-  document.getElementById("records-section")?.scrollIntoView({ behavior: "smooth" })
-}
-
 const screenHeight = ref(window.innerHeight)
-
 const totalPages = ref(1)
 const currentPage = ref(1)
 const rowsPerPage = ref(10)
@@ -75,11 +61,17 @@ function dismissQueryForm() {
   queryFormIsOpen.value = false
 }
 
+function focusTable() {
+  currentPage.value = 1
+  document.getElementById("records-section")?.scrollIntoView({ behavior: "smooth" })
+}
+
 watch(screenHeight, () => {
   setPageRecords()
 }, { immediate: true, deep: true })
 
 watch(() => recordStore.records, () => {
+  focusTable()
   setPageRecords()
   setColumnsBalance()
 }, { immediate: true })

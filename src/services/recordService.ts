@@ -7,7 +7,7 @@ export function createRecord(payload: Partial<Record>, demo: boolean) {
     .catch(handleError)
 }
 
-export function readRecords(filters: Partial<Record>, demo: boolean) {
+export function readRecords(filters: Partial<Record> & { fromDate?: string; toDate?: string }, demo: boolean) {
   return api.get(demo ? "/public/record" : "/record", { params: filters })
     .then(handleResponse)
     .catch(handleError)
