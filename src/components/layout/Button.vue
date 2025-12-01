@@ -32,6 +32,7 @@ defineProps({
 <style scoped>
 
 .button {
+  margin: 0 2px;
   height: 24px;
   width: 120px;
   border: none;

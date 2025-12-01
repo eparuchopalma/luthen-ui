@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue"
+import Exceljs from 'exceljs'
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
 import Button from "../layout/Button.vue"
-import { amountFormatter, tableDateFormatter } from '../../utils/formatter';
-import QueryForm from "./QueryForm.vue";
+import { amountFormatter, tableDateFormatter } from '../../utils/formatter'
+import QueryForm from "./QueryForm.vue"
+import { fundStore } from "../../store/fundStore"
 
 const screenHeight = ref(window.innerHeight)
 const totalPages = ref(1)
@@ -17,6 +19,11 @@ const queryBalance = ref(0)
 const recordEditing = ref<Record | null>(null)
 const recordFormIsOpen = ref(false)
 const queryFormIsOpen = ref(false)
+const typeNames = {
+  0: 'Fund to Fund',
+  1: 'Credit',
+  2: 'Debit'
+};
 
 function setColumnsBalance() {
   totalDebit.value = recordStore.getDebits().reduce((sum, record) => sum + Number(record.amount), 0)
@@ -66,6 +73,48 @@ function dismissQueryForm() {
 function focusTable() {
   currentPage.value = 1
   document.getElementById("table")?.scrollIntoView({ behavior: "smooth" })
+}
+
+async function formatToXls() {
+  const workbook = new Exceljs.Workbook();
+  const worksheet = workbook.addWorksheet("Sheet1");
+  worksheet.columns = [
+    { header: "Date", key: "date" },
+    { header: "Type", key: "type" },
+    { header: "Amount", key: "amount" },
+    { header: "Fund", key: "fund" },
+    { header: "Correlated Fund", key: "correlated" },
+    { header: "Tag", key: "tag" },
+    { header: "Note", key: "note" },
+  ]
+
+  recordStore.records.forEach(({ date, type, amount, fund_id, correlated_fund_id, tag, note }) => {
+    worksheet.addRow({
+      date: tableDateFormatter(date),
+      type: typeNames[type],
+      amount,
+      fund: getFundName(fund_id),
+      correlated: (correlated_fund_id) ? getFundName(correlated_fund_id) : '',
+      tag,
+      note,
+    })
+  })
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob(
+    [buffer], 
+    { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const tempLink = document.createElement("a")
+  tempLink.href = url
+  tempLink.download = 'data.xlsx'
+  tempLink.click()
+}
+
+function getFundName (id: string) {
+  return fundStore.funds.find(f => f.id === id)!.name;
 }
 
 watch(screenHeight, () => {
@@ -149,9 +198,11 @@ window.addEventListener('resize', handleResize)
     </div>
   </Transition>
   <Button
-  :modifiers="['secondary']"
   type="button"
-  text="Export" />
+  text="Export"
+  :modifiers="['secondary']"
+  :disabled="!recordStore.records.length"
+  @click="formatToXls" />
   <Button
   type="button"
   text="Query"
