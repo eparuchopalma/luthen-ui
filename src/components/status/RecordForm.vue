@@ -4,32 +4,33 @@ import Dialog from '../layout/Dialog.vue';
 import Button from '../layout/Button.vue';
 import { recordStore, type Record } from '../../store/recordStore'
 import { fundStore } from '../../store/fundStore'
-import { formDateFormatter } from '../../utils/formatter';
+import { formDateFormatter, formTimeFormatter } from '../../utils/formatter';
 
 onMounted(() => document.getElementById('record-date-field')?.focus())
 const emit = defineEmits(['dismissForm'])
 
 const props = defineProps<{ record?: Record | null }>()
 
-const [mm, dd, yyyy] = new Date().toLocaleString().slice(0, 10).split('/')
-
 const form = ref<Record & { time?: string }>({
-  amount: 0,
-  date: `${yyyy}-${mm}-${dd}`,
-  time: new Date().toTimeString().slice(0, 5),
-  fund_id: fundStore.funds.find(fund => fund.is_main)!.id,
-  note: '',
-  tag: '',
-  type: 2
+  amount: Math.abs(props.record?.amount! || 0),
+  date: formDateFormatter(props.record ? new Date(props.record?.date) : new Date()),
+  time: formTimeFormatter(props.record ? new Date(props.record?.date) : new Date()),
+  fund_id: props.record?.fund_id || fundStore.funds.find(fund => fund.is_main)!.id,
+  note: props.record?.note || null,
+  tag: props.record?.tag || null,
+  type: props.record?.type || 2
 })
 
-const originalValues = ref<null | Record & { time: string }>(null)
+const originalValues = ref<null | Record & { time: string }>(JSON.parse(JSON.stringify(form.value)))
 const loading = ref(false)
 const typeNames = ['Fund to fund', 'Credit', 'Debit']
 
-if (props.record) startEditing()
-
-const dateIsValid = computed(() => new Date(form.value.date) <= new Date())
+const dateIsValid = computed(() => {
+  const [yyyy, mm, dd] = form.value.date.split('-')
+  const formDate = new Date([mm, dd, yyyy].join('-'))
+  const currentDate = new Date()
+  return formDate <= currentDate
+})
 
 const timeIsValid = computed(() => {
   if (!form.value.time) return false
@@ -48,42 +49,29 @@ const correlatedFundIsValid = computed(() => {
 
 const typeIsValid = computed(() => [0, 1, 2].includes(form.value.type!))
 
-const changesOnUpdate = computed(() => {
-  if (!props.record) return null
+const formChanges = computed(() => {
   const updates = {} as Partial<Record>
-
+    
   Object.entries(form.value).forEach(([key, value]) => {
     const k = key as keyof Record
     const originalValue = originalValues.value![k]
-    if (value !== originalValue) updates[k] = value as any
+    if (value !== originalValue && (value ?? originalValue)) updates[k] = value as any
   })
 
   if (JSON.stringify(updates) === '{}') return null
   else return updates
 })
 
-const formInvalid = computed(() => {
+const formValid = computed(() => {
   return [
     dateIsValid.value,
     timeIsValid.value,
     amountIsValid.value,
     correlatedFundIsValid.value,
     typeIsValid.value,
-    (changesOnUpdate.value !== null || !props.record)
-  ]
-    .some(isValid => !isValid)
+    formChanges.value !== null
+  ].every(isValid => isValid)
 })
-
-function startEditing() {
-  originalValues.value = JSON.parse(JSON.stringify(props.record!))
-  const [m, d, yyyy] = new Date(props.record!.date).toLocaleString().split(',')[0]!.split('/')
-  originalValues.value!.date = `${yyyy}-${m!.padStart(2, '0')}-${d!.padStart(2, '0')}`
-  originalValues.value!.time = formDateFormatter(new Date(props.record!.date))
-  originalValues.value!.amount = (props.record!.type !== 1)
-    ? -Number(props.record!.amount)
-    : Number(props.record!.amount)
-  form.value = JSON.parse(JSON.stringify(originalValues.value))
-}
 
 function clearCorrelated() {
   const notFundToFund = form.value.type != 0
@@ -110,7 +98,7 @@ async function onDelete() {
 }
 
 function update() {
-  const payload = normalizePayload(changesOnUpdate.value!)
+  const payload = normalizePayload(formChanges.value!)
   return recordStore.updateRecord(props.record!.id!, payload)
 }
 
@@ -254,7 +242,7 @@ function setAmountAPIFormat(data: Partial<Record>) {
       <div class="record-form__actions">
         <Button
         type="submit"
-        :disabled="formInvalid || loading"
+        :disabled="!formValid || loading"
         :modifiers="['sm']"
         :text="props.record ? 'Update' : 'Create'" />
         <Button

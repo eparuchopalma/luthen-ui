@@ -9,8 +9,8 @@ export type Record = {
   date: string
   fund_id: string
   id?: string
-  note: string
-  tag: string
+  note: string | null
+  tag: string | null
   type: 0 | 1 | 2
 }
 
