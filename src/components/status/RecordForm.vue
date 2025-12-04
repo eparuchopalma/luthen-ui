@@ -130,10 +130,16 @@ function setAmountAPIFormat(data: Partial<Record>) {
   return
 }
 
+function confirmToClose() {
+  if (!formChanges.value) return emit('dismissForm')
+  const confirmClose = confirm('You have unsaved changes. Are you sure you want to close the form?')
+  if (confirmClose) emit('dismissForm')
+}
+
 </script>
 
 <template>
-  <Dialog>
+  <Dialog @click.self="confirmToClose" @keydown.esc="confirmToClose">
     <form class="record-form" @submit.prevent="handleSubmit">
       <h3 class="record-form__title">Record Form</h3>
       <fieldset class="record-form__fieldset">
@@ -250,7 +256,7 @@ function setAmountAPIFormat(data: Partial<Record>) {
         :modifiers="['secondary', 'sm']"
         :disabled="loading"
         text="Dismiss"
-        @click="$emit('dismissForm')" />
+        @click="confirmToClose" />
         <Button
         v-if="props.record"
         type="button"
