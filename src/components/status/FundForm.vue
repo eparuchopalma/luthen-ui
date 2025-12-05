@@ -45,7 +45,7 @@ async function onDelete() {
 </script>
 
 <template>
-  <Dialog>
+  <Dialog @click.self="emit('dismissForm')" @keydown.esc="emit('dismissForm')">
     <form class="fund-form" @submit.prevent="onSubmit">
       <h3 class="title">Fund Form</h3>
       <fieldset class="fund-form__fieldset">

@@ -30,6 +30,7 @@ function selectFund(fund: Fund) {
 }
 
 function dismissFundForm() {
+  fundEditing.value = null
   fundFormIsOpen.value = false
 }
 
