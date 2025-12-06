@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue"
+import { onMounted, ref, computed, inject } from "vue"
 import { fundStore, type Fund } from "../../store/fundStore"
 import FundForm from "./FundForm.vue"
 import RecordForm from "./RecordForm.vue"
 import Button from "../layout/Button.vue"
 import { amountFormatter } from "../../utils/formatter"
+import type { Alert } from "../layout/AlertBox.vue"
 
 onMounted(() => setFunds())
+const showAlert = inject('showAlert') as (arg: Alert) => void
 
 const loading = ref(false)
 const fundFormIsOpen = ref(false)
@@ -20,7 +22,11 @@ const totalBalance = computed(() => {
 async function setFunds() {
   loading.value = true
   const { errorMessage } = await fundStore.getFunds()
-  if (errorMessage) alert(errorMessage)
+  showAlert({
+    text: errorMessage || 'All set',
+    title: errorMessage ? 'Error loading funds' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
   loading.value = false
 }
 

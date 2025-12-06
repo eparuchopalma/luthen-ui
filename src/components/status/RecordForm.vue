@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, inject } from 'vue';
 import Dialog from '../layout/Dialog.vue';
 import Button from '../layout/Button.vue';
 import { recordStore, type Record } from '../../store/recordStore'
 import { fundStore } from '../../store/fundStore'
 import { formDateFormatter, formTimeFormatter } from '../../utils/formatter';
+import type { Alert } from '../layout/AlertBox.vue';
 
 onMounted(() => document.getElementById('record-date-field')?.focus())
 const emit = defineEmits(['dismissForm'])
+const showAlert = inject('showAlert') as (arg: Alert) => void
 
 const props = defineProps<{ record?: Record | null }>()
 
@@ -82,7 +84,11 @@ function clearCorrelated() {
 async function handleSubmit() {
   loading.value = true
   const { errorMessage } = props.record ? await update() : await create()
-  alert(errorMessage ? errorMessage : 'Record saved!')
+  showAlert({
+    text: errorMessage || 'Record saved!',
+    title: errorMessage ? 'Error saving record' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
   if (!errorMessage) emit('dismissForm')
   loading.value = false
 }
@@ -92,7 +98,11 @@ async function onDelete() {
   if (!confirmDelete) return
   loading.value = true
   const { errorMessage } = await recordStore.deleteRecord(props.record!.id!)
-  alert(errorMessage ? errorMessage : 'Record deleted!')
+  showAlert({
+    text: errorMessage || 'Record deleted',
+    title: errorMessage ? 'Error deleting record' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
   if (!errorMessage) emit('dismissForm')
   else loading.value = false
 }

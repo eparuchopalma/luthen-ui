@@ -3,24 +3,24 @@ import { onMounted } from 'vue';
 import Button from './Button.vue'
 import Dialog from './Dialog.vue';
 
-const props = defineProps<{
+export type Alert = {
   text: string,
   title?: string,
-  textOnly?: boolean,
-  loading?: boolean,
-  confirmationRequired?: boolean,
-}>()
+  autoDismiss: boolean,
+  onConfirm?: () => any
+}
 
-const emit = defineEmits(['dismiss', 'onConfirm'])
+const props = defineProps<Alert>()
+const emit = defineEmits(['dismiss'])
 
 onMounted(() => {
-  if (props.textOnly) setTimeout(() => emit('dismiss'), 3000)
+  if (props.autoDismiss) setTimeout(() => emit('dismiss'), 3000)
 })
 
 </script>
 
 <template>
-  <dialog role="dialog" open v-if="textOnly" class="alert-box">
+  <dialog role="dialog" open v-if="autoDismiss" class="alert-box">
     <p class="alert-box__text">{{ text }}</p>
   </dialog>
   <Dialog v-else>
@@ -30,17 +30,15 @@ onMounted(() => {
       <div>
         <Button
         type="button"
-        :disabled="loading"
         :modifiers="['secondary', 'sm']"
         text="Dismiss"
         @click="emit('dismiss')" />
         <Button
-        v-if="confirmationRequired"
+        v-if="onConfirm !== undefined"
         type="button"
-        :disabled="loading"
         :modifiers="['secondary', 'sm']"
         text="Confirm"
-        @click="emit('onConfirm')" />
+        @click="onConfirm" />
       </div>
     </div>
   </Dialog>
@@ -57,8 +55,10 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   border: none;
-  box-sizing: border-box;
+  position: fixed;
+  bottom: 32px;
   border-radius: 4px;
+  box-sizing: border-box;
   box-shadow: 0 1px 2px 0 var(--accent);
   background-color: var(--darkest);
   background-image: url('../../assets/squirrel.svg');
@@ -76,7 +76,10 @@ onMounted(() => {
   height: 200px;
   padding: 20px;
   flex-direction: column;
+  animation: none;
   justify-content: space-between;
+  white-space: wrap;
+  text-align: left;
 }
 
 .alert-box__title {

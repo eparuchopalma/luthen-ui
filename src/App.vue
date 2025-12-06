@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { provide, ref } from "vue"
 import Auth from "./components/auth/Auth.vue"
 import Insights from "./components/insights/Insights.vue"
 import AppBar from "./components/layout/AppBar.vue"
@@ -7,9 +7,23 @@ import Query from "./components/query/Query.vue"
 import Status from "./components/status/Status.vue"
 import { authStore } from "./store/authStore"
 import { recordStore } from "./store/recordStore"
-import AlertBox from "./components/layout/AlertBox.vue"
+import AlertBox, { type Alert } from "./components/layout/AlertBox.vue"
 
-const showingAlert = ref(true)
+const alertData = ref<{
+  text: string,
+  title?: string,
+  autoDismiss: boolean,
+  onConfirm?: () => any
+}>()
+
+const showingAlert = ref(false)
+
+function setAlertData(newAlert: Alert) {
+  showingAlert.value = true
+  alertData.value = newAlert
+}
+
+provide('showAlert', setAlertData)
 
 </script>
 
@@ -17,12 +31,6 @@ const showingAlert = ref(true)
   <main class="main">
     <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
     <div v-else>
-      <Transition>
-        <AlertBox
-        v-if="showingAlert"
-        text="Welcome"
-        @dismiss="showingAlert = false" />
-      </Transition>
       <AppBar />
       <section class="section">
         <Status />
@@ -33,6 +41,15 @@ const showingAlert = ref(true)
       <section class="section" v-if="recordStore.records.length">
         <Insights />
       </section>
+      <Transition>
+        <AlertBox
+        v-if="showingAlert"
+        :text="alertData!.text"
+        :title="alertData!.title"
+        :auto-dismiss="alertData!.autoDismiss"
+        :on-confirm="alertData!.onConfirm"
+        @dismiss="showingAlert = false" />
+      </Transition>
     </div>
   </main>
 </template>

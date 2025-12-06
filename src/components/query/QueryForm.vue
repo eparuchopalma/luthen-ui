@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, inject } from 'vue';
 import Dialog from '../layout/Dialog.vue'
 import Button from '../layout/Button.vue'
+import { type Alert } from '../layout/AlertBox.vue'
 import { fundStore } from '../../store/fundStore'
 import { recordStore } from '../../store/recordStore'
 
 const emit = defineEmits(['dismissForm'])
+const showAlert = inject('showAlert') as (arg: Alert) => void
 
 const form = ref({
   type: '',
@@ -32,9 +34,13 @@ async function onSubmit() {
   loading.value = true
   const filters = normalizeData()
   const { errorMessage } = await recordStore.getRecords(filters)
-  alert(errorMessage ? errorMessage : 'Query executed')
+  showAlert({
+    text: errorMessage || `Query executed. Records found: ${recordStore.records.length}`,
+    title: errorMessage ? 'Could not complete' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
   if (!errorMessage) emit('dismissForm')
-  loading.value = false
+  else loading.value = false
 }
 
 function normalizeData() {

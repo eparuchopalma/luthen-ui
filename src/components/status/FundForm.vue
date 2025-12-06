@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, inject } from 'vue';
 import Dialog from '../layout/Dialog.vue';
 import Button from '../layout/Button.vue';
 import { fundStore, type Fund } from '../../store/fundStore'
+import type { Alert } from '../layout/AlertBox.vue';
 
 onMounted(() => document.getElementById('fund-name-field')?.focus())
 const emit = defineEmits(['dismissForm'])
-
 const props = defineProps<{ fund?: Fund | null }>()
+const showAlert = inject('showAlert') as (arg: Alert) => void
 
 const fundName = ref(props.fund?.name || '')
 const loading = ref(false)
@@ -19,7 +20,11 @@ const invalidForm = computed(() => {
 async function onSubmit() {
   loading.value = true
   const { errorMessage } = props.fund ? await update() : await create()
-  alert(errorMessage ? errorMessage : 'Fund saved!')
+  showAlert({
+    text: errorMessage || 'Fund Saved',
+    title: errorMessage ? 'Error saving fund' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
   if (!errorMessage) emit('dismissForm')
   else loading.value = false
 }
@@ -32,15 +37,27 @@ function update() {
   return fundStore.updateFund({ id: props.fund!.id, name: fundName.value })
 }
 
-async function onDelete() {
-  const confirmDelete = confirm('Are you sure you want to delete this record? This action cannot be undone.')
-  if (!confirmDelete) return
+function onDelete() {
+  showAlert({
+    text: 'This action cannot be undone. Please confirm to proceed',
+    title: 'Caution',
+    autoDismiss: false,
+    onConfirm: deleteFund
+  })
+}
+
+async function deleteFund() {
   loading.value = true
   const { errorMessage } = await fundStore.deleteFund(props.fund!.id!)
-  alert(errorMessage ? errorMessage : 'Fund deleted successfully!')
+  showAlert({
+    text: errorMessage || 'Fund deleted successfully!',
+    title: errorMessage ? 'Error deleting fund' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
   if (!errorMessage) emit('dismissForm')
   else loading.value = false
 }
+
 
 </script>
 
