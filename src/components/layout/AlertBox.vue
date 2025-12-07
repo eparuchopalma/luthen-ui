@@ -13,9 +13,12 @@ export type Alert = {
 const props = defineProps<Alert>()
 const emit = defineEmits(['dismiss'])
 
-onMounted(() => {
-  if (props.autoDismiss) setTimeout(() => emit('dismiss'), 3000)
-})
+onMounted(() => (props.autoDismiss) ? setTimeout(() => emit('dismiss'), 3000) : {})
+
+function handleConfirmation() {
+  props.onConfirm!()
+  emit('dismiss')
+}
 
 </script>
 
@@ -38,7 +41,7 @@ onMounted(() => {
         type="button"
         :modifiers="['secondary', 'sm']"
         text="Confirm"
-        @click="onConfirm" />
+        @click="handleConfirmation" />
       </div>
     </div>
   </Dialog>

@@ -93,9 +93,16 @@ async function handleSubmit() {
   loading.value = false
 }
 
-async function onDelete() {
-  const confirmDelete = confirm('Are you sure you want to delete this record? This action cannot be undone.')
-  if (!confirmDelete) return
+function onDelete() {
+  showAlert({
+    text: 'This action cannot be undone. Please confirm to proceed',
+    title: 'Caution',
+    autoDismiss: false,
+    onConfirm: deleteRecord
+  })
+}
+
+async function deleteRecord() {
   loading.value = true
   const { errorMessage } = await recordStore.deleteRecord(props.record!.id!)
   showAlert({
@@ -142,8 +149,12 @@ function setAmountAPIFormat(data: Partial<Record>) {
 
 function confirmToClose() {
   if (!formChanges.value) return emit('dismissForm')
-  const confirmClose = confirm('You have unsaved changes. Are you sure you want to close the form?')
-  if (confirmClose) emit('dismissForm')
+  showAlert({
+    text: 'You have unsaved changes. Are you sure you want to close the form?',
+    title: 'Caution',
+    autoDismiss: false,
+    onConfirm: () => emit('dismissForm')
+  })
 }
 
 </script>
