@@ -18,9 +18,10 @@ const form = ref<Record & { time?: string }>({
   date: formDateFormatter(props.record ? new Date(props.record?.date) : new Date()),
   time: formTimeFormatter(props.record ? new Date(props.record?.date) : new Date()),
   fund_id: props.record?.fund_id || fundStore.funds.find(fund => fund.is_main)!.id,
+  correlated_fund_id: props.record?.correlated_fund_id || '',
   note: props.record?.note || null,
   tag: props.record?.tag || null,
-  type: props.record?.type || 2
+  type: props.record?.type ?? 2
 })
 
 const originalValues = ref<null | Record & { time: string }>(JSON.parse(JSON.stringify(form.value)))
@@ -49,7 +50,7 @@ const correlatedFundIsValid = computed(() => {
   return form.value.correlated_fund_id !== form.value.fund_id && form.value.correlated_fund_id
 })
 
-const typeIsValid = computed(() => [0, 1, 2].includes(form.value.type!))
+const typeIsValid = computed(() => [0, 1, 2].includes(form.value.type))
 
 const formChanges = computed(() => {
   const updates = {} as Partial<Record>
@@ -76,7 +77,7 @@ const formValid = computed(() => {
 })
 
 function clearCorrelated() {
-  const notFundToFund = form.value.type != 0
+  const notFundToFund = form.value.type !== 0
   const fundsAreEqual = form.value.correlated_fund_id === form.value.fund_id
   if (notFundToFund || fundsAreEqual) delete form.value.correlated_fund_id
 }
@@ -212,6 +213,7 @@ function confirmToClose() {
         class="record-form__input record-form__input_text-right"
         placeholder="0"
         min="0"
+        step="any"
         v-model.number="form.amount"
         required>
         <label

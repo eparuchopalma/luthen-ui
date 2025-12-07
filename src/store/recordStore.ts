@@ -39,12 +39,14 @@ export const recordStore = reactive({
     this.records[index] = record
   },
 
-  removeRecord(id: string) {
+  removeRecord(id: string, funds: Fund[]) {
     this.records = this.records.filter(r => r.id !== id)
+    funds.forEach((fund: Fund) => fundStore.replaceFund(fund))
   },
 
   async createRecord(record: Partial<Record>) {
     const response = await createRecord(record, authStore.inDemo)
+    if (!response.errorMessage) response.data.forEach((fund: Fund) => fundStore.replaceFund(fund))
     return response
   },
 
@@ -62,7 +64,7 @@ export const recordStore = reactive({
 
   async deleteRecord(id: string) {
     const response = await deleteRecord(id, authStore.inDemo)
-    if (!response.errorMessage) this.removeRecord(id)
+    if (!response.errorMessage) this.removeRecord(id, response.data)
     return response
   }
 })
