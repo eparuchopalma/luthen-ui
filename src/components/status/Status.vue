@@ -23,8 +23,8 @@ async function setFunds() {
   loading.value = true
   const { errorMessage } = await fundStore.getFunds()
   showAlert({
-    text: errorMessage || 'All set',
-    title: errorMessage ? 'Error loading funds' : '',
+    text: errorMessage || 'Fondos cargados',
+    title: errorMessage ? 'Error cargando fondos' : '',
     autoDismiss: !Boolean(errorMessage)
   })
   loading.value = false
@@ -51,7 +51,7 @@ function dismissRecordForm() {
     <div class="section__icon">
       <img src="../../assets/balance.png" alt="balance icon" class="icon__img">
     </div>
-    <h1>Status</h1>
+    <h1>Estado</h1>
   </header>
   <p v-if="loading">...Loading</p>
   <div class="card card_sm">
@@ -74,11 +74,11 @@ function dismissRecordForm() {
     <Button
     :modifiers="['secondary']"
     type="button"
-    text="Add fund"
+    text="Crear fondo"
     @click="fundFormIsOpen = true" />
     <Button
     type="button"
-    text="Add record"
+    text="Crear registro"
     @click="recordFormIsOpen = true" />
   </div>
   <Transition>

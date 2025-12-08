@@ -13,29 +13,29 @@ async function startDemo() {
   <Logo :centered="true" />
   <header>
     <h1 class="headline">Squirrel</h1>
-    <p>Financial Log</p>
+    <p>Registro financiero</p>
   </header>
   <div class="button-container">
     <Button
     :modifiers="['secondary']"
     type="button"
     @click="startDemo"
-    text="Start Demo"/>
+    text="Iniciar Demo" />
   </div>
   <footer class="footer">
     <ul class="link-container">
       <li>
-        <img src="../../assets/brand_light.svg" alt="Brand logo" class="brand-logo">
+        <img src="../../assets/brand_light.svg" alt="Logo / marca personal" class="brand-logo">
       </li>
       <li>
-        <a href="#" class="link">Website</a>
+        <a href="#" class="link">Sitio web</a>
       </li>
       <li>
         <a href="#" class="link">LinkedIn</a>
       </li>
     </ul>
     <p class="footer__text">
-      Thank you for being here.
+      Gracias por estar aquí.
       <br>
       Edgar
     </p>

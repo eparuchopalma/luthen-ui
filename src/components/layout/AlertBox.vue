@@ -34,13 +34,13 @@ function handleConfirmation() {
         <Button
         type="button"
         :modifiers="['secondary', 'sm']"
-        text="Dismiss"
+        text="Volver"
         @click="emit('dismiss')" />
         <Button
         v-if="onConfirm !== undefined"
         type="button"
         :modifiers="['secondary', 'sm']"
-        text="Confirm"
+        text="Confirmar"
         @click="handleConfirmation" />
       </div>
     </div>

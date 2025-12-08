@@ -13,7 +13,7 @@ const tagsData = computed(() => {
   const typeRecords = listType.value === 2 ? recordStore.getDebits() : recordStore.getCredits()
   const tagsData: Record<string, number> = {}
   typeRecords.forEach((record) => {
-    const tag = record.tag ?? 'Untagged'
+    const tag = record.tag ?? 'Sin etiqueta'
     const amount = Number(record.amount)
     if (tagsData[tag]) tagsData[tag] += amount
     else tagsData[tag] = amount
@@ -26,7 +26,7 @@ function setMonthsData() {
   monthsBalance.value = {}
   recordStore.records.forEach((record) => {
     const month = new Date(record.date)!
-      .toLocaleString('default', { month: 'short', year: 'numeric' })
+      .toLocaleString('es-VE', { month: 'short', year: 'numeric' })
     const balance = Number(record.amount)
     if (monthsBalance.value[month]) (monthsBalance.value[month]! += balance)
     else monthsBalance.value[month] = balance
@@ -45,19 +45,19 @@ watch(() => recordStore.records, () => {
     <div class="section__icon">
       <img src="../../assets/lupe-chart.png" alt="lupe on chart icon" class="icon__img">
     </div>
-    <h1>Insights</h1>
+    <h1>Estadísticas</h1>
   </header>
   <select id="tag-list-type" class="select-field" v-model.number="listType">
-    <option value="2" class="option">Debit</option>
-    <option value="1" class="option">Credit</option>
+    <option value="2" class="option">Débito</option>
+    <option value="1" class="option">Crédito</option>
   </select>
   <div class="flex-container">
     <table class="table">
       <thead>
         <tr class="table__header-row">
-          <th>Tag</th>
+          <th>Nota</th>
           <th>Balance</th>
-          <th>Equivalence</th>
+          <th>Equivalencia</th>
         </tr>
       </thead>
       <tbody>

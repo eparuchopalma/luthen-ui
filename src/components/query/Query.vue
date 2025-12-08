@@ -79,13 +79,13 @@ async function formatToXls() {
   const workbook = new Exceljs.Workbook();
   const worksheet = workbook.addWorksheet("Sheet1");
   worksheet.columns = [
-    { header: "Date", key: "date" },
-    { header: "Type", key: "type" },
-    { header: "Amount", key: "amount" },
-    { header: "Fund", key: "fund" },
-    { header: "Correlated Fund", key: "correlated" },
-    { header: "Tag", key: "tag" },
-    { header: "Note", key: "note" },
+    { header: "Fecha", key: "date" },
+    { header: "Tipo", key: "type" },
+    { header: "Monto", key: "amount" },
+    { header: "Fondo", key: "fund" },
+    { header: "Correlacionado", key: "correlated" },
+    { header: "Etiqueta", key: "tag" },
+    { header: "Nota", key: "note" },
   ]
 
   recordStore.records.forEach(({ date, type, amount, fund_id, correlated_fund_id, tag, note }) => {
@@ -136,17 +136,17 @@ window.addEventListener('resize', handleResize)
     <div class="section__icon">
       <img src="../../assets/lupe.png" alt="lupe icon" class="icon__img">
     </div>
-    <h1>Query</h1>
+    <h1>Consulta</h1>
   </header>
   <Transition>
     <div class="table-container" v-if="recordStore.records.length">
       <table class="table">
-        <caption id="table" class="table__caption">Click on a record for details and actions.</caption>
+        <caption id="table" class="table__caption">Pulsa sobre un registro para ver detalles y acciones.</caption>
         <thead>
           <tr class="table__header-row">
-            <th>Date</th>
-            <th>Tag</th>
-            <th>Amount</th>
+            <th>Fecha</th>
+            <th>Etiqueta</th>
+            <th>Monto</th>
           </tr>
         </thead>
         <tbody>
@@ -187,7 +187,10 @@ window.addEventListener('resize', handleResize)
         :disabled="currentPage == 1"
         text="&lt;"
         @click="setPreviousPage" />
-        <small class="table__caption">Pages {{ currentPage }}/{{ totalPages }}. Records: {{ recordStore.records.length }}</small>
+        <small
+        class="table__caption"
+        >Pagina {{ currentPage }}/{{ totalPages }}. Registros: {{ recordStore.records.length }}
+        </small>
         <Button
         type="button"
         :modifiers="['sm', 'dark']"
@@ -199,13 +202,13 @@ window.addEventListener('resize', handleResize)
   </Transition>
   <Button
   type="button"
-  text="Export"
+  text="Exportar"
   :modifiers="['secondary']"
   :disabled="!recordStore.records.length"
   @click="formatToXls" />
   <Button
   type="button"
-  text="Query"
+  text="Consultar"
   @click="queryFormIsOpen = true" />
   <Transition>
     <RecordForm

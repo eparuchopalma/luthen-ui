@@ -14,16 +14,16 @@ export function handleResponse(response: any) {
 export function handleError(error: any) {
   console.error(error)
   let errorMessage
-  const NETWORK_ERROR_MESSAGE = "Network Error"
+  const NETWORK_ERROR_MESSAGE = "Error de conexión"
   const errorStatusCode = error.response?.status
 
-  if (error.message === NETWORK_ERROR_MESSAGE) errorMessage = "Unable to connect to the server."
-  else if (errorStatusCode === 401) errorMessage = "Unauthorized access."
-  else if (errorStatusCode === 403) errorMessage = "Forbidden access."
-  else if (errorStatusCode === 404) errorMessage = "Resource not found."
-  else if (errorStatusCode === 409) errorMessage = error.response?.data?.message || "Something went wrong validating the consistency in the form."
-  else if (errorStatusCode === 500) errorMessage = "Internal server error."
-  else errorMessage = "An unexpected error occurred."
+  if (error.message === NETWORK_ERROR_MESSAGE) errorMessage = "Problema para conectar con el servidor."
+  else if (errorStatusCode === 401) errorMessage = "Acceso no autorizado."
+  else if (errorStatusCode === 403) errorMessage = "Acceso prohibido."
+  else if (errorStatusCode === 404) errorMessage = "Recurso no encontrado."
+  else if (errorStatusCode === 409) errorMessage = error.response?.data?.message || "Algo en el formulario compromete la consistencia de la data."
+  else if (errorStatusCode === 500) errorMessage = "Error interno del servidor."
+  else errorMessage = "Ocurrió un error."
 
   return { data: null, errorMessage }
 }

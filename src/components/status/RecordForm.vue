@@ -26,7 +26,7 @@ const form = ref<Record & { time?: string }>({
 
 const originalValues = ref<null | Record & { time: string }>(JSON.parse(JSON.stringify(form.value)))
 const loading = ref(false)
-const typeNames = ['Fund to fund', 'Credit', 'Debit']
+const typeNames = ['Fondo a Fondo', 'Credito', 'Débito']
 
 const dateIsValid = computed(() => {
   const [yyyy, mm, dd] = form.value.date.split('-')
@@ -86,8 +86,8 @@ async function handleSubmit() {
   loading.value = true
   const { errorMessage } = props.record ? await update() : await create()
   showAlert({
-    text: errorMessage || 'Record saved!',
-    title: errorMessage ? 'Error saving record' : '',
+    text: errorMessage || 'Registro guardado!',
+    title: errorMessage ? 'Error guardando registro' : '',
     autoDismiss: !Boolean(errorMessage)
   })
   if (!errorMessage) emit('dismissForm')
@@ -96,8 +96,8 @@ async function handleSubmit() {
 
 function onDelete() {
   showAlert({
-    text: 'This action cannot be undone. Please confirm to proceed',
-    title: 'Caution',
+    text: 'Esta acción es irreversible. Por favor confirma para completar.',
+    title: 'Aviso',
     autoDismiss: false,
     onConfirm: deleteRecord
   })
@@ -107,8 +107,8 @@ async function deleteRecord() {
   loading.value = true
   const { errorMessage } = await recordStore.deleteRecord(props.record!.id!)
   showAlert({
-    text: errorMessage || 'Record deleted',
-    title: errorMessage ? 'Error deleting record' : '',
+    text: errorMessage || 'Registro eliminado',
+    title: errorMessage ? 'Error eliminando registro' : '',
     autoDismiss: !Boolean(errorMessage)
   })
   if (!errorMessage) emit('dismissForm')
@@ -151,8 +151,8 @@ function setAmountAPIFormat(data: Partial<Record>) {
 function confirmToClose() {
   if (!formChanges.value) return emit('dismissForm')
   showAlert({
-    text: 'You have unsaved changes. Are you sure you want to close the form?',
-    title: 'Caution',
+    text: 'Si confirmas, perderás los cambios en el formulario.',
+    title: 'Aviso',
     autoDismiss: false,
     onConfirm: () => emit('dismissForm')
   })
@@ -163,18 +163,18 @@ function confirmToClose() {
 <template>
   <Dialog @click.self="confirmToClose" @keydown.esc="confirmToClose">
     <form class="record-form" @submit.prevent="handleSubmit">
-      <h3 class="record-form__title">Record Form</h3>
+      <h3 class="record-form__title">Formulario de registro</h3>
       <fieldset class="record-form__fieldset">
         <label
         for="record-date-field"
         class="record-form__label record-form__label_zero"
         :class="{ 'record-form__label_alert': !dateIsValid }"
-        >Date</label>
+        >Fecha</label>
         <label
         for="record-time-field"
         class="record-form__label record-form__label_zero"
         :class="{ 'record-form__label_alert': !timeIsValid }"
-        >Time</label>
+        >Hora</label>
         <input
         type="date"
         class="record-form__input"
@@ -191,12 +191,12 @@ function confirmToClose() {
         for="record-type-field"
         class="record-form__label"
         :class="{ 'record-form__label_alert': !typeIsValid }"
-        >Type</label>
+        >Tipo</label>
         <label
         for="record-amount-field"
         class="record-form__label"
         :class="{ 'record-form__label_alert': !amountIsValid }"
-        >Amount</label>
+        >Monto</label>
         <select
         id="record-type-field"
         class="record-form__select"
@@ -219,12 +219,12 @@ function confirmToClose() {
         <label
         for="record-fund-field"
         class="record-form__label"
-        >Fund</label>
+        >Fondo</label>
         <label
         for="record-correlated-field"
         class="record-form__label"
         :class="{ 'record-form__label_alert': !correlatedFundIsValid }"
-        >Correlated Fund</label>
+        >Fondo correlacionado</label>
         <select
         id="record-fund-field"
         class="record-form__select"
@@ -248,7 +248,7 @@ function confirmToClose() {
         <label
         for="record-tag-field"
         class="record-form__label record-form__label_w-full"
-        >Tag</label>
+        >Etiqueta</label>
         <input
         id="record-tag-field"
         type="text"
@@ -259,7 +259,7 @@ function confirmToClose() {
         <label
         for="record-note-field"
         class="record-form__label record-form__label_w-full"
-        >Note</label>
+        >Nota</label>
         <input
         id="record-note-field"
         type="text"
@@ -273,19 +273,19 @@ function confirmToClose() {
         type="submit"
         :disabled="!formValid || loading"
         :modifiers="['sm']"
-        :text="props.record ? 'Update' : 'Create'" />
+        :text="props.record ? 'Actualizar' : 'Crear'" />
         <Button
         type="button"
         :modifiers="['secondary', 'sm']"
         :disabled="loading"
-        text="Dismiss"
+        text="Volver"
         @click="confirmToClose" />
         <Button
         v-if="props.record"
         type="button"
         :disabled="loading"
         :modifiers="['secondary', 'sm']"
-        text="Delete"
+        text="Eliminar"
         @click="onDelete" />
       </div>
     </form>

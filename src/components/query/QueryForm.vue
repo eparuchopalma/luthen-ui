@@ -17,7 +17,7 @@ const form = ref({
   tag: '',
   note: ''
 })
-const typeNames = ['Fund to fund', 'Credit', 'Debit']
+const typeNames = ['Fondo a Fondo', 'Credito', 'Débito']
 const loading = ref(false)
 
 const fromDateIsValid = computed(() => {
@@ -35,8 +35,8 @@ async function onSubmit() {
   const filters = normalizeData()
   const { errorMessage } = await recordStore.getRecords(filters)
   showAlert({
-    text: errorMessage || `Query executed. Records found: ${recordStore.records.length}`,
-    title: errorMessage ? 'Could not complete' : '',
+    text: errorMessage || `Consulta realizada. Registros encontrados: ${recordStore.records.length}`,
+    title: errorMessage ? 'Ocurrió un problema' : '',
     autoDismiss: !Boolean(errorMessage)
   })
   if (!errorMessage) emit('dismissForm')
@@ -59,16 +59,16 @@ function normalizeData() {
 <template>
   <Dialog>
     <form class="query-form" @submit.prevent="onSubmit">
-      <h3 class="query-form__title">Query Form</h3>
+      <h3 class="query-form__title">Formulario de consulta</h3>
       <fieldset class="query-form__fieldset">
         <label
         for="query-type-field"
         class="query-form__label"
-        >Type</label>
+        >Tipo</label>
         <label
         for="query-fund-field"
         class="query-form__label"
-        >Fund</label>
+        >Fondo</label>
         <select
         id="query-type-field"
         class="query-form__select"
@@ -83,7 +83,7 @@ function normalizeData() {
         id="query-fund-field"
         class="query-form__select"
         v-model="form.fund_id">
-          <option value="">All funds</option>
+          <option value="">Todos</option>
           <option
           v-for="fund in fundStore.funds"
           :value="fund.id"
@@ -93,12 +93,12 @@ function normalizeData() {
         for="query-from-date"
         class="query-form__label"
         :class="{ 'query-form__label_alert': !fromDateIsValid }"
-        >From date</label>
+        >Desde</label>
         <label
         for="query-to-date"
         class="query-form__label"
         :class="{ 'query-form__label_alert': !toDateIsValid }"
-        >To date</label>
+        >Hasta</label>
         <input
         type="date"
         class="query-form__input"
@@ -112,23 +112,23 @@ function normalizeData() {
         <label
         for="query-tag-field"
         class="query-form__label query-form__label_w-full"
-        >Tag</label>
+        >Etiqueta</label>
         <input
         id="query-tag-field"
         type="text"
         class="query-form__input query-form__block"
-        placeholder="Vehicle"
+        placeholder="Vehículo"
         maxlength="250"
         v-model.trim="form.tag">
         <label
         for="query-note-field"
         class="query-form__label query-form__label_w-full"
-        >Note</label>
+        >Nota</label>
         <input
         id="query-note-field"
         type="text"
         class="query-form__input query-form__input_w-full"
-        placeholder="Fuel"
+        placeholder="Vehículo"
         maxlength="250"
         v-model.trim="form.note">
       </fieldset>
@@ -137,12 +137,12 @@ function normalizeData() {
         type="submit"
         :disabled="formInvalid || loading"
         :modifiers="['sm']"
-        text="Execute" />
+        text="Consultar" />
         <Button
         type="button"
         :modifiers="['secondary', 'sm']"
         :disabled="loading"
-        text="Dismiss"
+        text="Volver"
         @click="$emit('dismissForm')" />
       </div>
     </form>

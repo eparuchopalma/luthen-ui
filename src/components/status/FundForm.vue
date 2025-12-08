@@ -21,8 +21,8 @@ async function onSubmit() {
   loading.value = true
   const { errorMessage } = props.fund ? await update() : await create()
   showAlert({
-    text: errorMessage || 'Fund Saved',
-    title: errorMessage ? 'Error saving fund' : '',
+    text: errorMessage || 'Fondo guardado',
+    title: errorMessage ? 'Error guardando fondo' : '',
     autoDismiss: !Boolean(errorMessage)
   })
   if (!errorMessage) emit('dismissForm')
@@ -39,8 +39,8 @@ function update() {
 
 function onDelete() {
   showAlert({
-    text: 'This action cannot be undone. Please confirm to proceed',
-    title: 'Caution',
+    text: 'Esta acción es irreversible. Por favor confirma para completar.',
+    title: 'Aviso',
     autoDismiss: false,
     onConfirm: deleteFund
   })
@@ -50,8 +50,8 @@ async function deleteFund() {
   loading.value = true
   const { errorMessage } = await fundStore.deleteFund(props.fund!.id!)
   showAlert({
-    text: errorMessage || 'Fund deleted successfully!',
-    title: errorMessage ? 'Error deleting fund' : '',
+    text: errorMessage || 'Fondo eliminado',
+    title: errorMessage ? 'Error eliminando fondo' : '',
     autoDismiss: !Boolean(errorMessage)
   })
   if (!errorMessage) emit('dismissForm')
@@ -64,17 +64,17 @@ async function deleteFund() {
 <template>
   <Dialog @click.self="emit('dismissForm')" @keydown.esc="emit('dismissForm')">
     <form class="fund-form" @submit.prevent="onSubmit">
-      <h3 class="title">Fund Form</h3>
+      <h3 class="title">Formulario de Fondo</h3>
       <fieldset class="fund-form__fieldset">
         <label
         for="fund-name-field"
         class="fund-form__label"
         :class="{ 'fund-form__label_alert': invalidForm }"
-        >Name</label>
+        >Nombre</label>
         <input
         type="text"
         class="fund-form__input"
-        placeholder="Savings"
+        placeholder="Ahorros"
         id="fund-name-field"
         maxlength="50"
         required
@@ -85,19 +85,19 @@ async function deleteFund() {
         type="submit"
         :disabled="invalidForm || loading"
         :modifiers="['sm']"
-        :text="props.fund ? 'Update' : 'Create'" />
+        :text="props.fund ? 'Actualizar' : 'Crear'" />
         <Button
         type="button"
         :modifiers="['secondary', 'sm']"
         :disabled="loading"
-        text="Dismiss"
+        text="Volver"
         @click="$emit('dismissForm')" />
         <Button
         v-if="props.fund"
         type="button"
         :disabled="loading"
         :modifiers="['secondary', 'sm']"
-        text="Delete"
+        text="Eliminar"
         @click="onDelete" />
       </div>
     </form>
