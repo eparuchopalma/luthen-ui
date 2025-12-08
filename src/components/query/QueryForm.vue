@@ -5,9 +5,13 @@ import Button from '../layout/Button.vue'
 import { type Alert } from '../layout/AlertBox.vue'
 import { fundStore } from '../../store/fundStore'
 import { recordStore } from '../../store/recordStore'
+import { formDateFormatter } from '../../utils/formatter';
 
 const emit = defineEmits(['dismissForm'])
 const showAlert = inject('showAlert') as (arg: Alert) => void
+
+const currentYear = Number(new Date().getFullYear())
+const currentMonth = Number(new Date().getMonth())
 
 const form = ref({
   type: '',
@@ -54,6 +58,19 @@ function normalizeData() {
   return normalized
 }
 
+function setCurrentYear() {
+  form.value.fromDate = formDateFormatter(new Date(currentYear, 0, 1))
+}
+
+function setCurrentMonth() {
+  form.value.fromDate = formDateFormatter(new Date(currentYear, currentMonth, 1))
+}
+
+function setPastMonth() {
+  form.value.fromDate = formDateFormatter(new Date(currentYear, currentMonth - 1, 1))
+  form.value.toDate = formDateFormatter(new Date(currentYear, currentMonth, 1))
+}
+
 </script>
 
 <template>
@@ -73,7 +90,7 @@ function normalizeData() {
         id="query-type-field"
         class="query-form__select"
         v-model="form.type">
-          <option value="">Records</option>
+          <option value="">Todos</option>
           <option
           v-for="type in [0, 1, 2]"
           :key="type"
@@ -89,6 +106,23 @@ function normalizeData() {
           :value="fund.id"
           >{{ fund.name }}</option>
         </select>
+        <div class="pill-container">
+          <Button
+          :disabled="loading"
+          :modifiers="['secondary', 'sm', 'pill']"
+          @click="setCurrentYear"
+          :text="new Date().getFullYear().toString()" />
+          <Button
+          :disabled="loading"
+          :modifiers="['secondary', 'sm', 'pill']"
+          @click="setCurrentMonth"
+          text="This month" />
+          <Button
+          :disabled="loading"
+          :modifiers="['secondary', 'sm', 'pill']"
+          @click="setPastMonth"
+          text="Past month" />
+        </div>
         <label
         for="query-from-date"
         class="query-form__label"
@@ -117,7 +151,6 @@ function normalizeData() {
         id="query-tag-field"
         type="text"
         class="query-form__input query-form__block"
-        placeholder="Vehículo"
         maxlength="250"
         v-model.trim="form.tag">
         <label
@@ -128,7 +161,6 @@ function normalizeData() {
         id="query-note-field"
         type="text"
         class="query-form__input query-form__input_w-full"
-        placeholder="Vehículo"
         maxlength="250"
         v-model.trim="form.note">
       </fieldset>
@@ -167,7 +199,7 @@ function normalizeData() {
 }
 
 .query-form__label {
-  margin: 24px 6px 0;
+  margin: 0 6px;
   width: 45%;
   display: inline-block;
   text-align: left;
@@ -195,7 +227,7 @@ function normalizeData() {
 }
 
 .query-form__input {
-  margin: 0 6px;
+  margin: 4px 6px 18px;
   width: 45%;
   background-color: var(--darkest);
   color: var(--lightest);
@@ -223,7 +255,7 @@ function normalizeData() {
 }
 
 .query-form__select {
-  margin: 4px 6px 0;
+  margin: 4px 6px 12px;
   width: 45%;
   height: 28px;
   border: 1px solid var(--dark);
@@ -247,6 +279,13 @@ function normalizeData() {
   .query-form__actions {
     flex-direction: row-reverse;
   }
+}
+
+.pill-container {
+  margin: 8px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 </style>

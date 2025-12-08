@@ -71,4 +71,12 @@ defineProps({
   cursor: auto;
 }
 
+.button_pill {
+  width: 72px;
+  height: 20px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: var(--light);
+}
+
 </style>
