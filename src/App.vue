@@ -19,6 +19,7 @@ const alertData = ref<{
 }>()
 
 const showingAlert = ref(false)
+const preferredTheme = ref()
 
 function setAlertData(newAlert: Alert) {
   showingAlert.value = true
@@ -26,14 +27,22 @@ function setAlertData(newAlert: Alert) {
 }
 
 function setTheme() {
-  let preferredTheme
   const storedPreference = localStorage.getItem('theme')
   const systemThemeIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-  if (storedPreference) preferredTheme = storedPreference
-  else if (systemThemeIsDark) preferredTheme = 'dark'
-  else preferredTheme = 'light'
-  document.body.setAttribute('class', preferredTheme)
+  if (storedPreference) preferredTheme.value = storedPreference
+  else if (systemThemeIsDark) preferredTheme.value = 'dark'
+  else preferredTheme.value = 'light'
+  document.body.setAttribute('class', preferredTheme.value)
 }
+
+function toggleTheme() {
+  const newTheme = document.body.getAttribute('class') === 'dark' ? 'light' : 'dark'
+  localStorage.setItem('theme', newTheme)
+  document.body.setAttribute('class', newTheme)
+  preferredTheme.value = newTheme
+}
+
+
 
 provide('showAlert', setAlertData)
 
@@ -43,7 +52,7 @@ provide('showAlert', setAlertData)
   <main class="main">
     <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
     <div v-else>
-      <AppBar />
+      <AppBar :theme="preferredTheme" @toggle-theme="toggleTheme" />
       <section class="section">
         <Status />
       </section>

@@ -48,11 +48,6 @@ async function startDemo() {
   padding-top: 40px;
 }
 
-.brand-logo {
-  width: 24px;
-  height: auto;
-}
-
 .headline {
   margin: 40px 0 10px;
   font-size: 6.4rem;
@@ -70,14 +65,12 @@ async function startDemo() {
   text-align: right;
 }
 
-.footer__text {
-  padding-right: 20px;
-  display: inline-block;
-  font-size: 2.4rem;
-  font-family: "Sacramento", cursive;
-  font-weight: 400;
-  font-style: normal;
-  transform: rotate(-25deg);
+.brand-logo {
+  padding: 2px;
+  background-color: var(--dark);
+  border-radius: 50%;
+  width: 24px;
+  height: auto;
 }
 
 .link-container {
@@ -92,12 +85,22 @@ async function startDemo() {
 .link {
   font-weight: 400;
   font-size: 1.4rem;
-  color: var(--light);
+  color: var(--font-color);
 }
 
 .link:hover {
   color: var(--font-color);
   text-decoration-color: var(--accent);
+}
+
+.footer__text {
+  padding-right: 20px;
+  display: inline-block;
+  font-size: 2.4rem;
+  font-family: "Sacramento", cursive;
+  font-weight: 400;
+  font-style: normal;
+  transform: rotate(-25deg);
 }
 
 </style>

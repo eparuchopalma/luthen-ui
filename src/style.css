@@ -20,6 +20,10 @@
   --font-color: var(--lightest);
 }
 
+body {
+  transition: background-color .2s;
+}
+
 * {
   color: var(--font-color);
   font-family: "Roboto", sans-serif;

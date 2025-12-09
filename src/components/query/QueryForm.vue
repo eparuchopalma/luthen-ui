@@ -39,7 +39,7 @@ async function onSubmit() {
   const filters = normalizeData()
   const { errorMessage } = await recordStore.getRecords(filters)
   showAlert({
-    text: errorMessage || `Consulta realizada. Registros encontrados: ${recordStore.records.length}`,
+    text: errorMessage || `Registros encontrados: ${recordStore.records.length}`,
     title: errorMessage ? 'Ocurrió un problema' : '',
     autoDismiss: !Boolean(errorMessage)
   })

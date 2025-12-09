@@ -1,19 +1,20 @@
 <script lang="ts" setup>
 import Logo from './Logo.vue'
-import Button from './Button.vue'
 
-function toggleTheme() {
-  const newTheme = document.body.getAttribute('class') === 'dark' ? 'light' : 'dark'
-  localStorage.setItem('theme', newTheme)
-  document.body.setAttribute('class', newTheme)
-}
+defineProps({
+  theme: String
+})
+
+const emit = defineEmits(['toggleTheme'])
 
 </script>
 
 <template>
   <aside class="app-bar">
     <Logo :sm="true" />
-    <Button text="Tema" :modifiers="['secondary', 'sm']" @click="toggleTheme" />
+    <button
+    type="button"
+    :class="['theme-button', `theme-button_${theme}`]" @click="emit('toggleTheme')" />
   </aside>
 </template>
 
@@ -24,6 +25,23 @@ function toggleTheme() {
   justify-content: space-between;
   align-items: center;
   position: sticky;
+}
+
+.theme-button {
+  width: 24px;
+  height: 24px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.theme-button_dark {
+  background-image: url('../../assets/moon.png');
+}
+
+.theme-button_light {
+  background-image: url('../../assets/sun.png');
 }
 
 </style>
