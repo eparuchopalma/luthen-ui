@@ -31,17 +31,17 @@ export const recordStore = reactive({
 
   handleUpdate(data: { record: Record, funds: Fund[] }) {
     this.replaceRecord(data.record)
-    data.funds.forEach(fund => fundStore.replaceFund(fund))
+    data.funds?.forEach(fund => fundStore.replaceFund(fund))
   },
-
+  
   replaceRecord(record: Record) {
-    const index = this.records.findIndex(r => r.id === record.id)
-    this.records[index] = record
+    const index = this.records.findIndex(r => r.id === record?.id)
+    this.records.splice(index, 1, record)
   },
 
   removeRecord(id: string, funds: Fund[]) {
     this.records = this.records.filter(r => r.id !== id)
-    funds.forEach((fund: Fund) => fundStore.replaceFund(fund))
+    funds?.forEach((fund: Fund) => fundStore.replaceFund(fund))
   },
 
   async createRecord(record: Partial<Record>) {

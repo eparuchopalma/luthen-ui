@@ -122,10 +122,11 @@ watch(screenHeight, () => {
 }, { immediate: true, deep: true })
 
 watch(() => recordStore.records, () => {
+  console.log('launching');
   setPageRecords()
   setColumnsBalance()
   nextTick(() => focusTable())
-}, { immediate: true })
+}, { immediate: true, deep: true })
 
 window.addEventListener('resize', handleResize)
 
