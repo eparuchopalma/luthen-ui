@@ -39,36 +39,22 @@ defineProps({
   border-radius: 2px;
   background-color: var(--accent);
   color: var(--lightest);
-  box-shadow: 0 1px 4px #111;
-  transition: all 0.6s ease;
+  box-shadow: 0 1px 2px var(--secondary);
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 .button_secondary {
-  background-color: var(--darkest);
+  color: var(--font-color);
+  background-color: var(--primary);
 }
 
 .button_dark {
-  background-color: var(--dark);
+  color: var(--font-color);
+  background-color: var(--secondary);
 }
 
 .button_sm {
-  width: 72px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .button:hover {
-    box-shadow: 0 1px 4px var(--dark);
-  }
-}
-
-.button:disabled {
-  background-color: var(--darkest);
-  color: var(--dark)
-}
-
-.button:disabled:hover {
-  box-shadow: none;
-  cursor: auto;
+  width: 80px;
 }
 
 .button_pill {
@@ -76,7 +62,26 @@ defineProps({
   height: 20px;
   border-radius: 12px;
   font-size: 1.1rem;
-  color: var(--light);
+  color: var(--tertiary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .button:hover {
+    box-shadow: 1px 1px 2px var(--tertiary);
+  }
+
+  .button_secondary:hover {
+    box-shadow: -1px 1px 2px var(--tertiary);
+  }
+
+}
+
+.button:disabled {
+  background-color: var(--primary);
+  color: var(--secondary);
+  cursor: auto;
+  box-shadow: none;
 }
 
 </style>

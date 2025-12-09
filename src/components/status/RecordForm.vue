@@ -129,6 +129,7 @@ function normalizePayload(data: Partial<Record & { time: string }>) {
   const payload = JSON.parse(JSON.stringify(data))
   if (payload.date || payload.time) setDateAPIFormat(payload)
   if (payload.type !== undefined || payload.amount !== undefined) setAmountAPIFormat(payload)
+  if (payload.correlated_fund_id === '') delete payload.correlated_fund_id
   return payload
 }
 
@@ -301,8 +302,8 @@ function confirmToClose() {
   max-height: 440px;
   border-radius: 4px;
   padding: 24px;
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
 }
 
 .record-form__fieldset {
@@ -315,7 +316,7 @@ function confirmToClose() {
   display: inline-block;
   text-align: left;
   font-size: 1.2rem;
-  color: var(--light);
+  color: var(--tertiary);
 }
 
 .record-form__label_w-full {
@@ -338,16 +339,16 @@ function confirmToClose() {
   text-align: center;
   font-weight: bold;
   background-color: var(--accent);
-  color: var(--darkest);
+  color: var(--primary);
 }
 
 .record-form__input {
   margin: 0 6px;
   width: 45%;
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
   border: none;
-  border-bottom: 1px solid var(--light);
+  border-bottom: 1px solid var(--tertiary);
 }
 
 .record-form__input_w-full {
@@ -373,9 +374,9 @@ function confirmToClose() {
   margin: 4px 6px 0;
   width: 45%;
   height: 28px;
-  border: 1px solid var(--dark);
+  border: 1px solid var(--secondary);
   padding: 0 2px;
-  background-color: var(--darkest);
+  background-color: var(--primary);
   border-radius: 20px;
   outline: none;
 }

@@ -96,7 +96,7 @@ async function startDemo() {
 }
 
 .link:hover {
-  color: var(--lightest);
+  color: var(--font-color);
   text-decoration-color: var(--accent);
 }
 

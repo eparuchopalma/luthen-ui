@@ -115,8 +115,8 @@ async function deleteFund() {
   padding: 0 32px;
   display: grid;
   place-items: center;
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
 }
 
 .fund-form__fieldset {
@@ -129,7 +129,7 @@ async function deleteFund() {
   display: block;
   text-align: left;
   font-size: 1.2rem;
-  color: var(--light);
+  color: var(--tertiary);
 }
 
 .fund-form__label_alert::after {
@@ -143,16 +143,16 @@ async function deleteFund() {
   text-align: center;
   font-weight: bold;
   background-color: var(--accent);
-  color: var(--darkest);
+  color: var(--primary);
 }
 
 .fund-form__input {
   margin: 0 6px;
   width: calc(90% + 12px);
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
   border: none;
-  border-bottom: 1px solid var(--light);
+  border-bottom: 1px solid var(--tertiary);
 }
 
 .fund-form__input::selection, .fund-form__input:focus {
@@ -163,7 +163,7 @@ async function deleteFund() {
 .fund-form__actions {
   display: flex;
   justify-content: center;
-  gap: 48px;
+  gap: 20px;
 }
 
 @media (width <= 600px) {

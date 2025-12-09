@@ -25,7 +25,7 @@ defineProps({
   width: 140px;
   padding: 12px 12px 6px;
   border-radius: 20px;
-  box-shadow: 1px 1px 4px #111;
+  box-shadow: 1px 1px 4px var(--secondary);
 }
 
 .app-logo_sm {

@@ -62,8 +62,8 @@ function handleConfirmation() {
   bottom: 32px;
   border-radius: 4px;
   box-sizing: border-box;
-  box-shadow: 0 1px 2px 0 var(--accent);
-  background-color: var(--darkest);
+  box-shadow: 0 1px 4px var(--accent);
+  background-color: var(--primary);
   background-image: url('../../assets/squirrel.svg');
   background-repeat: no-repeat;
   background-size: 24px;
@@ -87,13 +87,13 @@ function handleConfirmation() {
 
 .alert-box__title {
   font-size: 1.8rem;
-  color: var(--lightest);
+  color: var(--font-color);
 }
 
 .alert-box__text {
   margin: 0;
   font-size: 1.6rem;
-  color: var(--light);
+  color: var(--tertiary);
   animation: fade-in 1s ease-in-out;
   animation-fill-mode: forwards;
 }

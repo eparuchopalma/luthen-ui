@@ -250,17 +250,17 @@ window.addEventListener('resize', handleResize)
   font-style: italic;
   font-size: 1.2rem;
   text-align: center;
-  color: var(--light);
+  color: var(--tertiary);
 }
 
 .table__header-row {
-  background-color: var(--dark);
+  background-color: var(--secondary);
 }
 
 .table__cell {
   width: 120px;
   padding: 0 4px;
-  border: 1px solid var(--dark);
+  border: 1px solid var(--secondary);
   height: 24px;
   max-height: 24px;
   line-height: 24px;
@@ -279,7 +279,7 @@ window.addEventListener('resize', handleResize)
 }
 
 .table__footer-row {
-  background-color: var(--dark);
+  background-color: var(--secondary);
 }
 
 .table__footer-data {
@@ -297,7 +297,7 @@ window.addEventListener('resize', handleResize)
 
   .table__body-row:hover {
     cursor: pointer;
-    color: var(--light);
+    opacity: .7;
   }
   
 }

@@ -74,7 +74,7 @@ function setPastMonth() {
 </script>
 
 <template>
-  <Dialog>
+  <Dialog @click.self="emit('dismissForm')" @keydown.esc="emit('dismissForm')">
     <form class="query-form" @submit.prevent="onSubmit">
       <h3 class="query-form__title">Formulario de consulta</h3>
       <fieldset class="query-form__fieldset">
@@ -116,12 +116,12 @@ function setPastMonth() {
           :disabled="loading"
           :modifiers="['secondary', 'sm', 'pill']"
           @click="setCurrentMonth"
-          text="This month" />
+          text="Este mes" />
           <Button
           :disabled="loading"
           :modifiers="['secondary', 'sm', 'pill']"
           @click="setPastMonth"
-          text="Past month" />
+          text="Mes pasado" />
         </div>
         <label
         for="query-from-date"
@@ -190,8 +190,8 @@ function setPastMonth() {
   max-height: 400px;
   border-radius: 4px;
   padding: 24px;
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
 }
 
 .query-form__fieldset {
@@ -204,7 +204,7 @@ function setPastMonth() {
   display: inline-block;
   text-align: left;
   font-size: 1.2rem;
-  color: var(--light);
+  color: var(--tertiary);
 }
 
 .query-form__label_w-full {
@@ -223,16 +223,16 @@ function setPastMonth() {
   text-align: center;
   font-weight: bold;
   background-color: var(--accent);
-  color: var(--darkest);
+  color: var(--primary);
 }
 
 .query-form__input {
   margin: 4px 6px 18px;
   width: 45%;
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
   border: none;
-  border-bottom: 1px solid var(--light);
+  border-bottom: 1px solid var(--tertiary);
 }
 
 .query-form__input_w-full {
@@ -258,9 +258,9 @@ function setPastMonth() {
   margin: 4px 6px 12px;
   width: 45%;
   height: 28px;
-  border: 1px solid var(--dark);
+  border: 1px solid var(--secondary);
   padding: 0 2px;
-  background-color: var(--darkest);
+  background-color: var(--primary);
   border-radius: 20px;
   outline: none;
 }

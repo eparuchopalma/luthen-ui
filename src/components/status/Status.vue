@@ -64,7 +64,7 @@ function dismissRecordForm() {
   :class="{ 'card-container_three-columns': fundStore.funds.length >= 3 }">
     <div
     v-for="fund in fundStore.funds"
-    :key="fund.id" class="card card_background"
+    :key="fund.id" class="card card_background card_hover"
     @click="selectFund(fund)">
       <dd class="card__balance card__balance_text-right">{{ amountFormatter(fund.balance) }}</dd>
       <dt class="card__description card__description_text-left">{{ fund.name }}</dt>
@@ -101,7 +101,7 @@ function dismissRecordForm() {
   padding: 8px;
   box-sizing: border-box;
   border-radius: 4px;
-  box-shadow: 0 2px 2px 1px #191817;
+  box-shadow: -1px 2px 6px var(--secondary);
   text-align: center;
 }
 
@@ -110,10 +110,10 @@ function dismissRecordForm() {
   .card {
     transition: box-shadow 0.3s;
   }
-  
-  .card:hover {
+
+  .card_hover:hover {
     cursor: pointer;
-    box-shadow: -2px 2px 6px var(--accent);
+    box-shadow: -1px 2px 6px var(--accent);
   }
 
 }
@@ -144,7 +144,7 @@ function dismissRecordForm() {
 }
 
 .card__description {
-  color: var(--light);
+  color: var(--tertiary);
   margin-top: 20px;
   font-size: 1.4rem;
 }

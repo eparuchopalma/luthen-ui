@@ -99,13 +99,14 @@ watch(() => recordStore.records, () => {
 
 .select-field {
   margin-top: 48px;
+  border-color: var(--secondary);
   border-radius: 2px;
   width: 80px;
 }
 
 .option {
-  background-color: var(--darkest);
-  color: var(--lightest);
+  background-color: var(--primary);
+  color: var(--font-color);
 }
 
 .flex-container {
@@ -140,13 +141,13 @@ watch(() => recordStore.records, () => {
 }
 
 .table__header-row {
-  background-color: var(--dark);
+  background-color: var(--secondary);
 }
 
 .table__cell {
   width: 120px;
   padding: 0 4px;
-  border: 1px solid var(--dark);
+  border: 1px solid var(--secondary);
   height: 24px;
   max-height: 24px;
   line-height: 24px;

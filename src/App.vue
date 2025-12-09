@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref } from "vue"
+import { onMounted, provide, ref } from "vue"
 import Auth from "./components/auth/Auth.vue"
 import Insights from "./components/insights/Insights.vue"
 import AppBar from "./components/layout/AppBar.vue"
@@ -8,6 +8,8 @@ import Status from "./components/status/Status.vue"
 import { authStore } from "./store/authStore"
 import { recordStore } from "./store/recordStore"
 import AlertBox, { type Alert } from "./components/layout/AlertBox.vue"
+
+onMounted(() => setTheme())
 
 const alertData = ref<{
   text: string,
@@ -21,6 +23,16 @@ const showingAlert = ref(false)
 function setAlertData(newAlert: Alert) {
   showingAlert.value = true
   alertData.value = newAlert
+}
+
+function setTheme() {
+  let preferredTheme
+  const storedPreference = localStorage.getItem('theme')
+  const systemThemeIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+  if (storedPreference) preferredTheme = storedPreference
+  else if (systemThemeIsDark) preferredTheme = 'dark'
+  else preferredTheme = 'light'
+  document.body.setAttribute('class', preferredTheme)
 }
 
 provide('showAlert', setAlertData)
@@ -76,6 +88,7 @@ provide('showAlert', setAlertData)
   width: 32px;
   height: 32px;
   padding: 6px;
+  background-color: var(--dark);
   border-radius: 50%;
 }
 

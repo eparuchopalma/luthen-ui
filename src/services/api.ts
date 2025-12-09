@@ -23,7 +23,7 @@ export function handleError(error: any) {
   else if (errorStatusCode === 404) errorMessage = "Recurso no encontrado."
   else if (errorStatusCode === 409) errorMessage = error.response?.data?.message || "Algo en el formulario compromete la consistencia de la data."
   else if (errorStatusCode === 500) errorMessage = "Error interno del servidor."
-  else errorMessage = "Ocurrió un error."
+  else errorMessage = "Ocurrió un error desconocido."
 
   return { data: null, errorMessage }
 }
