@@ -64,7 +64,7 @@ function handleConfirmation() {
   box-sizing: border-box;
   box-shadow: 0 2px 4px var(--accent);
   background-color: var(--primary);
-  background-image: url('../../assets/squirrel.svg');
+  background-image: url('../../assets/logo.svg');
   background-repeat: no-repeat;
   background-size: 24px;
   background-position: 10px 6px;
