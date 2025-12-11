@@ -62,7 +62,8 @@ defineProps({
   height: 20px;
   border-radius: 12px;
   font-size: 1.1rem;
-  color: var(--tertiary);
+  background-color: var(--accent);
+  color: var(--lightest);
 }
 
 @media (hover: hover) and (pointer: fine) {

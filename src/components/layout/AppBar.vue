@@ -34,6 +34,7 @@ const emit = defineEmits(['toggleTheme'])
   border-radius: 50%;
   background-repeat: no-repeat;
   background-size: contain;
+  transition: box-shadow .4s;
 }
 
 .theme-button_dark {
@@ -42,6 +43,10 @@ const emit = defineEmits(['toggleTheme'])
 
 .theme-button_light {
   background-image: url('../../assets/sun.png');
+}
+
+.theme-button:hover {
+  box-shadow: -1px 2px 4px 2px var(--secondary);
 }
 
 </style>
