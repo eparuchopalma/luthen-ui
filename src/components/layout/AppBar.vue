@@ -42,10 +42,7 @@
     transition: all 1s ease-in-out;
     background-repeat: no-repeat;
     background-size: contain;
-  }
-
-  .app-bar__theme-button_light:hover {
-    transform: rotate(90deg) scale(1.3);
+    position: relative;
   }
 
   .app-bar__theme-button_dark {
@@ -53,25 +50,31 @@
   }
 
   .app-bar__theme-button_dark::after {
-    width: 6px;
-    height: 6px;
     position: absolute;
-    top: 8px;
+    top: -10px;
     right: 2px;
     content: ".";
     color: transparent;
+    background-size: 4px;
+    background-position: center;
+    background-repeat: no-repeat;
     background-image: url('../../assets/star.png');
-    background-size: cover;
-    transition: opacity .4s;
-    opacity: 0;
-  }
-
-  .app-bar__theme-button_dark:hover::after {
-    opacity: 1;
+    transform-origin: -8px 20px;
+    transition: transform 4s ease;
   }
 
   .app-bar__theme-button_light {
     background-image: url('../../assets/sun.png');
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .app-bar__theme-button_dark:hover::after {
+      transform: rotate(360deg);
+    }
+
+    .app-bar__theme-button_light:hover {
+      transform: rotate(90deg);
+    }
   }
 
 </style>
