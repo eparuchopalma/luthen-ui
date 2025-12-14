@@ -69,11 +69,11 @@ defineProps({
 @media (hover: hover) and (pointer: fine) {
 
   .button:hover {
-    box-shadow: 1px 1px 2px var(--tertiary);
+    box-shadow: 1px 1px 4px var(--tertiary);
   }
 
   .button_secondary:hover {
-    box-shadow: -1px 1px 2px var(--tertiary);
+    box-shadow: -1px 1px 4px var(--tertiary);
   }
 
 }

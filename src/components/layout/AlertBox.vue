@@ -13,7 +13,10 @@ export type Alert = {
 const props = defineProps<Alert>()
 const emit = defineEmits(['dismiss'])
 
-onMounted(() => (props.autoDismiss) ? setTimeout(() => emit('dismiss'), 3000) : {})
+onMounted(() => {
+  if (props.autoDismiss) setTimeout(() => emit('dismiss'), 3000)
+  else document.getElementById('alert-dismiss-button')?.focus()
+})
 
 function handleConfirmation() {
   props.onConfirm!()
@@ -26,12 +29,13 @@ function handleConfirmation() {
   <dialog role="dialog" open v-if="autoDismiss" class="alert-box">
     <p class="alert-box__text">{{ text }}</p>
   </dialog>
-  <Dialog v-else>
+  <Dialog v-else @click.self="emit('dismiss')" @keydown.esc="emit('dismiss')">
     <div class="alert-box alert-box_lg">
       <h4 class="alert-box__title">{{ title }}</h4>
       <p class="alert-box__text">{{ text }}</p>
       <div>
         <Button
+        id="alert-dismiss-button"
         type="button"
         :modifiers="['secondary', 'sm']"
         text="Volver"
@@ -64,10 +68,10 @@ function handleConfirmation() {
   box-sizing: border-box;
   box-shadow: 0 2px 4px var(--accent);
   background-color: var(--primary);
-  background-image: url('../../assets/logo.svg');
+  background-image: url('../../assets/icon.png');
   background-repeat: no-repeat;
   background-size: 24px;
-  background-position: 10px 6px;
+  background-position: 8px 8px;
   animation: grow-wider 1.2s ease-in-out;
   overflow: hidden;
   text-overflow: ellipsis;

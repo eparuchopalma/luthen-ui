@@ -50,28 +50,30 @@ provide('showAlert', setAlertData)
 
 <template>
   <main class="main">
-    <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
-    <div v-else>
-      <AppBar :theme="preferredTheme" @toggle-theme="toggleTheme" />
-      <section class="section">
-        <Status />
-      </section>
-      <section class="section">
-        <Query />
-      </section>
-      <section class="section" v-if="recordStore.records.length">
-        <Insights />
-      </section>
-      <Transition>
-        <AlertBox
-        v-if="showingAlert"
-        :text="alertData!.text"
-        :title="alertData!.title"
-        :auto-dismiss="alertData!.autoDismiss"
-        :on-confirm="alertData!.onConfirm"
-        @dismiss="showingAlert = false" />
-      </Transition>
-    </div>
+    <Transition>
+      <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
+      <div v-else>
+        <AppBar :theme="preferredTheme" @toggle-theme="toggleTheme" />
+        <section class="section">
+          <Status />
+        </section>
+        <section class="section">
+          <Query />
+        </section>
+        <section class="section" v-if="recordStore.records.length">
+          <Insights />
+        </section>
+        <Transition>
+          <AlertBox
+          v-if="showingAlert"
+          :text="alertData!.text"
+          :title="alertData!.title"
+          :auto-dismiss="alertData!.autoDismiss"
+          :on-confirm="alertData!.onConfirm"
+          @dismiss="showingAlert = false" />
+        </Transition>
+      </div>
+    </Transition>
   </main>
 </template>
 
@@ -79,7 +81,7 @@ provide('showAlert', setAlertData)
 /* Default styles for transitioning dialogs */
 .v-enter-active,
 .v-leave-active {
-  transition: opacity .3s ease;
+  transition: opacity .4s ease;
 }
 
 .v-enter-from,
