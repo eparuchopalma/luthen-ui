@@ -37,7 +37,7 @@ async function startDemo() {
   <footer class="footer">
     <ul class="link-container">
       <li>
-        <img src="../../assets/brand_light.svg" alt="Logo / marca personal" class="brand-logo">
+        <img src="../../assets/brand-logo.svg" alt="Logo / marca personal" class="brand-logo">
       </li>
       <li>
         <a href="#" class="link">Sitio web</a>
@@ -88,7 +88,7 @@ async function startDemo() {
 
   .brand-logo {
     padding: 2px;
-    background-color: var(--dark);
+    background-color: var(--light);
     border-radius: 50%;
     width: 24px;
     height: auto;
