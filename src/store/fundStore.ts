@@ -29,26 +29,26 @@ export const fundStore = reactive({
     this.funds = this.funds.filter(f => f.id !== id)
   },
 
-  async getFunds() {
-    const response = await readFunds(authStore.inDemo)
+  async getFunds(token: string | null) {
+    const response = await readFunds(token, authStore.inDemo)
     if (!response.errorMessage) this.setFunds(response.data)
     return response
   },
 
-  async createFund(name: string) {
-    const response = await createFund(name, authStore.inDemo)
+  async createFund(token: string | null, name: string) {
+    const response = await createFund(token, name, authStore.inDemo)
     if (!response.errorMessage) this.addFund(response.data)
     return response
   },
 
-  async updateFund(payload: Partial<Fund>) {
-    const response = await updateFund(payload, authStore.inDemo)
+  async updateFund(token: string | null, payload: Partial<Fund>) {
+    const response = await updateFund(token, payload, authStore.inDemo)
     if (!response.errorMessage) this.replaceFund(response.data)
     return response
   },
 
-  async deleteFund(id: string) {
-    const response = await deleteFund(id, authStore.inDemo)
+  async deleteFund(token: string | null, id: string) {
+    const response = await deleteFund(token, id, authStore.inDemo)
     if (!response.errorMessage) this.removeFund(id)
     return response
   }

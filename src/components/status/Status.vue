@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, inject } from "vue"
+import { useAuth0 } from '@auth0/auth0-vue'
 import { fundStore, type Fund } from "../../store/fundStore"
+import { authStore } from "../../store/authStore"
 import FundForm from "./FundForm.vue"
 import RecordForm from "./RecordForm.vue"
 import Button from "../layout/Button.vue"
 import { amountFormatter } from "../../utils/formatter"
 import type { Alert } from "../layout/AlertBox.vue"
 
-onMounted(() => setFunds())
+onMounted(() => getFunds())
+
 const showAlert = inject('showAlert') as (arg: Alert) => void
+const { getAccessTokenSilently } = useAuth0()
 
 const loading = ref(false)
 const fundFormIsOpen = ref(false)
@@ -19,9 +23,26 @@ const totalBalance = computed(() => {
   return fundStore.funds.reduce((acc, fund) => acc + Number(fund.balance), 0)
 })
 
-async function setFunds() {
+async function getToken() {
+  try {
+    const token = await getAccessTokenSilently()
+    return token
+  } catch (error) {
+    showAlert({
+      title: 'Error cargando fondos',
+      text: 'Algo no salió como se esperaba al tratar de recuperar los datos.',
+      autoDismiss: false
+    })
+    console.error(error)
+  } finally {
+    loading.value = false  
+  }
+}
+
+async function getFunds() {
   loading.value = true
-  const { errorMessage } = await fundStore.getFunds()
+  const token = authStore.inDemo ? null : await getToken()
+  const { errorMessage } = await fundStore.getFunds(token!)
   showAlert({
     text: errorMessage || 'Fondos cargados',
     title: errorMessage ? 'Error cargando fondos' : '',

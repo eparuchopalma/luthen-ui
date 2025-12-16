@@ -44,26 +44,26 @@ export const recordStore = reactive({
     funds?.forEach((fund: Fund) => fundStore.replaceFund(fund))
   },
 
-  async createRecord(record: Partial<Record>) {
-    const response = await createRecord(record, authStore.inDemo)
+  async createRecord(token: string | null, record: Partial<Record>) {
+    const response = await createRecord(token, record, authStore.inDemo)
     if (!response.errorMessage) response.data.forEach((fund: Fund) => fundStore.replaceFund(fund))
     return response
   },
 
-  async updateRecord(id: string, payload: Partial<Record>) {
-    const response = await updateRecord(id, payload, authStore.inDemo)
+  async updateRecord(token: string | null, id: string, payload: Partial<Record>) {
+    const response = await updateRecord(token, id, payload, authStore.inDemo)
     if (!response.errorMessage) this.handleUpdate(response.data)
     return response
   },
 
-  async getRecords(filters: Partial<Record> & { fromDate?: string; toDate?: string }) {
-    const response = await readRecords(filters, authStore.inDemo)
+  async getRecords(token: string | null, filters: Partial<Record> & { fromDate?: string; toDate?: string }) {
+    const response = await readRecords(token, filters, authStore.inDemo)
     if (!response.errorMessage) this.setRecords(response.data)
     return response
   },
 
-  async deleteRecord(id: string) {
-    const response = await deleteRecord(id, authStore.inDemo)
+  async deleteRecord(token: string | null, id: string) {
+    const response = await deleteRecord(token, id, authStore.inDemo)
     if (!response.errorMessage) this.removeRecord(id, response.data)
     return response
   }

@@ -1,19 +1,26 @@
 <script lang="ts" setup>
+  import { useAuth0 } from '@auth0/auth0-vue'
+  import Button from './Button.vue'
 
-  defineProps({
-    theme: String
-  })
+  defineProps({ theme: String })
 
   const emit = defineEmits(['toggleTheme'])
+  const { logout } = useAuth0()
 
 </script>
 
 <template>
   <aside class="app-bar">
     <img src="../../assets/icon.png" alt="Logo Luthen: Buho sobre la cornucopia" class="app-bar__icon">
-    <button
-    type="button" @click="emit('toggleTheme')" class="app-bar__theme-button" :class="theme === 'light' ? 'app-bar__theme-button_light' : 'app-bar__theme-button_dark'">
-    </button>
+    <div class="app-bar__actions">
+      <button
+        type="button"
+        @click="emit('toggleTheme')"
+        class="theme-button"
+        :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
+      </button>
+      <Button @click="logout" :modifiers="['secondary']" text="Cerrar sesión" />
+    </div>
   </aside>
 </template>
 
@@ -30,7 +37,13 @@
     height: 24px;
   }
 
-  .app-bar__theme-button {
+  .app-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .theme-button {
     background-color: transparent;
     width: 24px;
     height: 24px;
@@ -41,11 +54,11 @@
     position: relative;
   }
 
-  .app-bar__theme-button_dark {
+  .theme-button_dark {
     background-image: url('../../assets/moon.png');
   }
 
-  .app-bar__theme-button_dark::after {
+  .theme-button_dark::after {
     position: absolute;
     top: -4px;
     right: 2px;
@@ -59,16 +72,16 @@
     transition: transform 4s ease;
   }
 
-  .app-bar__theme-button_light {
+  .theme-button_light {
     background-image: url('../../assets/sun.png');
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .app-bar__theme-button_dark:hover::after {
+    .theme-button_dark:hover::after {
       transform: rotate(360deg);
     }
 
-    .app-bar__theme-button_light:hover {
+    .theme-button_light:hover {
       transform: rotate(90deg);
     }
   }

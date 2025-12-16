@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, provide, ref } from "vue"
+import { onMounted, provide, ref, watch } from "vue"
+import { useAuth0 } from '@auth0/auth0-vue'
 import Auth from "./components/auth/Auth.vue"
 import Insights from "./components/insights/Insights.vue"
 import AppBar from "./components/layout/AppBar.vue"
@@ -10,6 +11,8 @@ import { recordStore } from "./store/recordStore"
 import AlertBox, { type Alert } from "./components/layout/AlertBox.vue"
 
 onMounted(() => setTheme())
+
+const { isAuthenticated } = useAuth0()
 
 const alertData = ref<{
   text: string,
@@ -42,38 +45,36 @@ function toggleTheme() {
   preferredTheme.value = newTheme
 }
 
-
-
 provide('showAlert', setAlertData)
+
+watch(isAuthenticated, isAuth => authStore.isAuthenticated = isAuth)
 
 </script>
 
 <template>
   <main class="main">
-    <Transition>
-      <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
-      <div v-else>
-        <AppBar :theme="preferredTheme" @toggle-theme="toggleTheme" />
-        <section class="section">
-          <Status />
-        </section>
-        <section class="section">
-          <Query />
-        </section>
-        <section class="section" v-if="recordStore.records.length">
-          <Insights />
-        </section>
-        <Transition>
-          <AlertBox
-          v-if="showingAlert"
-          :text="alertData!.text"
-          :title="alertData!.title"
-          :auto-dismiss="alertData!.autoDismiss"
-          :on-confirm="alertData!.onConfirm"
-          @dismiss="showingAlert = false" />
-        </Transition>
-      </div>
-    </Transition>
+    <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
+    <div v-else>
+      <AppBar :theme="preferredTheme" @toggle-theme="toggleTheme" />
+      <section class="section">
+        <Status />
+      </section>
+      <section class="section">
+        <Query />
+      </section>
+      <section class="section" v-if="recordStore.records.length">
+        <Insights />
+      </section>
+      <Transition>
+        <AlertBox
+        v-if="showingAlert"
+        :text="alertData!.text"
+        :title="alertData!.title"
+        :auto-dismiss="alertData!.autoDismiss"
+        :on-confirm="alertData!.onConfirm"
+        @dismiss="showingAlert = false" />
+      </Transition>
+    </div>
   </main>
 </template>
 

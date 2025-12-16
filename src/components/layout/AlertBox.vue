@@ -71,7 +71,7 @@ function handleConfirmation() {
   background-image: url('../../assets/icon.png');
   background-repeat: no-repeat;
   background-size: 24px;
-  background-position: 8px 8px;
+  background-position: 6px 4px;
   animation: grow-wider 1.2s ease-in-out;
   overflow: hidden;
   text-overflow: ellipsis;

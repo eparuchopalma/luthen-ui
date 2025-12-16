@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, inject } from 'vue';
+import { useAuth0 } from '@auth0/auth0-vue'
 import Dialog from '../layout/Dialog.vue';
 import Button from '../layout/Button.vue';
 import { recordStore, type Record } from '../../store/recordStore'
 import { fundStore } from '../../store/fundStore'
 import { formDateFormatter, formTimeFormatter } from '../../utils/formatter';
 import type { Alert } from '../layout/AlertBox.vue';
+import { authStore } from '../../store/authStore';
 
 onMounted(() => document.getElementById('record-date-field')?.focus())
 const emit = defineEmits(['dismissForm'])
 const showAlert = inject('showAlert') as (arg: Alert) => void
+const { getAccessTokenSilently } = useAuth0()
 
 const props = defineProps<{ record?: Record | null }>()
 
@@ -76,6 +79,22 @@ const formValid = computed(() => {
   ].every(isValid => isValid)
 })
 
+async function getToken() {
+  try {
+    const token = await getAccessTokenSilently()
+    return token
+  } catch (error) {
+    showAlert({
+      title: 'Error autenticando',
+      text: 'Algo no salió como se esperaba.',
+      autoDismiss: false
+    })
+    console.error(error)
+  } finally {
+    loading.value = false  
+  }
+}
+
 function clearCorrelated() {
   const notFundToFund = form.value.type !== 0
   const fundsAreEqual = form.value.correlated_fund_id === form.value.fund_id
@@ -84,7 +103,8 @@ function clearCorrelated() {
 
 async function handleSubmit() {
   loading.value = true
-  const { errorMessage } = props.record ? await update() : await create()
+  const token = authStore.inDemo ? null : await getToken()
+  const { errorMessage } = props.record ? await update(token!) : await create(token!)
   showAlert({
     text: errorMessage || 'Registro guardado!',
     title: errorMessage ? 'Error guardando registro' : '',
@@ -105,7 +125,8 @@ function onDelete() {
 
 async function deleteRecord() {
   loading.value = true
-  const { errorMessage } = await recordStore.deleteRecord(props.record!.id!)
+  const token = authStore.inDemo ? null : await getToken()
+  const { errorMessage } = await recordStore.deleteRecord(token!, props.record!.id!)
   showAlert({
     text: errorMessage || 'Registro eliminado',
     title: errorMessage ? 'Error eliminando registro' : '',
@@ -115,14 +136,14 @@ async function deleteRecord() {
   else loading.value = false
 }
 
-function update() {
+function update(token: string | null) {
   const payload = normalizePayload(formChanges.value!)
-  return recordStore.updateRecord(props.record!.id!, payload)
+  return recordStore.updateRecord(token, props.record!.id!, payload)
 }
 
-function create() {
+function create(token: string | null) {
   const payload = normalizePayload(form.value)
-  return recordStore.createRecord(payload)
+  return recordStore.createRecord(token, payload)
 }
 
 function normalizePayload(data: Partial<Record & { time: string }>) {

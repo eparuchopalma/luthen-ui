@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, inject } from 'vue';
+import { useAuth0 } from '@auth0/auth0-vue'
 import Dialog from '../layout/Dialog.vue';
 import Button from '../layout/Button.vue';
 import { fundStore, type Fund } from '../../store/fundStore'
 import type { Alert } from '../layout/AlertBox.vue';
+import { authStore } from '../../store/authStore';
 
 onMounted(() => document.getElementById('fund-name-field')?.focus())
+
 const emit = defineEmits(['dismissForm'])
 const props = defineProps<{ fund?: Fund | null }>()
 const showAlert = inject('showAlert') as (arg: Alert) => void
+const { getAccessTokenSilently } = useAuth0()
 
 const fundName = ref(props.fund?.name || '')
 const loading = ref(false)
@@ -17,9 +21,26 @@ const invalidForm = computed(() => {
   return fundName.value === '' || props.fund?.name === fundName.value
 })
 
+async function getToken() {
+  try {
+    const token = await getAccessTokenSilently()
+    return token
+  } catch (error) {
+    showAlert({
+      title: 'Error autenticando',
+      text: 'Algo no salió como se esperaba.',
+      autoDismiss: false
+    })
+    console.error(error)
+  } finally {
+    loading.value = false  
+  }
+}
+
 async function onSubmit() {
   loading.value = true
-  const { errorMessage } = props.fund ? await update() : await create()
+  const token = authStore.inDemo ? null : await getToken()
+  const { errorMessage } = props.fund ? await update(token!) : await create(token!)
   showAlert({
     text: errorMessage || 'Fondo guardado',
     title: errorMessage ? 'Error guardando fondo' : '',
@@ -29,12 +50,12 @@ async function onSubmit() {
   else loading.value = false
 }
 
-function create() {
-  return fundStore.createFund(fundName.value)
+function create(token: string) {
+  return fundStore.createFund(token, fundName.value)
 }
 
-function update() {
-  return fundStore.updateFund({ id: props.fund!.id, name: fundName.value })
+function update(token: string) {
+  return fundStore.updateFund(token, { id: props.fund!.id, name: fundName.value })
 }
 
 function onDelete() {
@@ -48,7 +69,8 @@ function onDelete() {
 
 async function deleteFund() {
   loading.value = true
-  const { errorMessage } = await fundStore.deleteFund(props.fund!.id!)
+  const token = authStore.inDemo ? null : await getToken()
+  const { errorMessage } = await fundStore.deleteFund(token!, props.fund!.id!)
   showAlert({
     text: errorMessage || 'Fondo eliminado',
     title: errorMessage ? 'Error eliminando fondo' : '',

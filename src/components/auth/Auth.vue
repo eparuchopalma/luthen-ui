@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import Button from "../layout/Button.vue"
 import { authStore } from "../../store/authStore"
+import { useAuth0 } from '@auth0/auth0-vue'
+
+const { loginWithRedirect, isLoading } = useAuth0()
+
+const handleLogin = () => {
+  loginWithRedirect()
+}
 
 async function startDemo() {
   authStore.loginForDemo()
@@ -18,8 +25,14 @@ async function startDemo() {
     <Button
     :modifiers="['secondary']"
     type="button"
+    :disabled="isLoading"
     @click="startDemo"
     text="Iniciar Demo" />
+    <Button
+    type="button"
+    :disabled="isLoading"
+    @click="handleLogin"
+    text="Iniciar Sesión" />
   </div>
   <footer class="footer">
     <ul class="link-container">
