@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed, ref, inject } from 'vue';
+import { useAuth0 } from '@auth0/auth0-vue'
 import Dialog from '../layout/Dialog.vue'
 import Button from '../layout/Button.vue'
 import { type Alert } from '../layout/AlertBox.vue'
 import { fundStore } from '../../store/fundStore'
 import { recordStore } from '../../store/recordStore'
 import { formDateFormatter } from '../../utils/formatter';
+import { authStore } from '../../store/authStore';
 
 const emit = defineEmits(['dismissForm'])
 const showAlert = inject('showAlert') as (arg: Alert) => void
+const { getAccessTokenSilently } = useAuth0()
 
 const currentYear = Number(new Date().getFullYear())
 const currentMonth = Number(new Date().getMonth())
@@ -34,10 +37,27 @@ const toDateIsValid = computed(() => {
 
 const formInvalid = computed(() => !fromDateIsValid.value || !toDateIsValid.value)
 
+async function getToken() {
+  try {
+    const token = await getAccessTokenSilently()
+    return token
+  } catch (error) {
+    showAlert({
+      title: 'Error autenticando',
+      text: 'Algo no salió como se esperaba.',
+      autoDismiss: false
+    })
+    console.error(error)
+  } finally {
+    loading.value = false  
+  }
+}
+
 async function onSubmit() {
   loading.value = true
+  const token = authStore.inDemo ? null : await getToken()
   const filters = normalizeData()
-  const { errorMessage } = await recordStore.getRecords(filters)
+  const { errorMessage } = await recordStore.getRecords(token!, filters)
   showAlert({
     text: errorMessage || `Registros encontrados: ${recordStore.records.length}`,
     title: errorMessage ? 'Ocurrió un problema' : '',
