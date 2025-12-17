@@ -11,16 +11,20 @@
 
 <template>
   <aside class="app-bar">
-    <img src="../../assets/icon.png" alt="Logo Luthen: Buho sobre la cornucopia" class="app-bar__icon">
-    <div class="app-bar__actions">
-      <button
-        type="button"
-        @click="emit('toggleTheme')"
-        class="theme-button"
-        :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
-      </button>
-      <Button @click="logout" :modifiers="['secondary']" text="Cerrar sesión" />
+    <div class="app-bar__item">
+      <img src="../../assets/icon.png" alt="Logo Luthen: Buho sobre la cornucopia" class="app-bar__icon">
     </div>
+    <div class="app-bar__item app-bar__item_justify-center">
+      <button
+      type="button"
+      @click="emit('toggleTheme')"
+      class="theme-button"
+      :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
+    </button>
+  </div>
+  <div class="app-bar__item app-bar__item_justify-end">
+    <Button @click="logout" :modifiers="['secondary', 'sm']" text="Salir" />
+  </div>
   </aside>
 </template>
 
@@ -28,8 +32,8 @@
 
   .app-bar {
     display: flex;
+    width: 100%;
     justify-content: space-between;
-    align-items: center;
   }
 
   .app-bar__icon {
@@ -37,20 +41,27 @@
     height: 24px;
   }
 
-  .app-bar__actions {
+  .app-bar__item {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    width: 33%;
+  }
+
+  .app-bar__item_justify-center {
+    justify-content: center;
+  }
+
+  .app-bar__item_justify-end {
+    justify-content: end;
   }
 
   .theme-button {
-    background-color: transparent;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    transition: all 1s ease-in-out;
+    background-color: transparent;
     background-repeat: no-repeat;
     background-size: contain;
+    transition: all 1s ease-in-out;
     position: relative;
   }
 

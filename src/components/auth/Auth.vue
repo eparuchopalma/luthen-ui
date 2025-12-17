@@ -65,10 +65,6 @@ async function startDemo() {
     fill: var(--tertiary);
   }
 
-  .main {
-    padding-top: 40px;
-  }
-
   .headline {
     margin: 40px 0 10px;
     font-size: 6.4rem;
@@ -87,18 +83,19 @@ async function startDemo() {
   }
 
   .brand-logo {
-    padding: 2px;
-    background-color: var(--light);
-    border-radius: 50%;
     width: 24px;
-    height: auto;
+    height: 24px;
+    padding: 2px;
+    border: 1px solid var(--light);
+    background-color: var(--lightest);
+    border-radius: 50%;
   }
 
   .link-container {
     padding: 0 12px;
-    display: flex;
-    justify-self: start;
     align-self: end;
+    align-items: center;
+    display: flex;
     gap: 16px;
     list-style: none;
   }
