@@ -26,9 +26,9 @@ function handleConfirmation() {
 </script>
 
 <template>
-  <dialog role="dialog" open v-if="autoDismiss" class="alert-box">
-    <p class="alert-box__text">{{ text }}</p>
-  </dialog>
+  <div role="alert" open v-if="autoDismiss" class="alert-box">
+    <p class="alert-box__text alert-box__text_light">{{ text }}</p>
+  </div>
   <Dialog v-else @click.self="emit('dismiss')" @keydown.esc="emit('dismiss')">
     <div class="alert-box alert-box_lg">
       <h4 class="alert-box__title">{{ title }}</h4>
@@ -57,21 +57,18 @@ function handleConfirmation() {
   bottom: 20px;
   width: 90%;
   max-width: 400px;
-  height: 20px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   position: fixed;
-  bottom: 32px;
+  top: 14px;
+  left: 14px;
   border-radius: 4px;
   box-sizing: border-box;
-  box-shadow: 0 2px 4px var(--accent);
-  background-color: var(--primary);
-  background-image: url('../../assets/icon.png');
-  background-repeat: no-repeat;
-  background-size: 24px;
-  background-position: 6px 4px;
+  box-shadow: -2px 3px 4px var(--accent);
+  background-color: var(--darkest);
   animation: grow-wider 1.2s ease-in-out;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -87,12 +84,14 @@ function handleConfirmation() {
   justify-content: space-between;
   white-space: wrap;
   text-align: left;
+  background-color: var(--primary);
+  position: relative;
+  box-shadow: 0 1px 4px 1px var(--accent);
 }
 
 .alert-box__title {
   font-size: 1.8rem;
-  color: var(--light);
-  color: var(--font-color);
+  color: var(--tertiary);
 }
 
 .alert-box__text {
@@ -101,6 +100,10 @@ function handleConfirmation() {
   color: var(--font-color);
   animation: fade-in 1s ease-in-out;
   animation-fill-mode: forwards;
+}
+
+.alert-box__text_light {
+  color: var(--light);
 }
 
 @keyframes grow-wider {
