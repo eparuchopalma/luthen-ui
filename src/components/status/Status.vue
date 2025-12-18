@@ -79,10 +79,7 @@ function dismissRecordForm() {
     <strong class="card__balance card__balance_lg">{{ amountFormatter(totalBalance) }}</strong>
     <p class="card__description">Balance</p>
   </div>
-  <dl
-  v-if="fundStore.funds.length"
-  class="card-container"
-  :class="{ 'card-container_three-columns': fundStore.funds.length >= 3 }">
+  <dl v-if="fundStore.funds.length" class="card-container">
     <div
     v-for="fund in fundStore.funds"
     :key="fund.id" class="card card_background card_hover"
@@ -124,13 +121,14 @@ function dismissRecordForm() {
 <style>
 
 .card-container {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .card {
   margin: 32px auto;
-  width: 220px;
+  width: 160px;
   height: 80px;
   padding: 8px;
   box-sizing: border-box;
@@ -186,20 +184,6 @@ function dismissRecordForm() {
 
 .card__description_text-left {
   text-align: left;
-}
-
-@media (width >= 480px) {
-  .card-container {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-}
-
-@media (width >= 640px) {
-  .card-container_three-columns {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-  }
 }
 
 </style>
