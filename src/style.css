@@ -99,3 +99,11 @@ input[type=number] {
   }
 }
 
+kbd {
+  padding: 0 4px;
+  border-radius: 2px;
+  background-color: var(--light);
+  color: var(--dark);
+  font-style: italic;
+  font-weight: 500;
+}

@@ -1,11 +1,14 @@
 <script lang="ts" setup>
   import { useAuth0 } from '@auth0/auth0-vue'
   import Button from './Button.vue'
+  import SignOut from '../user/SignOut.vue'
+
+  import { ref } from 'vue'
 
   defineProps({ theme: String })
-
   const emit = defineEmits(['toggleTheme'])
   const { logout } = useAuth0()
+  const showingSignoutForm = ref(false)
 
 </script>
 
@@ -20,12 +23,16 @@
       @click="emit('toggleTheme')"
       class="theme-button"
       :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
-    </button>
-  </div>
-  <div class="app-bar__item app-bar__item_justify-end">
-    <Button @click="logout" :modifiers="['secondary', 'sm']" text="Salir" />
-  </div>
+      </button>
+    </div>
+    <div class="app-bar__item app-bar__item_justify-end">
+      <Button @click="showingSignoutForm = true" :modifiers="['secondary', 'sm']" text="Eliminar" />
+      <Button @click="logout" :modifiers="['secondary', 'sm']" text="Salir" />
+    </div>
   </aside>
+  <Transition>
+    <SignOut v-if="showingSignoutForm" @dismiss-form="showingSignoutForm = false" />
+  </Transition>
 </template>
 
 <style scoped>
