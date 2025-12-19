@@ -9,25 +9,39 @@
   const emit = defineEmits(['toggleTheme'])
   const { logout } = useAuth0()
   const showingSignoutForm = ref(false)
+  const showingMenu = ref(false)
 
 </script>
 
 <template>
-  <aside class="app-bar">
-    <div class="app-bar__item">
-      <img src="../../assets/icon.png" alt="Logo Luthen: Buho sobre la cornucopia" class="app-bar__icon">
-    </div>
-    <div class="app-bar__item app-bar__item_justify-center">
-      <button
-      type="button"
-      @click="emit('toggleTheme')"
-      class="theme-button"
-      :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
-      </button>
-    </div>
-    <div class="app-bar__item app-bar__item_justify-end">
-      <Button @click="showingSignoutForm = true" :modifiers="['secondary', 'sm']" text="Eliminar" />
-      <Button @click="logout" :modifiers="['secondary', 'sm']" text="Salir" />
+  <aside class="bar">
+    <img src="../../assets/icon.png" alt="Logo: Buho sobre la cornucopia" class="bar__icon">
+    <button
+    type="button"
+    @click="emit('toggleTheme')"
+    class="bar__theme-button theme-button"
+    :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
+    </button>
+    <div class="bar__menu" @mouseleave="showingMenu = false">
+      <Button
+      @click="showingMenu = true"
+      :modifiers="['secondary', 'sm']"
+      text="Cuenta" />
+      <Transition>
+        <div v-if="showingMenu">
+          <Button
+          @click="showingSignoutForm = true"
+          :modifiers="['secondary']"
+          class="menu__item"
+          text="Eliminar" />
+          <Button
+          v-if="showingMenu"
+          @click="logout"
+          class="menu__item"
+          :modifiers="['secondary']"
+          text="Cerrar sesión" />
+        </div>
+      </Transition>
     </div>
   </aside>
   <Transition>
@@ -37,28 +51,20 @@
 
 <style scoped>
 
-  .app-bar {
+  .bar {
     display: flex;
     width: 100%;
     justify-content: space-between;
   }
 
-  .app-bar__icon {
+  .bar__icon {
     width: 24px;
     height: 24px;
   }
 
-  .app-bar__item {
-    display: flex;
-    width: 33%;
-  }
-
-  .app-bar__item_justify-center {
-    justify-content: center;
-  }
-
-  .app-bar__item_justify-end {
-    justify-content: end;
+  .bar__theme-button {
+    margin-left: 18px;
+    margin-right: auto;
   }
 
   .theme-button {
@@ -103,5 +109,19 @@
       transform: rotate(90deg);
     }
   }
+  
+  .bar__menu {
+    width: 132px;
+    display: grid;
+    position: absolute;
+    right: 0;
+  }
+
+  .menu__item {
+    padding-left: 8px;
+    text-align-last: left;
+    margin-top: 8px;
+  }
+
 
 </style>

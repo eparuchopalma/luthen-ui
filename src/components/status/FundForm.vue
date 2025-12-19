@@ -100,7 +100,7 @@ async function deleteFund() {
         id="fund-name-field"
         maxlength="50"
         required
-        v-model="fundName">
+        v-model.trim="fundName">
       </fieldset>
       <div class="fund-form__actions">
         <Button

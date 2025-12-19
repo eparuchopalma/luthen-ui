@@ -70,7 +70,7 @@
         id="delete-confirmation-field"
         maxlength="50"
         required
-        v-model="confirmationText">
+        v-model.trim="confirmationText">
       </fieldset>
       <div class="signout-form__actions">
         <Button
