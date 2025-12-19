@@ -6,13 +6,15 @@ import Insights from "./components/insights/Insights.vue"
 import AppBar from "./components/layout/AppBar.vue"
 import Query from "./components/query/Query.vue"
 import Status from "./components/status/Status.vue"
+import Button from "./components/layout/Button.vue"
 import { authStore } from "./store/authStore"
 import { recordStore } from "./store/recordStore"
 import AlertBox, { type Alert } from "./components/layout/AlertBox.vue"
+import { fundStore } from "./store/fundStore"
 
 onMounted(() => setTheme())
 
-const { isAuthenticated } = useAuth0()
+const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0()
 
 const alertData = ref<{
   text: string,
@@ -20,6 +22,9 @@ const alertData = ref<{
   autoDismiss: boolean,
   onConfirm?: () => any
 }>()
+
+const errorLoadingFunds = ref(false)
+const loading = ref(false)
 
 const showingAlert = ref(false)
 const preferredTheme = ref()
@@ -45,6 +50,38 @@ function toggleTheme() {
   preferredTheme.value = newTheme
 }
 
+async function getToken() {
+  try {
+    const token = await getAccessTokenSilently()
+    return token
+  } catch (error) {
+    setAlertData({
+      title: 'Error cargando fondos',
+      text: 'Algo no salió como se esperaba al tratar de recuperar los datos.',
+      autoDismiss: false
+    })
+    console.error(error)
+  } finally {
+    loading.value = false  
+  }
+}
+
+async function getFunds() {
+  loading.value = true
+  const token = authStore.inDemo ? null : await getToken()
+  const { errorMessage } = await fundStore.getFunds(token!)
+  setAlertData({
+    text: errorMessage || 'Fondos cargados',
+    title: errorMessage ? 'Error cargando fondos' : '',
+    autoDismiss: !Boolean(errorMessage)
+  })
+  loading.value = false
+}
+
+function showActionsOnError() {
+  errorLoadingFunds.value = true
+}
+
 provide('showAlert', setAlertData)
 
 watch(isAuthenticated, isAuth => authStore.isAuthenticated = isAuth)
@@ -54,10 +91,17 @@ watch(isAuthenticated, isAuth => authStore.isAuthenticated = isAuth)
 <template>
   <main class="main">
     <Auth v-if="!authStore.isAuthenticated && !authStore.inDemo" />
+    <div v-else-if="errorLoadingFunds">
+      <section class="section">
+        <p>Sus datos no pudieron ser cargados.</p>
+        <Button text="Reintentar" :disabled="loading" @click="getFunds" />
+        <Button text="Cerrar sesion" :disabled="loading" @click="logout" :modifiers="['secondary']" />
+      </section>
+    </div>
     <div v-else>
       <AppBar :theme="preferredTheme" @toggle-theme="toggleTheme" />
       <section class="section">
-        <Status />
+        <Status @showActionsOnError="showActionsOnError" />
       </section>
       <section class="section">
         <Query />
@@ -65,17 +109,17 @@ watch(isAuthenticated, isAuth => authStore.isAuthenticated = isAuth)
       <section class="section" v-if="recordStore.records.length">
         <Insights />
       </section>
-      <Transition>
-        <AlertBox
-        v-if="showingAlert"
-        :text="alertData!.text"
-        :title="alertData!.title"
-        :auto-dismiss="alertData!.autoDismiss"
-        :on-confirm="alertData!.onConfirm"
-        @dismiss="showingAlert = false" />
-      </Transition>
     </div>
   </main>
+  <Transition>
+    <AlertBox
+    v-if="showingAlert"
+    :text="alertData!.text"
+    :title="alertData!.title"
+    :auto-dismiss="alertData!.autoDismiss"
+    :on-confirm="alertData!.onConfirm"
+    @dismiss="showingAlert = false" />
+  </Transition>
 </template>
 
 <style>

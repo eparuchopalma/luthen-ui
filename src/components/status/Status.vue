@@ -12,6 +12,7 @@ import type { Alert } from "../layout/AlertBox.vue"
 onMounted(() => getFunds())
 
 const showAlert = inject('showAlert') as (arg: Alert) => void
+const emit = defineEmits(['showActionsOnError'])
 const { getAccessTokenSilently } = useAuth0()
 
 const loading = ref(false)
@@ -33,6 +34,7 @@ async function getToken() {
       text: 'Algo no salió como se esperaba al tratar de recuperar los datos.',
       autoDismiss: false
     })
+    emit('showActionsOnError')
     console.error(error)
   } finally {
     loading.value = false  
@@ -48,6 +50,7 @@ async function getFunds() {
     title: errorMessage ? 'Error cargando fondos' : '',
     autoDismiss: !Boolean(errorMessage)
   })
+  if (errorMessage) emit('showActionsOnError')
   loading.value = false
 }
 
@@ -101,7 +104,7 @@ function dismissRecordForm() {
       <dt class="card__description card__description_text-left">{{ fund.name }}</dt>
     </div>
   </dl>
-  <div class="button-container">
+  <div>
     <Button
     :modifiers="['secondary']"
     type="button"
