@@ -49,6 +49,9 @@ function handleLogout() {
     class="bar__theme-button theme-button"
     :class="preferredTheme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
     </button>
+    <div role="alert" class="demo-alert" v-if="authStore.inDemo">
+      <span>Demo</span>
+    </div>
     <div v-if="authStore.isAuthenticated" class="bar__menu" @mouseleave="showingMenu = false">
       <button type="button" @click="showingMenu = !showingMenu" class="bar__menu-button">
         <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -141,6 +144,14 @@ function handleLogout() {
     .bar__menu-button:hover {
       box-shadow: 0 0 10px 2px var(--secondary);
     }
+  }
+
+  .demo-alert {
+    width: 70px;
+    background-color: var(--secondary);
+    border-radius: 20px;
+    position: absolute;
+    left: calc(50% - 35px);
   }
   
   .bar__menu {
