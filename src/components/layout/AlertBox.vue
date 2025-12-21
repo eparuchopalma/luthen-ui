@@ -13,10 +13,15 @@ export type Alert = {
 const props = defineProps<Alert>()
 const emit = defineEmits(['dismiss'])
 
-onMounted(() => {
-  if (props.autoDismiss) setTimeout(() => emit('dismiss'), 3000)
-  else document.getElementById('alert-dismiss-button')?.focus()
-})
+onMounted(() => (props.autoDismiss) ? autoDismiss() : focusButton())
+
+function autoDismiss() {
+  setTimeout(() => emit('dismiss'), 3000)
+}
+
+function focusButton() {
+  document.getElementById('alert-dismiss-button')?.focus()
+}
 
 function handleConfirmation() {
   props.onConfirm!()
@@ -26,8 +31,8 @@ function handleConfirmation() {
 </script>
 
 <template>
-  <div role="alert" open v-if="autoDismiss" class="alert-box">
-    <p class="alert-box__text alert-box__text_light">{{ text }}</p>
+  <div role="alert" open v-if="props.autoDismiss" class="alert-box">
+    <p class="alert-box__text alert-box__text_lightest">{{ text }}</p>
   </div>
   <Dialog v-else @click.self="emit('dismiss')" @keydown.esc="emit('dismiss')">
     <div class="alert-box alert-box_lg">
@@ -67,8 +72,7 @@ function handleConfirmation() {
   left: 14px;
   border-radius: 4px;
   box-sizing: border-box;
-  box-shadow: -2px 3px 4px var(--accent);
-  background-color: var(--darkest);
+  background-color: var(--accent);
   animation: grow-wider 1.2s ease-in-out;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -86,7 +90,6 @@ function handleConfirmation() {
   text-align: left;
   background-color: var(--primary);
   position: relative;
-  box-shadow: 0 1px 4px 1px var(--accent);
 }
 
 .alert-box__title {
@@ -102,8 +105,8 @@ function handleConfirmation() {
   animation-fill-mode: forwards;
 }
 
-.alert-box__text_light {
-  color: var(--light);
+.alert-box__text_lightest {
+  color: var(--lightest);
 }
 
 @keyframes grow-wider {

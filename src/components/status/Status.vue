@@ -1,21 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, inject } from "vue"
-import { useAuth0 } from '@auth0/auth0-vue'
+import { ref, computed } from "vue"
 import { fundStore, type Fund } from "../../store/fundStore"
-import { authStore } from "../../store/authStore"
-import FundForm from "./FundForm.vue"
-import RecordForm from "./RecordForm.vue"
-import Button from "../layout/Button.vue"
 import { amountFormatter } from "../../utils/formatter"
-import type { Alert } from "../layout/AlertBox.vue"
+import Button from "../layout/Button.vue"
+import RecordForm from "./RecordForm.vue"
+import FundForm from "./FundForm.vue"
 
-onMounted(() => getFunds())
-
-const showAlert = inject('showAlert') as (arg: Alert) => void
-const emit = defineEmits(['showActionsOnError'])
-const { getAccessTokenSilently } = useAuth0()
-
-const loading = ref(false)
 const fundFormIsOpen = ref(false)
 const recordFormIsOpen = ref(false)
 const fundEditing = ref<Fund | null>(null)
@@ -23,36 +13,6 @@ const fundEditing = ref<Fund | null>(null)
 const totalBalance = computed(() => {
   return fundStore.funds.reduce((acc, fund) => acc + Number(fund.balance), 0)
 })
-
-async function getToken() {
-  try {
-    const token = await getAccessTokenSilently()
-    return token
-  } catch (error) {
-    showAlert({
-      title: 'Error cargando fondos',
-      text: 'Algo no salió como se esperaba al tratar de recuperar los datos.',
-      autoDismiss: false
-    })
-    emit('showActionsOnError')
-    console.error(error)
-  } finally {
-    loading.value = false  
-  }
-}
-
-async function getFunds() {
-  loading.value = true
-  const token = authStore.inDemo ? null : await getToken()
-  const { errorMessage } = await fundStore.getFunds(token!)
-  showAlert({
-    text: errorMessage || 'Fondos cargados',
-    title: errorMessage ? 'Error cargando fondos' : '',
-    autoDismiss: !Boolean(errorMessage)
-  })
-  if (errorMessage) emit('showActionsOnError')
-  loading.value = false
-}
 
 function selectFund(fund: Fund) {
   fundEditing.value = fund
@@ -71,13 +31,6 @@ function dismissRecordForm() {
 </script>
 
 <template>
-  <header>
-    <div class="section__icon">
-      <img src="../../assets/balance.png" alt="balance icon" class="icon__img">
-    </div>
-    <h1>Estado</h1>
-  </header>
-  <p v-if="loading">...Loading</p>
   <div class="card card_sm">
     <strong class="card__balance card__balance_lg">{{ amountFormatter(totalBalance) }}</strong>
     <p class="card__description">Balance</p>

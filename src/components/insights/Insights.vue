@@ -41,12 +41,6 @@ watch(() => recordStore.records, () => {
 </script>
 
 <template>
-  <header>
-    <div class="section__icon">
-      <img src="../../assets/lupe-chart.png" alt="lupe on chart icon" class="icon__img">
-    </div>
-    <h1>Estadísticas</h1>
-  </header>
   <select id="tag-list-type" class="select-field" v-model.number="listType">
     <option value="2" class="option">Débito</option>
     <option value="1" class="option">Crédito</option>
@@ -111,6 +105,7 @@ watch(() => recordStore.records, () => {
 
 .flex-container {
   margin-top: 20px;
+  gap: 8px;
   display: flex;
   align-items: start;
   justify-content: space-between;

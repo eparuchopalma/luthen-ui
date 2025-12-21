@@ -1,32 +1,59 @@
 <script lang="ts" setup>
-  import { useAuth0 } from '@auth0/auth0-vue'
-  import Button from './Button.vue'
-  import SignOut from '../user/SignOut.vue'
+import { onMounted, ref } from 'vue'
+import { useAuth0 } from '@auth0/auth0-vue'
+import { authStore } from '../../store/authStore'
+import Button from './Button.vue'
+import SignOut from '../user/SignOut.vue'
 
-  import { ref } from 'vue'
+onMounted(() => setTheme())
 
-  defineProps({ theme: String })
-  const emit = defineEmits(['toggleTheme'])
-  const { logout } = useAuth0()
-  const showingSignoutForm = ref(false)
-  const showingMenu = ref(false)
+const { logout, isAuthenticated } = useAuth0()
+
+const showingSignoutForm = ref(false)
+const showingMenu = ref(false)
+const preferredTheme = ref<'dark' | 'light'>()
+
+function setTheme() {
+  const storedPreference = localStorage.getItem('theme') as 'dark' | 'light' | undefined
+  const systemThemeIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+  if (storedPreference) preferredTheme.value = storedPreference
+  else if (systemThemeIsDark) preferredTheme.value = 'dark'
+  else preferredTheme.value = 'light'
+  document.body.setAttribute('class', preferredTheme.value)
+}
+
+function toggleTheme() {
+  const newTheme = document.body.getAttribute('class') === 'dark' ? 'light' : 'dark'
+  localStorage.setItem('theme', newTheme)
+  document.body.setAttribute('class', newTheme)
+  preferredTheme.value = newTheme
+}
+
+function handleLogout() {
+  authStore.logout()
+  if (isAuthenticated.value) logout()
+}
 
 </script>
 
 <template>
   <aside class="bar">
-    <img src="../../assets/icon.png" alt="Logo: Buho sobre la cornucopia" class="bar__icon">
+    <img
+    v-if="authStore.isAuthenticated"
+    src="../../assets/icon.png"
+    alt="Logo: Buho sobre la cornucopia"
+    class="bar__icon">
     <button
     type="button"
-    @click="emit('toggleTheme')"
+    @click="toggleTheme"
     class="bar__theme-button theme-button"
-    :class="theme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
+    :class="preferredTheme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
     </button>
-    <div class="bar__menu" @mouseleave="showingMenu = false">
+    <div v-if="authStore.isAuthenticated" class="bar__menu" @mouseleave="showingMenu = false">
       <Button
       @click="showingMenu = true"
       :modifiers="['secondary', 'sm']"
-      text="Cuenta" />
+      text="Menú" />
       <Transition>
         <div v-if="showingMenu">
           <Button
@@ -35,11 +62,10 @@
           class="menu__item"
           text="Eliminar" />
           <Button
-          v-if="showingMenu"
-          @click="logout"
+          text="Cerrar sesión" 
           class="menu__item"
-          :modifiers="['secondary']"
-          text="Cerrar sesión" />
+          :modifiers="['secondary']" 
+          @click="handleLogout" />
         </div>
       </Transition>
     </div>

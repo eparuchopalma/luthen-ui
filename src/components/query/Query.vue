@@ -132,12 +132,6 @@ window.addEventListener('resize', handleResize)
 </script>
 
 <template>
-  <header class="header">
-    <div class="section__icon">
-      <img src="../../assets/lupe.png" alt="lupe icon" class="icon__img">
-    </div>
-    <h1>Consulta</h1>
-  </header>
   <Transition>
     <div class="table-container" v-if="recordStore.records.length">
       <table class="table">
@@ -222,10 +216,6 @@ window.addEventListener('resize', handleResize)
 </template>
 
 <style scoped>
-
-.header {
-  margin-bottom: 48px;
-}
 
 .table-container {
   margin: 48px auto;
