@@ -33,7 +33,7 @@ function setColumnsBalance() {
 
 function setPageRecords() {
   const rowHeight = 28
-  const nonDataRows = 6
+  const nonDataRows = 8
   const rowsToFit = Math.floor(screenHeight.value / rowHeight) - nonDataRows
   rowsPerPage.value = rowsToFit
   totalPages.value = Math.ceil(recordStore.records.length / rowsToFit)
@@ -154,27 +154,22 @@ window.addEventListener('resize', handleResize)
             <td class="table__cell table__cell_text-right">{{ amountFormatter(record.amount) }}</td>
           </tr>
         </tbody>
-        <tfoot>
-          <tr class="table__footer-row">
-            <td>
-              <div class="table__footer-data">
-                <span>{{ amountFormatter(totalCredit) }}</span>
-              </div>
-            </td>
-            <td>
-              <div class="table__footer-data">
-                <span>{{ amountFormatter(totalDebit) }}</span>
-              </div>
-            </td>
-            <td>
-              <div class="table__footer-data">
-                <span>{{ amountFormatter(queryBalance) }}</span>
-              </div>
-            </td>
-          </tr>
-        </tfoot>
       </table>
-      <div class="table-actions">
+      <div class="query-summary">
+        <div class="query-summary__row">
+          <span>Credit:</span>
+          <span>{{ amountFormatter(totalCredit) }}</span>
+        </div>
+        <div class="query-summary__row">
+          <span>Debit:</span>
+          <span>{{ amountFormatter(totalDebit) }}</span>
+        </div>
+        <div class="query-summary__row">
+          <span>Balance:</span>
+          <span>{{ amountFormatter(queryBalance) }}</span>
+        </div>
+      </div>
+      <div class="table__controls">
         <Button
         type="button"
         :modifiers="['sm', 'dark']"
@@ -220,10 +215,12 @@ window.addEventListener('resize', handleResize)
 .table-container {
   margin: 48px auto;
   width: 100%;
+  min-height: 93vh;
   max-width: 500px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 12px;
 }
   
 .table {
@@ -268,17 +265,22 @@ window.addEventListener('resize', handleResize)
   text-align: right;
 }
 
-.table__footer-row {
-  background-color: var(--secondary);
+.query-summary {
+  margin-top: auto;
 }
 
-.table__footer-data {
-  text-align: right;
+.query-summary__row {
+  background-color: var(--secondary);
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
   padding: 0 4px;
 }
 
-.table-actions {
+.table__controls {
+  margin: 0 auto;
   width: 100%;
+  max-width: 500px;
   display: flex;
   justify-content: space-between;
 }

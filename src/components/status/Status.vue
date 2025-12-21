@@ -77,6 +77,8 @@ function dismissRecordForm() {
 <style>
 
 .card-container {
+  margin: 0 auto 24px;
+  max-width: 600px;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -85,13 +87,18 @@ function dismissRecordForm() {
 .card {
   margin: 32px auto;
   width: 160px;
-  height: 80px;
+  height: 64px;
   padding: 8px;
   box-sizing: border-box;
   border-radius: 4px;
-  box-shadow: -1px 2px 6px var(--secondary);
   text-align: center;
   position: relative;
+  box-shadow: 0 0 8px 1px var(--secondary);
+}
+
+.card_hover {
+  border: none;
+  box-shadow: 0 2px 6px var(--secondary);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -109,7 +116,7 @@ function dismissRecordForm() {
 
 .card_sm {
   width: 200px;
-  height: 90px;
+  height: 80px;
 }
 
 .card__icon {
@@ -121,7 +128,7 @@ function dismissRecordForm() {
 
 .card__balance {
   font-weight: 400;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .card__balance_text-right {
@@ -134,7 +141,7 @@ function dismissRecordForm() {
 
 .card__description {
   color: var(--tertiary);
-  margin-top: 20px;
+  margin-top: 12px;
   font-size: 1.4rem;
 }
 

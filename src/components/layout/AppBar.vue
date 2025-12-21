@@ -50,10 +50,13 @@ function handleLogout() {
     :class="preferredTheme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
     </button>
     <div v-if="authStore.isAuthenticated" class="bar__menu" @mouseleave="showingMenu = false">
-      <Button
-      @click="showingMenu = true"
-      :modifiers="['secondary', 'sm']"
-      text="Menú" />
+      <button type="button" @click="showingMenu = !showingMenu" class="bar__menu-button">
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line class="menu-icon" x1="2" y1="6" x2="46" y2="6" stroke-width="4" stroke-linecap="round"/>
+          <line class="menu-icon" x1="2" y1="24" x2="46" y2="24" stroke-width="4" stroke-linecap="round"/>
+          <line class="menu-icon" x1="2" y1="42" x2="46" y2="42" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </button>
       <Transition>
         <div v-if="showingMenu">
           <Button
@@ -134,13 +137,28 @@ function handleLogout() {
     .theme-button_light:hover {
       transform: rotate(90deg);
     }
+
+    .bar__menu-button:hover {
+      box-shadow: 0 0 10px 2px var(--secondary);
+    }
   }
   
   .bar__menu {
     width: 132px;
     display: grid;
     position: absolute;
-    right: 0;
+    right: 24px;
+  }
+
+  .bar__menu-button {
+    padding: 2px 4px;
+    border-radius: 2px;
+    margin-left: auto;
+    transition: box-shadow .5s;
+  }
+
+  .menu-icon {
+    stroke: var(--font-color);
   }
 
   .menu__item {
