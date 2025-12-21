@@ -32,7 +32,6 @@ async function getToken() {
       autoDismiss: false
     })
     console.error(error)
-  } finally {
     loading.value = false  
   }
 }
