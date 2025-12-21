@@ -117,10 +117,6 @@ function getFundName (id: string) {
   return fundStore.funds.find(f => f.id === id)!.name;
 }
 
-watch(screenHeight, () => {
-  setPageRecords()
-}, { immediate: true, deep: true })
-
 watch(() => recordStore.records, () => {
   setPageRecords()
   setColumnsBalance()
