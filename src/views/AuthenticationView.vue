@@ -34,12 +34,10 @@ watch([isAuthenticated, isLoading], ([authenticated]) => {
       type="button"
       text="Iniciar Demo"
       :modifiers="['secondary']"
-      :disabled="isLoading"
       @click="() => handleLogin(true)" />
       <Button
       type="button"
       text="Iniciar Sesión"
-      :disabled="isLoading"
       @click="loginWithRedirect" />
     </div>
     <footer class="footer">
@@ -66,7 +64,7 @@ watch([isAuthenticated, isLoading], ([authenticated]) => {
 <style scoped>
 
   .app-logo {
-    margin: 48px auto 0;
+    margin: 20px auto 12px;
     width: 220px;
   }
 
@@ -75,7 +73,7 @@ watch([isAuthenticated, isLoading], ([authenticated]) => {
   }
 
   .headline {
-    margin: 40px 0 10px;
+    margin: 20px 0 10px;
     font-size: 6.4rem;
   }
 
