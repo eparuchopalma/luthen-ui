@@ -16,7 +16,7 @@ function handleLogin(inDemo: boolean) {
   authStore.login(inDemo)
 }
 
-watch(isAuthenticated, (authenticated) => {
+watch([isAuthenticated, isLoading], ([authenticated]) => {
   if (authenticated) handleLogin(false)
 }, { immediate: true })
 

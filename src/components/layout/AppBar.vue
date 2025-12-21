@@ -66,7 +66,7 @@ function handleLogout() {
           @click="showingSignoutForm = true"
           :modifiers="['secondary']"
           class="menu__item"
-          text="Eliminar" />
+          text="Eliminar datos" />
           <Button
           text="Cerrar sesión" 
           class="menu__item"
