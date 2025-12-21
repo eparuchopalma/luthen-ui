@@ -6,32 +6,32 @@ import LineChart from './LineChart.vue';
 import { amountFormatter } from '../../utils/formatter';
 
 const listType = ref<1 | 2>(2)
-const monthsBalance = ref<Record<string, number>>({})
+const balanceByMonth = ref<Record<string, number>>({})
 
 const tagsData = computed(() => {
-  let tagListBalance = 0
+  let typeSelectedSum = 0
   const typeRecords = listType.value === 2 ? recordStore.getDebits() : recordStore.getCredits()
-  const tagsData: Record<string, number> = {}
+  const balanceByTag: Record<string, number> = {}
   typeRecords.forEach((record) => {
     const tag = record.tag ?? 'Sin etiqueta'
     const amount = Number(record.amount)
-    if (tagsData[tag]) tagsData[tag] += amount
-    else tagsData[tag] = amount
-    tagListBalance += amount
+    if (balanceByTag[tag]) balanceByTag[tag] += amount
+    else balanceByTag[tag] = amount
+    typeSelectedSum += amount
   })
-  return { tagsData, tagListBalance }
+  return { balanceByTag, typeSelectedSum }
 })
 
 function setMonthsData() {
-  monthsBalance.value = {}
-  recordStore.records.forEach((record) => {
+  balanceByMonth.value = {}
+  for (const record of recordStore.records) {
+    if (record.type === 0) continue
     const month = new Date(record.date)!
       .toLocaleString('es-VE', { month: 'short', year: 'numeric' })
     const balance = Number(record.amount)
-    if (monthsBalance.value[month]) (monthsBalance.value[month]! += balance)
-    else monthsBalance.value[month] = balance
-  })
-
+    if (balanceByMonth.value[month]) balanceByMonth.value[month]! += balance
+    else balanceByMonth.value[month] = balance
+  }
 }
 
 watch(() => recordStore.records, () => {
@@ -56,21 +56,21 @@ watch(() => recordStore.records, () => {
       </thead>
       <tbody>
         <tr
-        v-for="[tagName, tagBalance] in Object.entries(tagsData.tagsData)"
+        v-for="[tagName, balanceByTag] in Object.entries(tagsData.balanceByTag)"
         :key="tagName">
           <td class="table__cell table__cell_text-left">{{ tagName }}</td>
-          <td class="table__cell table__cell_text-right">{{ amountFormatter(tagBalance) }}</td>
-          <td class="table__cell">{{ Math.round((tagBalance / tagsData.tagListBalance) * 100) }}%</td>
+          <td class="table__cell table__cell_text-right">{{ amountFormatter(balanceByTag) }}</td>
+          <td class="table__cell">{{ Math.round((balanceByTag / tagsData.typeSelectedSum) * 100) }}%</td>
         </tr>
       </tbody>
     </table>
     <div class="chart-container">
-      <BarChart :tag-names="Object.keys(tagsData.tagsData)" :tag-balances="Object.values(tagsData.tagsData)" />
+      <BarChart :tag-names="Object.keys(tagsData.balanceByTag)" :tag-balances="Object.values(tagsData.balanceByTag)" />
     </div>
   </div>
   <div class="flex-container">
     <div class="chart-container">
-      <LineChart :months="Object.keys(monthsBalance)" :months-balance="Object.values(monthsBalance)" />
+      <LineChart :months="Object.keys(balanceByMonth)" :months-balance="Object.values(balanceByMonth)" />
     </div>
     <table class="table">
       <thead>
@@ -80,7 +80,7 @@ watch(() => recordStore.records, () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="[month, monthBalance] in Object.entries(monthsBalance)" :key="month">
+        <tr v-for="[month, monthBalance] in Object.entries(balanceByMonth)" :key="month">
           <td class="table__cell table__cell_text-left">{{ month }}</td>
           <td class="table__cell table__cell_text-right">{{ amountFormatter(monthBalance) }}</td>
         </tr>
