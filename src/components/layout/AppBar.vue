@@ -46,8 +46,8 @@ function handleLogout() {
     <button
     type="button"
     @click="toggleTheme"
-    class="bar__theme-button theme-button"
-    :class="preferredTheme === 'light' ? 'theme-button_light' : 'theme-button_dark'">
+    class="bar__theme-button"
+    :class="preferredTheme === 'light' ? 'bar__theme-button_light' : 'bar__theme-button_dark'">
     </button>
     <div role="alert" class="demo-alert" v-if="authStore.inDemo">
       <span>Demo</span>
@@ -95,50 +95,71 @@ function handleLogout() {
   }
 
   .bar__theme-button {
-    margin-left: 18px;
     margin-right: auto;
-  }
-
-  .theme-button {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: contain;
     transition: all 1s ease-in-out;
     position: relative;
   }
 
-  .theme-button_dark {
-    background-image: url('../../assets/moon.png');
+  .bar__theme-button_dark {
+    box-shadow: -6px 3px 6px var(--accent);
   }
 
-  .theme-button_dark::after {
+  .bar__theme-button_light {
+    box-shadow: 0 0 6px var(--accent);
+  }
+
+  .bar__theme-button_dark::after {
     position: absolute;
-    top: -4px;
+    top: 0;
     right: 2px;
-    content: ".";
-    color: transparent;
-    background-size: 4px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url('../../assets/star.png');
-    transform-origin: -8px 20px;
-    transition: transform 4s ease;
+    content: "*";
+    font-size: 1rem;
+    color: var(--accent);
+    transform-origin: -8px 10px;
+    transition: transform 2s ease;
   }
 
-  .theme-button_light {
-    background-image: url('../../assets/sun.png');
+  .bar__theme-button_light::before {
+    position: absolute;
+    top: 4px;
+    right: -1px;
+    content: "*";
+    width: 10px;
+    height: 4px;
+    border-radius: 40%;
+    color: transparent;
+    background-color: var(--secondary);
+    box-shadow: 0 0 4px var(--dark);
+    transition: transform 2s ease;
+  }
+
+  .bar__theme-button_light::after {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    content: "*";
+    width: 6px;
+    height: 3px;
+    border-radius: 50%;
+    color: transparent;
+    background-color: var(--secondary);
+    transition: transform 2s ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .theme-button_dark:hover::after {
+    .bar__theme-button_dark:hover::after {
       transform: rotate(360deg);
     }
 
-    .theme-button_light:hover {
-      transform: rotate(90deg);
+    .bar__theme-button_light:hover::before {
+      transform: translateX(-10px)
+    }
+
+    .bar__theme-button_light:hover::after {
+      transform: translateX(-12px)
     }
 
     .bar__menu-button:hover {
