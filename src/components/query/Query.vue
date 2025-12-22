@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue"
+import { ref, watch } from "vue"
 import Exceljs from 'exceljs'
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
@@ -25,6 +25,32 @@ const typeNames = {
   2: 'Debit'
 };
 
+const startX = ref(0)
+const threshold = ref(50)
+
+function onTouchStart(e: any) {
+  startX.value = e.changedTouches[0].clientX
+}
+
+function onTouchEnd(e: any) {
+  const endX = e.changedTouches[0].clientX
+
+  const diffX = endX - startX.value
+
+  if (Math.abs(diffX) > threshold.value) {
+    if (diffX > 0) onSwipeRight()
+    else onSwipeLeft()
+  }
+}
+
+function onSwipeLeft() {
+  setNextPage()
+}
+
+function onSwipeRight() {
+  setPreviousPage()
+}
+
 function setColumnsBalance() {
   totalDebit.value = recordStore.getDebits().reduce((sum, record) => sum + Number(record.amount), 0)
   totalCredit.value = recordStore.getCredits().reduce((sum, record) => sum + Number(record.amount), 0)
@@ -43,11 +69,13 @@ function setPageRecords() {
 }
 
 function setNextPage() {
+  if (currentPage.value === totalPages.value) return
   currentPage.value++
   setPageRecords()
 }
 
 function setPreviousPage() {
+  if (currentPage.value === 1) return
   currentPage.value--
   setPageRecords()
 }
@@ -118,9 +146,9 @@ function getFundName (id: string) {
 }
 
 watch(() => recordStore.records, () => {
+  focusTable()
   setPageRecords()
   setColumnsBalance()
-  nextTick(() => focusTable())
 }, { immediate: true, deep: true })
 
 window.addEventListener('resize', handleResize)
@@ -130,7 +158,13 @@ window.addEventListener('resize', handleResize)
 <template>
   <Transition>
     <div class="table-container" v-if="recordStore.records.length">
-      <table class="table">
+      <table
+      class="table"
+      @touchstart="onTouchStart"
+      @touchend="onTouchEnd"
+      @keydown.left="setPreviousPage"
+      @keydown.right="setNextPage"
+      tabindex="0">
         <caption id="table" class="table__caption">Pulsa sobre un registro para ver detalles y acciones.</caption>
         <thead>
           <tr class="table__header-row">
