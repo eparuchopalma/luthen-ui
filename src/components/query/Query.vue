@@ -157,15 +157,17 @@ window.addEventListener('resize', handleResize)
 
 <template>
   <Transition>
-    <div class="table-container" v-if="recordStore.records.length">
-      <table
-      class="table"
-      @touchstart="onTouchStart"
-      @touchend="onTouchEnd"
-      @keydown.left="setPreviousPage"
-      @keydown.right="setNextPage"
-      tabindex="0">
-        <caption id="table" class="table__caption">Pulsa sobre un registro para ver detalles y acciones.</caption>
+    <div
+    id="table"
+    class="table-container"
+    v-if="recordStore.records.length"
+    @touchstart="onTouchStart"
+    @touchend="onTouchEnd"
+    @keydown.left="setPreviousPage"
+    @keydown.right="setNextPage"
+    tabindex="0">
+      <table class="table">
+        <caption class="table__caption">Pulsa sobre un registro para ver detalles y acciones.</caption>
         <thead>
           <tr class="table__header-row">
             <th>Fecha</th>
