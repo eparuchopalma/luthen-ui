@@ -90,6 +90,7 @@ function handleLogout() {
   }
 
   .bar__icon {
+    margin-right: 24px;
     width: 24px;
     height: 24px;
   }
