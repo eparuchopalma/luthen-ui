@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, inject } from 'vue';
+import { computed, ref, inject, watch } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue'
 import Dialog from '../layout/Dialog.vue'
 import Button from '../layout/Button.vue'
@@ -16,6 +16,16 @@ const { getAccessTokenSilently } = useAuth0()
 const currentYear = Number(new Date().getFullYear())
 const currentMonth = Number(new Date().getMonth())
 
+const firstOfYear = formDateFormatter(new Date(currentYear, 0, 1))
+const firstOfMonth = formDateFormatter(new Date(currentYear, currentMonth, 1))
+const firstOfPreviousMonth = formDateFormatter(new Date(currentYear, currentMonth - 1, 1))
+
+const currentMonthName = new Intl.DateTimeFormat('es-VE', { month: 'long' })
+  .format(new Date())
+
+  const previousMonthName = new Intl.DateTimeFormat('es-VE', { month: 'long' })
+  .format(new Date(currentYear, currentMonth - 1, 1))
+
 const form = ref({
   type: '',
   fund_id: '',
@@ -26,6 +36,9 @@ const form = ref({
 })
 const typeNames = ['Fondo a Fondo', 'Credito', 'Débito']
 const loading = ref(false)
+const filteredByYear = ref(false)
+const filteredByMonth = ref(false)
+const filteredByPastMonth = ref(false)
 
 const fromDateIsValid = computed(() => {
   return !form.value.fromDate || new Date(form.value.fromDate) <= new Date()
@@ -78,17 +91,25 @@ function normalizeData() {
 }
 
 function setCurrentYear() {
-  form.value.fromDate = formDateFormatter(new Date(currentYear, 0, 1))
+  form.value.fromDate = firstOfYear
+  form.value.toDate = ''
 }
 
 function setCurrentMonth() {
-  form.value.fromDate = formDateFormatter(new Date(currentYear, currentMonth, 1))
+  form.value.fromDate = firstOfMonth
+  form.value.toDate = ''
 }
 
 function setPastMonth() {
-  form.value.fromDate = formDateFormatter(new Date(currentYear, currentMonth - 1, 1))
-  form.value.toDate = formDateFormatter(new Date(currentYear, currentMonth, 1))
+  form.value.fromDate = firstOfPreviousMonth
+  form.value.toDate = firstOfMonth
 }
+
+watch(() => [form.value.fromDate, form.value.toDate], ([fromDate, toDate]) => {
+  filteredByYear.value = (fromDate === firstOfYear && toDate === '')
+  filteredByMonth.value = (fromDate === firstOfMonth && toDate === '')
+  filteredByPastMonth.value = (fromDate === firstOfPreviousMonth && toDate === firstOfMonth)
+}, { deep: true })
 
 </script>
 
@@ -128,19 +149,19 @@ function setPastMonth() {
         <div class="pill-container">
           <Button
           :disabled="loading"
-          :modifiers="['secondary', 'sm', 'pill']"
+          :modifiers="['sm', 'pill', filteredByYear ? '' : 'secondary']"
           @click="setCurrentYear"
           :text="new Date().getFullYear().toString()" />
           <Button
           :disabled="loading"
-          :modifiers="['secondary', 'sm', 'pill']"
+          :modifiers="['sm', 'pill', filteredByMonth ? '' : 'secondary']"
           @click="setCurrentMonth"
-          text="Este mes" />
+          :text="currentMonthName" />
           <Button
           :disabled="loading"
-          :modifiers="['secondary', 'sm', 'pill']"
+          :modifiers="['sm', 'pill', filteredByPastMonth ? '' : 'secondary']"
           @click="setPastMonth"
-          text="Mes pasado" />
+          :text="previousMonthName" />
         </div>
         <label
         for="query-from-date"

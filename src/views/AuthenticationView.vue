@@ -16,7 +16,7 @@ function handleLogin(inDemo: boolean) {
   authStore.login(inDemo)
 }
 
-watch([isAuthenticated, isLoading], ([authenticated]) => {
+watch(isAuthenticated, (authenticated) => {
   if (authenticated) handleLogin(false)
 }, { immediate: true })
 
@@ -33,10 +33,12 @@ watch([isAuthenticated, isLoading], ([authenticated]) => {
       <Button
       type="button"
       text="Iniciar Demo"
+      :disabled="isLoading"
       :modifiers="['secondary']"
       @click="() => handleLogin(true)" />
       <Button
       type="button"
+      :disabled="isLoading"
       text="Iniciar Sesión"
       @click="loginWithRedirect" />
     </div>
