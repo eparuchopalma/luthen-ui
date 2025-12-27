@@ -16,11 +16,13 @@ const { getAccessTokenSilently } = useAuth0()
 
 const props = defineProps<{ record?: Record | null }>()
 
+const mainFundID = fundStore.funds.find(fund => fund.is_main)!.id
+
 const form = ref<Record & { time?: string }>({
   amount: Math.abs(props.record?.amount! || 0),
   date: formDateFormatter(props.record ? new Date(props.record?.date) : new Date()),
   time: formTimeFormatter(props.record ? new Date(props.record?.date) : new Date()),
-  fund_id: props.record?.fund_id || fundStore.funds.find(fund => fund.is_main)!.id,
+  fund_id: props.record?.fund_id || mainFundID,
   correlated_fund_id: props.record?.correlated_fund_id || '',
   note: props.record?.note || null,
   tag: props.record?.tag || null,
@@ -90,14 +92,16 @@ async function getToken() {
       autoDismiss: false
     })
     console.error(error)
-    loading.value = false  
+    loading.value = false
   }
 }
 
 function clearCorrelated() {
   const notFundToFund = form.value.type !== 0
   const fundsAreEqual = form.value.correlated_fund_id === form.value.fund_id
+  const isCredit = form.value.type === 1
   if (notFundToFund || fundsAreEqual) delete form.value.correlated_fund_id
+  if (isCredit) form.value.fund_id = mainFundID
 }
 
 async function handleSubmit() {
@@ -251,6 +255,7 @@ function confirmToClose() {
         class="record-form__select"
         v-model="form.fund_id"
         @change="clearCorrelated"
+        :disabled="form.type === 1"
         required>
           <option v-for="fund in fundStore.funds" :value="fund.id">{{ fund.name }}</option>
         </select>
