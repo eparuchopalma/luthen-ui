@@ -14,7 +14,7 @@ function handleLogin(inDemo: boolean) {
 
 watch(isAuthenticated, (authenticated) => {
   if (authenticated) handleLogin(false)
-})
+}, { immediate: true })
 
 </script>
 
