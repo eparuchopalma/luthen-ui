@@ -4,11 +4,7 @@ import { authStore } from "../store/authStore"
 import { useAuth0 } from "@auth0/auth0-vue"
 import { watch } from "vue"
 
-const {
-  isAuthenticated,
-  isLoading,
-  loginWithRedirect,
-} = useAuth0()
+const { isAuthenticated, loginWithRedirect } = useAuth0()
 
 const emit = defineEmits(['showActionsOnError'])
 
@@ -18,14 +14,14 @@ function handleLogin(inDemo: boolean) {
 
 watch(isAuthenticated, (authenticated) => {
   if (authenticated) handleLogin(false)
-}, { immediate: true })
+})
 
 </script>
 
 <template>
   <main>
     <header>
-      <img src="../assets/logo.svg" alt="Logo Luthen: Buho sobre la cornucopia" class="app-logo">
+      <img src="../assets/logo.svg" alt="Logo de Luthen: Buho sobre una cornucopia" class="app-logo">
       <h1 class="headline">Luthen</h1>
       <p>Registro financiero</p>
     </header>
@@ -33,31 +29,19 @@ watch(isAuthenticated, (authenticated) => {
       <Button
       type="button"
       text="Iniciar Demo"
-      :disabled="isLoading"
       :modifiers="['secondary']"
       @click="() => handleLogin(true)" />
       <Button
       type="button"
-      :disabled="isLoading"
       text="Iniciar Sesión"
       @click="loginWithRedirect" />
     </div>
     <footer class="footer">
-      <ul class="link-container">
-        <li>
-          <img src="../assets/brand-logo.svg" alt="Logo / marca personal" class="brand-logo">
-        </li>
-        <li>
-          <a href="#" class="link">Sitio web</a>
-        </li>
-        <li>
-          <a href="#" class="link">LinkedIn</a>
-        </li>
-      </ul>
+      <img src="../assets/brand-logo.svg" alt="Logo / marca personal" class="footer__img">
       <p class="footer__text">
         Gracias por estar aquí.
         <br>
-        Edgar
+        Edgar Parucho Palma
       </p>
     </footer>
   </main>
@@ -70,28 +54,25 @@ watch(isAuthenticated, (authenticated) => {
     width: 220px;
   }
 
-  .owl, .cornucopia {
-    fill: var(--tertiary);
-  }
-
   .headline {
     margin: 20px 0 10px;
     font-size: 6.4rem;
   }
 
   .footer {
-    height: 120px;
     width: 100%;
     position: fixed;
     bottom: 0;
     left: 0;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-align: right;
+    align-items: end;
+    justify-content: end;
   }
 
-  .brand-logo {
+  .footer__img {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
     width: 24px;
     height: 24px;
     padding: 2px;
@@ -100,34 +81,13 @@ watch(isAuthenticated, (authenticated) => {
     border-radius: 50%;
   }
 
-  .link-container {
-    padding: 0 12px;
-    align-self: end;
-    align-items: center;
-    display: flex;
-    gap: 16px;
-    list-style: none;
-  }
-
-  .link {
-    font-weight: 400;
-    font-size: 1.4rem;
-    color: var(--tertiary);
-  }
-
-  .link:hover {
-    color: var(--tertiary);
-    text-decoration-color: var(--accent);
-  }
-
   .footer__text {
     padding-right: 20px;
-    display: inline-block;
     font-size: 2.4rem;
     font-family: "Sacramento", cursive;
     font-weight: 400;
     font-style: normal;
-    transform: rotate(-25deg);
+    transform: rotate(-15deg);
   }
 
 </style>

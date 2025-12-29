@@ -109,6 +109,7 @@ function handleLogout() {
   }
 
   .bar__theme-button_light {
+    background-color: var(--accent);
     box-shadow: 0 0 6px var(--accent);
   }
 
