@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { nextTick, ref, watch } from "vue"
 import Exceljs from 'exceljs'
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
 import Button from "../layout/Button.vue"
 import { amountFormatter, tableDateFormatter } from '../../utils/formatter'
-import QueryForm from "./QueryForm.vue"
 import { fundStore } from "../../store/fundStore"
 
 const screenHeight = ref(window.innerHeight)
@@ -18,7 +17,6 @@ const totalDebit = ref(0)
 const queryBalance = ref(0)
 const recordEditing = ref<Record | null>(null)
 const recordFormIsOpen = ref(false)
-const queryFormIsOpen = ref(false)
 const typeNames = {
   0: 'Fund to Fund',
   1: 'Credit',
@@ -58,7 +56,7 @@ function setColumnsBalance() {
 }
 
 function setPageRecords() {
-  const rowHeight = 28
+  const rowHeight = 36
   const nonDataRows = 8
   const rowsToFit = Math.floor(screenHeight.value / rowHeight) - nonDataRows
   rowsPerPage.value = rowsToFit
@@ -92,10 +90,6 @@ function openRecordForm(record: Record) {
 function dismissRecordForm() {
   recordFormIsOpen.value = false
   recordEditing.value = null
-}
-
-function dismissQueryForm() {
-  queryFormIsOpen.value = false
 }
 
 function focusTable() {
@@ -146,9 +140,9 @@ function getFundName (id: string) {
 }
 
 watch(() => recordStore.records, () => {
-  focusTable()
   setPageRecords()
   setColumnsBalance()
+  nextTick(() => focusTable())
 }, { immediate: true, deep: true })
 
 window.addEventListener('resize', handleResize)
@@ -158,7 +152,6 @@ window.addEventListener('resize', handleResize)
 <template>
   <Transition>
     <div
-    id="table"
     class="table-container"
     v-if="recordStore.records.length"
     @touchstart="onTouchStart"
@@ -166,6 +159,12 @@ window.addEventListener('resize', handleResize)
     @keydown.left="setPreviousPage"
     @keydown.right="setNextPage"
     tabindex="0">
+      <Button
+      type="button"
+      text="Exportar"
+      :modifiers="['secondary']"
+      :disabled="!recordStore.records.length"
+      @click="formatToXls" />
       <table class="table">
         <caption class="table__caption">Pulsa sobre un registro para ver detalles y acciones.</caption>
         <thead>
@@ -221,36 +220,24 @@ window.addEventListener('resize', handleResize)
       </div>
     </div>
   </Transition>
-  <Button
-  type="button"
-  text="Exportar"
-  :modifiers="['secondary']"
-  :disabled="!recordStore.records.length"
-  @click="formatToXls" />
-  <Button
-  type="button"
-  text="Consultar"
-  @click="queryFormIsOpen = true" />
   <Transition>
     <RecordForm
     :record="recordEditing"
     v-if="recordFormIsOpen"
     @dismiss-form="dismissRecordForm" />
-    <QueryForm
-    v-else-if="queryFormIsOpen"
-    @dismiss-form="dismissQueryForm" />
   </Transition>
 </template>
 
 <style scoped>
 
 .table-container {
-  margin: 48px auto;
+  margin: 0 auto;
   width: 100%;
-  min-height: 93vh;
+  min-height: 64vh;
   max-width: 500px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
@@ -260,7 +247,6 @@ window.addEventListener('resize', handleResize)
   margin: 0 auto;
   border-spacing: 2px;
   border-collapse: separate;
-  font-size: 1.4rem;
   table-layout: fixed;
 }
 
@@ -280,9 +266,9 @@ window.addEventListener('resize', handleResize)
   width: 120px;
   padding: 0 4px;
   border: 1px solid var(--secondary);
-  height: 24px;
+  font-size: 1.4rem;
   max-height: 24px;
-  line-height: 24px;
+  line-height: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -298,6 +284,7 @@ window.addEventListener('resize', handleResize)
 }
 
 .query-summary {
+  width: 100%;
   margin-top: auto;
 }
 

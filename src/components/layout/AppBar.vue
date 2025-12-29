@@ -50,7 +50,7 @@ function handleLogout() {
     :class="preferredTheme === 'light' ? 'bar__theme-button_light' : 'bar__theme-button_dark'">
     </button>
     <div role="alert" class="demo-alert" v-if="authStore.inDemo">
-      <span>Demo</span>
+      Demo
     </div>
     <div v-if="authStore.isAuthenticated" class="bar__menu" @mouseleave="showingMenu = false">
       <button type="button" @click="showingMenu = !showingMenu" class="bar__menu-button">
@@ -84,9 +84,17 @@ function handleLogout() {
 <style scoped>
 
   .bar {
-    display: flex;
     width: 100%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: var(--primary);
+    transition: background-color .5s;
   }
 
   .bar__icon {
@@ -170,17 +178,18 @@ function handleLogout() {
   }
 
   .demo-alert {
+    margin-right: 120px;
     width: 70px;
-    background-color: var(--secondary);
+    background-color: var(--accent);
     border-radius: 20px;
-    position: absolute;
-    left: calc(50% - 35px);
+    color: var(--lightest);
   }
   
   .bar__menu {
     width: 132px;
     display: grid;
     position: absolute;
+    top: 8px;
     right: 24px;
   }
 

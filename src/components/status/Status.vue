@@ -5,9 +5,11 @@ import { amountFormatter } from "../../utils/formatter"
 import Button from "../layout/Button.vue"
 import RecordForm from "./RecordForm.vue"
 import FundForm from "./FundForm.vue"
+import QueryForm from "./QueryForm.vue"
 
 const fundFormIsOpen = ref(false)
 const recordFormIsOpen = ref(false)
+const queryFormIsOpen = ref(false)
 const fundEditing = ref<Fund | null>(null)
 
 const totalBalance = computed(() => {
@@ -26,6 +28,10 @@ function dismissFundForm() {
 
 function dismissRecordForm() {
   recordFormIsOpen.value = false
+}
+
+function dismissQueryForm() {
+  queryFormIsOpen.value = false
 }
 
 </script>
@@ -65,12 +71,20 @@ function dismissRecordForm() {
     @click="fundFormIsOpen = true" />
     <Button
     type="button"
+    :modifiers="['secondary']"
+    text="Consultar"
+    @click="queryFormIsOpen = true" />
+    <Button
+    type="button"
     text="Crear registro"
     @click="recordFormIsOpen = true" />
   </div>
   <Transition>
     <FundForm v-if="fundFormIsOpen" @dismiss-form="dismissFundForm" :fund="fundEditing" />
     <RecordForm v-else-if="recordFormIsOpen" @dismiss-form="dismissRecordForm" />
+    <QueryForm
+    v-else-if="queryFormIsOpen"
+    @dismiss-form="dismissQueryForm" />
   </Transition>
 </template>
 

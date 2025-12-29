@@ -66,7 +66,12 @@ provide('showAlert', setAlertData)
       <Section title="Estado" description="Balance general y fondos" :icon="balance">
         <Status />
       </Section>
-      <Section title="Consultas" description="Búsqueda de registros" :icon="lupe">
+      <Section
+      id="table"
+      v-if="recordStore.records.length"
+      title="Registros"
+      description="Resultados de su búsqueda"
+      :icon="lupe">
         <Query />
       </section>
       <Section

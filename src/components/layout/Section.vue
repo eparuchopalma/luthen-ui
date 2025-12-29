@@ -22,9 +22,7 @@ defineProps<{
 <style scoped>
 
 .section {
-  margin-top: 24px;
-  margin-bottom: 72px;
-  min-height: 88vh;
+  min-height: calc(100vh - 68px);
 }
 
 .header {
