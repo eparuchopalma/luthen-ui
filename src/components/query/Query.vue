@@ -234,7 +234,6 @@ window.addEventListener('resize', handleResize)
   margin: 0 auto 96px;
   width: 100%;
   min-height: 70vh;
-  border: 1px dashed firebrick;
   max-width: 500px;
   display: flex;
   flex-direction: column;
