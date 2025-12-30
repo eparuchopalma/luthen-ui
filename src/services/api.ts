@@ -14,10 +14,9 @@ export function handleResponse(response: any) {
 export function handleError(error: any) {
   console.error(error)
   let errorMessage
-  const NETWORK_ERROR_MESSAGE = "Error de conexión"
   const errorStatusCode = error.response?.status
 
-  if (error.message === NETWORK_ERROR_MESSAGE) errorMessage = "Problema para conectar con el servidor."
+  if (error.message.toLowerCase().includes('network')) errorMessage = "Problema para conectar con el servidor."
   else if (errorStatusCode === 401) errorMessage = "Acceso no autorizado."
   else if (errorStatusCode === 403) errorMessage = "Acceso prohibido."
   else if (errorStatusCode === 404) errorMessage = "Recurso no encontrado."
