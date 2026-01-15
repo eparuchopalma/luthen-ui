@@ -59,11 +59,11 @@ const typeIsValid = computed(() => [0, 1, 2].includes(form.value.type))
 
 const formChanges = computed(() => {
   const updates = {} as Partial<Record>
-    
+
   Object.entries(form.value).forEach(([key, value]) => {
     const k = key as keyof Record
     const originalValue = originalValues.value![k]
-    if (value !== originalValue && (value ?? originalValue)) updates[k] = value as any
+    if (value !== originalValue && (value ?? originalValue) !== undefined) updates[k] = value as any
   })
 
   if (JSON.stringify(updates) === '{}') return null
@@ -100,7 +100,7 @@ function clearCorrelated() {
   const notFundToFund = form.value.type !== 0
   const fundsAreEqual = form.value.correlated_fund_id === form.value.fund_id
   const isCredit = form.value.type === 1
-  if (notFundToFund || fundsAreEqual) delete form.value.correlated_fund_id
+  if (notFundToFund || fundsAreEqual) form.value.correlated_fund_id = null;
   if (isCredit) form.value.fund_id = mainFundID
 }
 

@@ -5,7 +5,7 @@ import { fundStore, type Fund } from "./fundStore"
 
 export type Record = {
   amount: number
-  correlated_fund_id?: string
+  correlated_fund_id?: string | null
   date: string
   fund_id: string
   id?: string
@@ -31,7 +31,7 @@ export const recordStore = reactive({
 
   handleUpdate(data: { record: Record, funds: Fund[] }) {
     this.replaceRecord(data.record)
-    data.funds?.forEach(fund => fundStore.replaceFund(fund))
+    if (data.funds?.length > 0) data.funds.forEach(fund => fundStore.replaceFund(fund))
   },
   
   replaceRecord(record: Record) {

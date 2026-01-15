@@ -64,6 +64,7 @@ function setPageRecords() {
   const startingIndex = (currentPage.value - 1) * rowsPerPage.value
   const endingIndex = startingIndex + rowsPerPage.value
   pageRecords.value = recordStore.records.slice(startingIndex, endingIndex)
+  nextTick(() => focusTable())
 }
 
 function setNextPage() {
@@ -142,7 +143,6 @@ function getFundName (id: string) {
 watch(() => recordStore.records, () => {
   setPageRecords()
   setColumnsBalance()
-  nextTick(() => focusTable())
 }, { immediate: true, deep: true })
 
 window.addEventListener('resize', handleResize)

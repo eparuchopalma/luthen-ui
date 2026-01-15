@@ -38,11 +38,6 @@ function handleLogout() {
 
 <template>
   <aside class="bar">
-    <img
-    v-if="authStore.isAuthenticated"
-    src="../../assets/icon.png"
-    alt="Logo: Buho sobre la cornucopia"
-    class="bar__icon">
     <button
     type="button"
     @click="toggleTheme"
@@ -97,13 +92,8 @@ function handleLogout() {
     transition: background-color .5s;
   }
 
-  .bar__icon {
-    margin-right: 24px;
-    width: 24px;
-    height: 24px;
-  }
-
   .bar__theme-button {
+    margin-left: 12px;
     margin-right: auto;
     width: 24px;
     height: 24px;
