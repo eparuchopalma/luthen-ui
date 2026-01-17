@@ -31,7 +31,6 @@
 
 body {
   margin: 0;
-  padding-top: 24px;
   min-width: 320px;
   background: var(--primary);
   transition: background-color .5s;
@@ -70,7 +69,7 @@ fieldset {
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.6rem 2rem;
   text-align: center;
 }
 

@@ -66,7 +66,7 @@ function dismissFundForm() {
 <style>
 
 .card-container {
-  margin: 0 auto 12px;
+  margin: 28px auto;
   max-width: 600px;
   display: flex;
   gap: 12px;
@@ -74,7 +74,7 @@ function dismissFundForm() {
 }
 
 .card {
-  margin: 32px auto;
+  margin: 20px auto;
   width: 160px;
   height: 64px;
   padding: 8px;

@@ -40,12 +40,14 @@ function dismissQueryForm() {
 <style scoped>
   .bottom-bar {
     width: 100%;
-    padding-bottom: 4px;
+    padding: 6px;
     position: fixed;
     bottom: 0;
     left: 0;
     display: flex;
+    align-items: center;
     justify-content: center;
     background-color: var(--primary);
+    box-shadow: 0 -1px 4px var(--secondary);
   }
 </style>
