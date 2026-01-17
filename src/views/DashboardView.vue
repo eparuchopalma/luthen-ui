@@ -9,6 +9,7 @@ import Button from "../components/layout/Button.vue"
 import Section from "../components/layout/Section.vue"
 import Query from "../components/query/Query.vue"
 import Status from "../components/status/Status.vue"
+import BottomBar from "../components/layout/BottomBar.vue"
 import AlertBox, { type Alert } from "../components/layout/AlertBox.vue"
 import balance from '../assets/balance.png'
 import lupe from '../assets/lupe.png'
@@ -98,6 +99,7 @@ provide('showAlert', setAlertData)
       @dismiss="showingAlert = false" />
     </Transition>
   </main>
+  <BottomBar />
 </template>
 
 <style scoped>

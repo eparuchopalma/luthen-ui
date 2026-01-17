@@ -3,13 +3,9 @@ import { ref, computed } from "vue"
 import { fundStore, type Fund } from "../../store/fundStore"
 import { amountFormatter } from "../../utils/formatter"
 import Button from "../layout/Button.vue"
-import RecordForm from "./RecordForm.vue"
 import FundForm from "./FundForm.vue"
-import QueryForm from "./QueryForm.vue"
 
 const fundFormIsOpen = ref(false)
-const recordFormIsOpen = ref(false)
-const queryFormIsOpen = ref(false)
 const fundEditing = ref<Fund | null>(null)
 
 const totalBalance = computed(() => {
@@ -24,14 +20,6 @@ function selectFund(fund: Fund) {
 function dismissFundForm() {
   fundEditing.value = null
   fundFormIsOpen.value = false
-}
-
-function dismissRecordForm() {
-  recordFormIsOpen.value = false
-}
-
-function dismissQueryForm() {
-  queryFormIsOpen.value = false
 }
 
 </script>
@@ -69,29 +57,16 @@ function dismissQueryForm() {
     type="button"
     text="Crear fondo"
     @click="fundFormIsOpen = true" />
-    <Button
-    type="button"
-    :modifiers="['secondary']"
-    text="Consultar"
-    @click="queryFormIsOpen = true" />
-    <Button
-    type="button"
-    text="Crear registro"
-    @click="recordFormIsOpen = true" />
   </div>
   <Transition>
     <FundForm v-if="fundFormIsOpen" @dismiss-form="dismissFundForm" :fund="fundEditing" />
-    <RecordForm v-else-if="recordFormIsOpen" @dismiss-form="dismissRecordForm" />
-    <QueryForm
-    v-else-if="queryFormIsOpen"
-    @dismiss-form="dismissQueryForm" />
   </Transition>
 </template>
 
 <style>
 
 .card-container {
-  margin: 0 auto 24px;
+  margin: 0 auto 12px;
   max-width: 600px;
   display: flex;
   gap: 12px;

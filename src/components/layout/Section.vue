@@ -23,6 +23,7 @@ defineProps<{
 
 .section {
   min-height: calc(100vh - 68px);
+  padding-bottom: 12px;
 }
 
 .header {
