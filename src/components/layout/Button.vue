@@ -33,7 +33,7 @@ defineProps({
 
 .button {
   margin: 0 2px;
-  height: 24px;
+  height: 30px;
   width: 120px;
   border: none;
   border-radius: 2px;
