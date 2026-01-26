@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue"
+import { ref, watch } from "vue"
 import Exceljs from 'exceljs'
 import { recordStore, type Record } from "../../store/recordStore"
 import RecordForm from "../status/RecordForm.vue"
@@ -58,13 +58,11 @@ function setColumnsBalance() {
 function setPageRecords() {
   const rowHeight = 36
   const nonDataRows = 8
-  const rowsToFit = Math.floor(screenHeight.value / rowHeight) - nonDataRows
-  rowsPerPage.value = rowsToFit
-  totalPages.value = Math.ceil(recordStore.records.length / rowsToFit)
+  rowsPerPage.value = Math.floor(screenHeight.value / rowHeight) - nonDataRows
+  totalPages.value = Math.ceil(recordStore.records.length / rowsPerPage.value)
   const startingIndex = (currentPage.value - 1) * rowsPerPage.value
   const endingIndex = startingIndex + rowsPerPage.value
   pageRecords.value = recordStore.records.slice(startingIndex, endingIndex)
-  nextTick(() => focusTable())
 }
 
 function setNextPage() {
@@ -141,6 +139,7 @@ function getFundName (id: string) {
 }
 
 watch(() => recordStore.records, () => {
+  focusTable()
   setPageRecords()
   setColumnsBalance()
 }, { immediate: true, deep: true })
