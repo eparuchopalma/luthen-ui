@@ -80,7 +80,7 @@ function handleLogout() {
 
   .bar {
     width: 100%;
-    padding: 8px;
+    padding: 16px 24px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -93,7 +93,6 @@ function handleLogout() {
   }
 
   .bar__theme-button {
-    margin-left: 12px;
     margin-right: auto;
     width: 24px;
     height: 24px;
@@ -168,7 +167,9 @@ function handleLogout() {
   }
 
   .demo-alert {
-    margin-right: 120px;
+    position: fixed;
+    top: 16px;
+    left: calc(50% - 35px);
     width: 70px;
     background-color: var(--accent);
     border-radius: 20px;
@@ -179,8 +180,8 @@ function handleLogout() {
     width: 132px;
     display: grid;
     position: absolute;
-    top: 8px;
-    right: 24px;
+    top: 16px;
+    right: 64px;
   }
 
   .bar__menu-button {

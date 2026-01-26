@@ -60,9 +60,9 @@ watch(isAuthenticated, (authenticated) => {
   }
 
   .footer {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+    width: 98%;
+    position: absolute;
+    bottom: 24px;
     left: 0;
     display: flex;
     align-items: end;
@@ -71,7 +71,7 @@ watch(isAuthenticated, (authenticated) => {
 
   .footer__img {
     position: absolute;
-    right: 8px;
+    right: 12px;
     bottom: 8px;
     width: 24px;
     height: 24px;
@@ -82,7 +82,7 @@ watch(isAuthenticated, (authenticated) => {
   }
 
   .footer__text {
-    padding-right: 20px;
+    margin-right: 12px;
     font-size: 2.4rem;
     font-family: "Sacramento", cursive;
     font-weight: 400;
