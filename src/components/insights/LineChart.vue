@@ -2,7 +2,8 @@
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs'
 
-const props = defineProps(['months', 'monthsBalance'])
+const props = defineProps(['months', 'monthsBalance', 'monthlyAverage'])
+  console.log(props.monthlyAverage);
 
 const chartData = computed(() => {
   return {
@@ -10,12 +11,20 @@ const chartData = computed(() => {
     datasets: [{
       data: props.monthsBalance,
       label: 'Total',
-      maxBarThickness: 32,
+      borderColor: '#545456',
+      hoverBackgroundColor: '#545456',
+      borderRadius: 2,
+      borderWidth: 1
+    },
+    {
+      data: props.monthlyAverage,
+      label: 'Average',
       borderColor: '#BC5536',
       hoverBackgroundColor: '#545456',
       borderRadius: 2,
       borderWidth: 1
-    }]
+    }
+  ]
   }
 })
 

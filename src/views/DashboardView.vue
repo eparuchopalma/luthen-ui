@@ -85,7 +85,7 @@ provide('showAlert', setAlertData)
     </div>
     <div v-else>
       <section class="section">
-        <p>Su data no pudo obtenerse.</p>
+        <p class="error-message">Su data no pudo obtenerse.</p>
         <Button text="Reintentar" :disabled="loading" @click="getFunds" />
       </section>
     </div>
@@ -142,6 +142,10 @@ provide('showAlert', setAlertData)
     animation-fill-mode: forwards;
     animation-timing-function: ease-in-out;
     animation-direction: alternate;
+  }
+
+  .error-message {
+    margin-top: 24px;
   }
 
   @keyframes skeleton {

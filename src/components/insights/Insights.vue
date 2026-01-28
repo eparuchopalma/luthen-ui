@@ -6,6 +6,7 @@ import LineChart from './LineChart.vue';
 import { amountFormatter } from '../../utils/formatter';
 
 const listType = ref<1 | 2>(2)
+const monthlyAverage = ref()
 const balanceByMonth = ref<Record<string, number>>({})
 
 const tagsData = computed(() => {
@@ -24,14 +25,21 @@ const tagsData = computed(() => {
 
 function setMonthsData() {
   balanceByMonth.value = {}
+  let totalMonths = 0
+  let totalBalance = 0
   for (const record of recordStore.records) {
     if (record.type === 0) continue
     const month = new Date(record.date)!
       .toLocaleString('es-VE', { month: 'short', year: 'numeric' })
     const balance = Number(record.amount)
     if (balanceByMonth.value[month]) balanceByMonth.value[month]! += balance
-    else balanceByMonth.value[month] = balance
+    else {
+      balanceByMonth.value[month] = balance
+      totalMonths++
+    }
+    totalBalance += balance
   }
+  monthlyAverage.value = Array.from({ length: totalMonths }).fill((totalBalance / totalMonths).toFixed(2))
 }
 
 watch(() => recordStore.records, () => {
@@ -70,7 +78,10 @@ watch(() => recordStore.records, () => {
   </div>
   <div class="flex-container">
     <div class="chart-container">
-      <LineChart :months="Object.keys(balanceByMonth)" :months-balance="Object.values(balanceByMonth)" />
+      <LineChart
+      :months="Object.keys(balanceByMonth)"
+      :months-balance="Object.values(balanceByMonth)"
+      :monthly-average="monthlyAverage" />
     </div>
     <table class="table">
       <thead>
