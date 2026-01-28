@@ -18,7 +18,7 @@ const chartData = computed(() => {
     },
     {
       data: props.monthlyAverage,
-      label: 'Average',
+      label: 'Promedio',
       borderColor: '#BC5536',
       hoverBackgroundColor: '#545456',
       borderRadius: 2,
