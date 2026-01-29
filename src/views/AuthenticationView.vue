@@ -4,7 +4,7 @@ import { authStore } from "../store/authStore"
 import { useAuth0 } from "@auth0/auth0-vue"
 import { watchEffect } from "vue"
 
-const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0()
+const { isAuthenticated, loginWithRedirect } = useAuth0()
 
 const emit = defineEmits(['showActionsOnError'])
 
@@ -30,12 +30,10 @@ watchEffect(() => {
       type="button"
       text="Iniciar Demo"
       :modifiers="['secondary']"
-      :disabled="isLoading"
       @click="() => handleLogin(true)" />
       <Button
       type="button"
       text="Iniciar Sesión"
-      :disabled="isLoading"
       @click="loginWithRedirect" />
     </div>
     <footer class="footer">
