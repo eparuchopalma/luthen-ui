@@ -2,19 +2,19 @@
 import Button from "../components/layout/Button.vue"
 import { authStore } from "../store/authStore"
 import { useAuth0 } from "@auth0/auth0-vue"
-import { watch } from "vue"
+import { watchEffect } from "vue"
 
-const { isAuthenticated, loginWithRedirect } = useAuth0()
+const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0()
 
 const emit = defineEmits(['showActionsOnError'])
 
-function handleLogin(inDemo: boolean) {
+function handleLogin(inDemo: boolean = false) {
   authStore.login(inDemo)
 }
 
-watch(isAuthenticated, (authenticated) => {
-  if (authenticated) handleLogin(false)
-}, { immediate: true })
+watchEffect(() => {
+  if (isAuthenticated.value) handleLogin()
+})
 
 </script>
 
@@ -30,10 +30,12 @@ watch(isAuthenticated, (authenticated) => {
       type="button"
       text="Iniciar Demo"
       :modifiers="['secondary']"
+      :disabled="isLoading"
       @click="() => handleLogin(true)" />
       <Button
       type="button"
       text="Iniciar Sesión"
+      :disabled="isLoading"
       @click="loginWithRedirect" />
     </div>
     <footer class="footer">
