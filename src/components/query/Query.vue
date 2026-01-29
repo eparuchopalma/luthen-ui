@@ -179,9 +179,15 @@ window.addEventListener('resize', handleResize)
           :key="record.id"
           class="table__body-row"
           @click="openRecordForm(record)">
-            <td class="table__cell table__cell_text-left">{{ tableDateFormatter(record.date) }}</td>
-            <td class="table__cell table__cell_text-left">{{ record.tag }}</td>
-            <td class="table__cell table__cell_text-right">{{ amountFormatter(record.amount) }}</td>
+            <td class="table__cell table__cell_text-left">
+              {{ tableDateFormatter(record.date) }}
+            </td>
+            <td class="table__cell table__cell_text-left" :title="record.note">
+              {{ record.tag }}
+            </td>
+            <td class="table__cell table__cell_text-right">
+              {{ amountFormatter(record.amount) }}
+            </td>
           </tr>
         </tbody>
       </table>
