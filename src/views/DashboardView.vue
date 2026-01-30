@@ -10,6 +10,8 @@ import Section from "../components/layout/Section.vue"
 import Query from "../components/query/Query.vue"
 import Status from "../components/status/Status.vue"
 import BottomBar from "../components/layout/BottomBar.vue"
+import RecordForm from '../components/status/RecordForm.vue'
+import QueryForm from '../components/status/QueryForm.vue'
 import AlertBox, { type Alert } from "../components/layout/AlertBox.vue"
 import balance from '../assets/balance.png'
 import lupe from '../assets/lupe.png'
@@ -23,6 +25,16 @@ const alertData = ref<Alert>()
 const showingAlert = ref(false)
 const dataLoaded = ref(false)
 const loading = ref(false)
+const recordFormIsOpen = ref(false)
+const queryFormIsOpen = ref(false)
+
+function dismissRecordForm() {
+  recordFormIsOpen.value = false
+}
+
+function dismissQueryForm() {
+  queryFormIsOpen.value = false
+}
 
 function setAlertData(newAlert: Alert) {
   showingAlert.value = true
@@ -40,7 +52,7 @@ async function getToken() {
       autoDismiss: false
     })
     console.error(error)
-    loading.value = false  
+    loading.value = false
   }
 }
 
@@ -90,6 +102,10 @@ provide('showAlert', setAlertData)
       </section>
     </div>
     <Transition>
+      <RecordForm v-if="recordFormIsOpen" @dismiss-form="dismissRecordForm" />
+      <QueryForm v-else-if="queryFormIsOpen" @dismiss-form="dismissQueryForm" />
+    </Transition>
+    <Transition>
       <AlertBox
       v-if="showingAlert"
       :text="alertData!.text"
@@ -99,7 +115,9 @@ provide('showAlert', setAlertData)
       @dismiss="showingAlert = false" />
     </Transition>
   </main>
-  <BottomBar />
+  <BottomBar
+  @open-query-form="queryFormIsOpen = true"
+  @open-record-form="recordFormIsOpen = true" />
 </template>
 
 <style scoped>

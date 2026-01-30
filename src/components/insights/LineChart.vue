@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import { Line } from 'vue-chartjs'
 
 const props = defineProps(['months', 'monthsBalance', 'monthlyAverage'])
-  console.log(props.monthlyAverage);
 
 const chartData = computed(() => {
   return {

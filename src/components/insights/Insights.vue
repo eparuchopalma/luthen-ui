@@ -83,7 +83,7 @@ watch(() => recordStore.records, () => {
       :months-balance="Object.values(balanceByMonth)"
       :monthly-average="monthlyAverage" />
     </div>
-    <table class="table">
+    <table class="table table_mb">
       <thead>
         <tr class="table__header-row">
           <th>Month</th>
@@ -144,6 +144,10 @@ watch(() => recordStore.records, () => {
   border-collapse: separate;
   font-size: 1.4rem;
   table-layout: fixed;
+}
+
+.table_mb {
+  margin-bottom: 60px;
 }
 
 .table__header-row {

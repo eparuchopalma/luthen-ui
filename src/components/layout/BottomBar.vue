@@ -1,19 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import RecordForm from '../status/RecordForm.vue'
-import QueryForm from '../status/QueryForm.vue'
 import Button from './Button.vue'
 
-const recordFormIsOpen = ref(false)
-const queryFormIsOpen = ref(false)
-
-function dismissRecordForm() {
-  recordFormIsOpen.value = false
-}
-
-function dismissQueryForm() {
-  queryFormIsOpen.value = false
-}
+const emit = defineEmits(['openQueryForm', 'openRecordForm'])
 
 </script>
 
@@ -23,18 +11,12 @@ function dismissQueryForm() {
     type="button"
     :modifiers="['secondary']"
     text="Consultar"
-    @click="queryFormIsOpen = true" />
+    @click="emit('openQueryForm')" />
     <Button
     type="button"
     text="Crear registro"
-    @click="recordFormIsOpen = true" />
+    @click="emit('openRecordForm')" />
   </div>
-  <Transition>
-    <RecordForm v-if="recordFormIsOpen" @dismiss-form="dismissRecordForm" />
-    <QueryForm
-    v-else-if="queryFormIsOpen"
-    @dismiss-form="dismissQueryForm" />
-  </Transition>
 </template>
 
 <style scoped>
