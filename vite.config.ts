@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'Luthen: Financial Log.',
         short_name: 'Luthen',
         start_url: '/',
-        display: 'fullscreen',
+        display: 'standalone',
         background_color: '#242225',
         theme_color: '#BC5536',
         icons: [
