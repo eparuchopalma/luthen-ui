@@ -91,11 +91,6 @@ function dismissRecordForm() {
   recordEditing.value = null
 }
 
-function focusTable() {
-  currentPage.value = 1
-  document.getElementById("table")?.scrollIntoView({ behavior: "smooth" })
-}
-
 async function formatToXls() {
   const workbook = new Exceljs.Workbook();
   const worksheet = workbook.addWorksheet("Sheet1");
@@ -139,7 +134,7 @@ function getFundName (id: string) {
 }
 
 watch(() => recordStore.records, () => {
-  focusTable()
+  currentPage.value = 1
   setPageRecords()
   setColumnsBalance()
 }, { immediate: true, deep: true })

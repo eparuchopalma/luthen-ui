@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, provide, ref } from "vue"
+import { onMounted, provide, ref, watch } from "vue"
 import { useAuth0 } from '@auth0/auth0-vue'
 import { recordStore } from "../store/recordStore"
 import { authStore } from "../store/authStore"
@@ -27,6 +27,10 @@ const dataLoaded = ref(false)
 const loading = ref(false)
 const recordFormIsOpen = ref(false)
 const queryFormIsOpen = ref(false)
+
+function focusTable() {
+  document.getElementById("table")?.scrollIntoView({ behavior: "smooth" })
+}
 
 function dismissRecordForm() {
   recordFormIsOpen.value = false
@@ -70,6 +74,9 @@ async function getFunds() {
 }
 
 provide('showAlert', setAlertData)
+
+watch(() => recordStore.records, () => focusTable())
+
 </script>
 
 <template>
