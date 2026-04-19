@@ -75,7 +75,11 @@ async function getFunds() {
 
 provide('showAlert', setAlertData)
 
-watch(() => recordStore.records, () => focusTable())
+watch(
+  () => recordStore.records,
+  () => focusTable(),
+  { flush: 'post', deep: true }
+)
 
 </script>
 
@@ -87,8 +91,8 @@ watch(() => recordStore.records, () => focusTable())
         <Status />
       </Section>
       <Section
-      id="table"
       v-if="recordStore.records.length"
+      id="table"
       title="Registros"
       description="Resultados de su búsqueda"
       :icon="lupe">
