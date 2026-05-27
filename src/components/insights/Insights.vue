@@ -14,7 +14,7 @@ const tagsData = computed(() => {
   const typeRecords = listType.value === 2 ? recordStore.getDebits() : recordStore.getCredits()
   const balanceByTag: Record<string, number> = {}
   typeRecords.forEach((record) => {
-    const tag = record.tag ?? 'Sin etiqueta'
+    const tag = record.tag || 'Sin etiqueta'
     const amount = Number(record.amount)
     if (balanceByTag[tag]) balanceByTag[tag] += amount
     else balanceByTag[tag] = amount
@@ -57,7 +57,7 @@ watch(() => recordStore.records, () => {
     <table class="table">
       <thead>
         <tr class="table__header-row">
-          <th>Nota</th>
+          <th>Etiqueta</th>
           <th>Balance</th>
           <th>Equivalencia</th>
         </tr>
