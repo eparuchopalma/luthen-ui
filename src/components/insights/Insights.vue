@@ -124,7 +124,7 @@ watch(() => recordStore.records, () => {
 }
 
 .chart-container {
-  margin: 14px auto 0;
+  margin: 48px auto;
   height: 100%;
   width: 100%;
   max-width: 700px;
